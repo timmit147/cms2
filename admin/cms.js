@@ -125,6 +125,9 @@ async function placeBlock() {
         const removeButton = document.createElement('button');
         removeButton.textContent = 'Remove';
         removeButton.style.display = 'none';
+        removeButton.addEventListener('click', () => {
+            removeBlockAndPage(currentPage, index);
+        });
         blockDiv.appendChild(removeButton);
 
         typeLabel.addEventListener('click', () => {
@@ -167,6 +170,7 @@ async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) 
 }
 
 async function removeBlockAndPage(pageName, blockIndex) {
+    console.log("test");
     const confirmation = confirm(`Are you sure you want to remove the block ${blockIndex} from the page ${pageName}?`);
     if (confirmation) {
         try {
