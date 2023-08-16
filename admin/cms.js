@@ -81,6 +81,7 @@ async function placeBlock() {
         blockDiv.appendChild(typeLabel);
 
         let propertiesVisible = false;
+        let removeButtonVisible = false;
 
         for (const key in block) {
             if (key === "type" || key === "hash") {
@@ -119,12 +120,10 @@ async function placeBlock() {
             blockDiv.appendChild(reverseDiv);
         }
 
-        // Add Remove button
+        // Add Remove button, initially hidden
         const removeButton = document.createElement('button');
         removeButton.textContent = 'Remove';
-        removeButton.addEventListener('click', () => {
-            removeBlockAndPage(currentPage, index);
-        });
+        removeButton.style.display = 'none';
         blockDiv.appendChild(removeButton);
 
         typeLabel.addEventListener('click', () => {
@@ -133,11 +132,15 @@ async function placeBlock() {
             propertyDivs.forEach(div => {
                 div.style.display = propertiesVisible ? 'block' : 'none';
             });
+
+            removeButtonVisible = !removeButtonVisible;
+            removeButton.style.display = removeButtonVisible ? 'inline' : 'none';
         });
 
         blockContainer.appendChild(blockDiv);
     }
 }
+
 
 function handleInputKeydown(blockIndex, inputKey, inputField) {
     return (event) => {
