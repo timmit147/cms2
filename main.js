@@ -95,10 +95,6 @@ async function addHtmlToBody(key) {
     const response = await fetch(`./blocks/${key}/body.html`);
     const htmlContent = await response.text();
     document.body.insertAdjacentHTML('beforeend', htmlContent);
-    const bodyId = document.body.id;
-    const data = await fetchDataFromFirestore(`pages/${bodyId}/blocks`);
-    const block1Data = data[`${key}`];
-    console.log(block1Data);
 }
 
 function addCssLink(key) {
