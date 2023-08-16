@@ -1,4 +1,6 @@
 let currentPage = null;
+let database = null;
+
 
 async function fetchAllData() {
     try {
@@ -14,7 +16,71 @@ async function fetchAllData() {
     }
 }
 
-async function placeBlock() {
+
+async function newDatabase() {
+    // Your Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8",
+        authDomain: "cms2-58eaf.firebaseapp.com",
+        projectId: "cms2-58eaf",
+        storageBucket: "cms2-58eaf.appspot.com",
+        messagingSenderId: "405806447010",
+        appId: "1:405806447010:web:e842ddf9737960fbd45afb",
+        measurementId: "G-VYBDR6G2EG"
+      };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Get a reference to the Firestore database
+    const firestore = firebase.firestore();
+
+    // Reference to the <ul> element in the HTML
+    const dataList = document.getElementById('data-list');
+    const dataListContainer = document.getElementById('data-list-container');
+    const loginForm = document.getElementById('login-form');
+
+    // Function to log in
+    function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => {
+          // User logged in successfully
+          loginForm.style.display = 'none';
+
+          // Call function to fetch data
+          fetchDataFromFirestore();
+        })
+        .catch((error) => {
+          console.error('Error logging in: ', error);
+        });
+    }
+
+    // Function to fetch data from Firestore and display
+    function fetchDataFromFirestore() {
+      firestore.collection('data').get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            database = data;
+            addMenuButtons();
+          });
+        })
+        .catch((error) => {
+          console.error('Error fetching documents: ', error);
+        });
+    }
+
+    // Call login function initially
+    login();
+  }
+
+
+
+
+  async function placeBlock() {
     if (!currentPage) {
         return;
     }
@@ -23,22 +89,22 @@ async function placeBlock() {
     const blockContainer = document.getElementById('blockContainer');
     blockContainer.innerHTML = ''; // Clear the existing content
 
-    for (const [index, block] of blocksData.entries()) {
+    for (const [index, block] of Object.entries(blocksData)) {
         const blockDiv = document.createElement('div');
         const typeLabel = document.createElement('label');
-        typeLabel.textContent = block["title"] || block["type"]; // Set the type as the title
+        typeLabel.textContent = block["title"] || block["type"];
         typeLabel.style.fontWeight = 'bold';
         blockDiv.appendChild(typeLabel);
 
-        let propertiesVisible = false; // Flag to track visibility of the properties
+        let propertiesVisible = false;
 
         for (const key in block) {
             if (key === "type" || key === "hash") {
                 continue;
             }
             if (block.hasOwnProperty(key)) {
-                const propertyDiv = document.createElement('div'); // Wrap each property in a div
-                propertyDiv.style.display = 'none'; // Initially hide the properties
+                const propertyDiv = document.createElement('div');
+                propertyDiv.style.display = 'none';
 
                 const inputLabel = document.createElement('label');
                 inputLabel.textContent = key;
@@ -55,8 +121,8 @@ async function placeBlock() {
         }
 
         if (block.hash) {
-            const reverseDiv = document.createElement('div'); // Wrap the reverse button in a div
-            reverseDiv.style.display = 'none'; // Initially hide the reverse button
+            const reverseDiv = document.createElement('div');
+            reverseDiv.style.display = 'none';
 
             const reverseButton = document.createElement('button');
             reverseButton.textContent = 'Reverse';
@@ -68,7 +134,6 @@ async function placeBlock() {
             blockDiv.appendChild(reverseDiv);
         }
 
-        // Add event listener to toggle visibility of the rest of the properties and reverse button when clicking on the title
         typeLabel.addEventListener('click', () => {
             const propertyDivs = blockDiv.querySelectorAll('div');
             propertiesVisible = !propertiesVisible;
@@ -79,6 +144,10 @@ async function placeBlock() {
 
         blockContainer.appendChild(blockDiv);
     }
+}
+
+function reverseBlock(index, blockHash) {
+    // Implement your logic for reversing a block here
 }
 
 
@@ -123,35 +192,35 @@ async function reverseBlock(blockIndex, hash) {
     }
 }
 
-function sendRequestToPhp(route, value) {
-    const formData = new FormData();
-    formData.append('JSON_PATH', route);
-    formData.append('NEW_TITLE', value);
+// function sendRequestToPhp(route, value) {
+//     const formData = new FormData();
+//     formData.append('JSON_PATH', route);
+//     formData.append('NEW_TITLE', value);
 
-    fetch('server.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.text();
-    })
-    .then(data => {
-        console.log(data); // Output the response to the console
-    })
-    .catch(error => {
-        console.error('Fetch error:', error);
-    });
-}
+//     fetch('server.php', {
+//         method: 'POST',
+//         body: formData
+//     })
+//     .then(response => {
+//         if (!response.ok) {
+//             throw new Error('Network response was not ok');
+//         }
+//         return response.text();
+//     })
+//     .then(data => {
+//         console.log(data); // Output the response to the console
+//     })
+//     .catch(error => {
+//         console.error('Fetch error:', error);
+//     });
+// }
 
 async function addMenuButtons() {
     const menuContainer = document.getElementById('menuContainer');
 
     try {
-        var data = await fetchAllData();
-        const pagesData = data["pages"];
+        // var data = await fetchAllData();
+        const pagesData = database["pages"];
 
         for (const page in pagesData) {
             const button = document.createElement('button');
@@ -170,41 +239,40 @@ async function addMenuButtons() {
     }
 }
 
-addMenuButtons();
 
 placeBlock();
 
 
-function sendBlockName() {
-// Get the selected value from the dropdown
-var selectedValue = document.getElementById("dropdown").value;
-console.log(selectedValue);
+// function sendBlockName() {
+// // Get the selected value from the dropdown
+// var selectedValue = document.getElementById("dropdown").value;
+// console.log(selectedValue);
 
-// Create a new XMLHttpRequest object
-var xhr = new XMLHttpRequest();
+// // Create a new XMLHttpRequest object
+// var xhr = new XMLHttpRequest();
 
-// Define the PHP file URL to send the data to
-var phpFile = "addBlock.php";
+// // Define the PHP file URL to send the data to
+// var phpFile = "addBlock.php";
 
-// Create the data to be sent in the request
-var data = new FormData();
-data.append('blockName', selectedValue);
+// // Create the data to be sent in the request
+// var data = new FormData();
+// data.append('blockName', selectedValue);
 
-// Set up the AJAX request
-xhr.open("POST", phpFile, true);
+// // Set up the AJAX request
+// xhr.open("POST", phpFile, true);
 
-// Set the event handler to handle the response from the PHP file
-xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-        // This is where you can handle the response from the PHP file if needed
-        console.log(xhr.responseText);
-    }
-};
+// // Set the event handler to handle the response from the PHP file
+// xhr.onreadystatechange = function() {
+//     if (xhr.readyState === 4 && xhr.status === 200) {
+//         // This is where you can handle the response from the PHP file if needed
+//         console.log(xhr.responseText);
+//     }
+// };
 
-// Send the AJAX request with the data
-xhr.send(data);
-}
+// // Send the AJAX request with the data
+// xhr.send(data);
+// }
 
-document.getElementById("submitButton").addEventListener("click", sendBlockName);
+// document.getElementById("submitButton").addEventListener("click", sendBlockName);
 
         
