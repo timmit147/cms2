@@ -98,6 +98,7 @@ async function placeBlock() {
                 const inputField = document.createElement('input');
                 inputField.type = 'text';
                 inputField.value = block[key];
+                inputField.addEventListener('keydown', handleInputKeydown(index, key, inputField));
                 propertyDiv.appendChild(inputField);
 
                 blockDiv.appendChild(propertyDiv);
@@ -135,6 +136,29 @@ async function placeBlock() {
         });
 
         blockContainer.appendChild(blockDiv);
+    }
+}
+
+function handleInputKeydown(blockIndex, inputKey, inputField) {
+    return (event) => {
+        if (event.keyCode === 13) { // Enter key
+            console.log(`Page: ${currentPage}, Block: ${blockIndex}, Input: ${inputKey}`);
+            const newValue = inputField.value;
+            updateBlockProperty(currentPage, blockIndex, inputKey, newValue);
+        }
+    };
+}
+
+async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) {
+    try {
+        // Assuming you are using Firebase Firestore
+        const blockRef = firebase.firestore().doc(`pages/${pageName}/blocks/${blockIndex}`);
+        const updateData = { [propertyKey]: newValue };
+        await blockRef.update(updateData);
+        console.log(`Updated property ${propertyKey} of block ${blockIndex} on page ${pageName}`);
+        placeBlock(); // Re-render the blocks after update
+    } catch (error) {
+        console.error("Error updating property:", error);
     }
 }
 
