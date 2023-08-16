@@ -233,7 +233,7 @@ document.querySelector('#submitButton').addEventListener('click', (event) => {
 async function addNewBlock(selectedBlock) {
     try {
         const pagesCollection = firestore.collection('pages'); // No 'data' prefix
-        const page1DocumentRef = pagesCollection.doc('page1');
+        const page1DocumentRef = pagesCollection.doc(currentPage);
         const blocksCollectionRef = page1DocumentRef.collection('blocks'); // Subcollection for blocks
 
         const newBlockDocRef = blocksCollectionRef.doc(selectedBlock);
