@@ -1,17 +1,50 @@
-async function fetchAllData() {
-    try {
-        const response = await fetch("database.js");
-        if (!response.ok) {
-        throw new Error("Network response was not ok.");
-        }
-        const jsonData = await response.json();
-        return jsonData;
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        return null;
+let database = null;
+
+newDatabase()
+
+async function newDatabase() {
+    // Your Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8",
+        authDomain: "cms2-58eaf.firebaseapp.com",
+        projectId: "cms2-58eaf",
+        storageBucket: "cms2-58eaf.appspot.com",
+        messagingSenderId: "405806447010",
+        appId: "1:405806447010:web:e842ddf9737960fbd45afb",
+        measurementId: "G-VYBDR6G2EG"
+      };
+
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Get a reference to the Firestore database
+    const firestore = firebase.firestore();
+
+    // Reference to the <ul> element in the HTML
+    const dataList = document.getElementById('data-list');
+    const dataListContainer = document.getElementById('data-list-container');
+
+    // Function to fetch data from Firestore and display
+    function fetchDataFromFirestore() {
+        firestore.collection('data').get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    database = data;
+                    placeBlock();
+                });
+            })
+            .catch((error) => {
+                console.error('Error fetching documents: ', error);
+            });
     }
+
+    // Call the function to fetch data from Firestore
+    fetchDataFromFirestore();
 }
-  
+
+
 async function addHtmlToBody(key) {
     const response = await fetch(`./blocks/${key}/body.html`);
     const htmlContent = await response.text();
@@ -65,10 +98,10 @@ function addJsScript(key) {
 
 
 async function placeBlock() {
-    const data = await fetchAllData();
-    const blocksData = data["pages"]["page1"]["blocks"];
+    const blocksData = database["pages"]["page1"]["blocks"];
   
-    for (const block of blocksData) {
+    for (const blockKey in blocksData) {
+      const block = blocksData[blockKey];
       const blockType = block['type'];
   
       await addHtmlToBody(blockType);
@@ -77,6 +110,4 @@ async function placeBlock() {
     }
   }
   
-placeBlock();
-
   
