@@ -1,5 +1,4 @@
 let currentPage = null;
-let database = null;
 let firestore = null; // Declare firestore in a broader scope
 
 async function newDatabase() {
@@ -35,8 +34,7 @@ async function newDatabase() {
                 // User logged in successfully
                 loginForm.style.display = 'none';
 
-                // Call function to fetch data
-                fetchDataFromFirestore();
+                addMenuButtons();
             })
             .catch((error) => {
                 console.error('Error logging in: ', error);
@@ -47,40 +45,34 @@ login();
 }
 
 // Function to fetch data from Firestore and display
-function fetchDataFromFirestore() {
-    const blocksData = {};
+async function fetchDataFromFirestore(path) {
+    const allData = {};
 
-    firestore.collection('pages').get()
-    .then((querySnapshot) => {
+    try {
+        const querySnapshot = await firestore.collection(path).get();
         querySnapshot.forEach((doc) => {
-            blocksData[doc.id] = doc.data();
+            allData[doc.id] = doc.data();
         });
-
-        database = blocksData;
-        addMenuButtons();
-    })
-    .catch((error) => {
+        return allData;
+    } catch (error) {
         console.error("Error fetching data: ", error);
-    });
+        throw error; // Re-throw the error to be handled by the caller
+    }
 }
 
 
-
-
-
-
-
-
-  async function placeBlock() {
+async function placeBlock() {
     if (!currentPage) {
         return;
     }
 
-    const blocksData = currentPage["blocks"];
     const blockContainer = document.getElementById('blockContainer');
     blockContainer.innerHTML = ''; // Clear the existing content
+    console.log(currentPage);
 
-    for (const [index, block] of Object.entries(blocksData)) {
+    const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
+
+    for (const [index, block] of Object.entries(pages)) { // Loop through the fetched pages data
         const blockDiv = document.createElement('div');
         const typeLabel = document.createElement('label');
         typeLabel.textContent = block["title"] || block["type"];
@@ -140,6 +132,7 @@ function fetchDataFromFirestore() {
 
 
 
+
 async function fetchOldData(commitHash) {
     try {
         const response = await fetch(
@@ -183,16 +176,14 @@ async function reverseBlock(blockIndex, hash) {
 
 
 async function addMenuButtons() {
-    const menuContainer = document.getElementById('menuContainer');
-
+    const pages = await fetchDataFromFirestore("pages");
     try {
-        for (const page in database) {
+        for (const page in pages) {
             const button = document.createElement('button');
             button.textContent = page;
 
             button.addEventListener('click', () => {
-                currentPage = database[page];
-                currentPage.name = page;
+                currentPage = page;
                 placeBlock();
             });
 
