@@ -1,21 +1,6 @@
 let currentPage = null;
 let database = null;
-
-
-async function fetchAllData() {
-    try {
-        const response = await fetch("../database.js");
-        if (!response.ok) {
-            throw new Error("Network response was not ok.");
-        }
-        const jsonData = await response.json();
-        return jsonData;
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        return null;
-    }
-}
-
+let firestore = null; // Declare firestore in a broader scope
 
 async function newDatabase() {
     // Your Firebase configuration
@@ -33,7 +18,7 @@ async function newDatabase() {
     firebase.initializeApp(firebaseConfig);
 
     // Get a reference to the Firestore database
-    const firestore = firebase.firestore();
+    firestore = firebase.firestore();
 
     // Reference to the <ul> element in the HTML
     const dataList = document.getElementById('data-list');
@@ -42,40 +27,46 @@ async function newDatabase() {
 
     // Function to log in
     function login() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => {
-          // User logged in successfully
-          loginForm.style.display = 'none';
+        firebase.auth().signInWithEmailAndPassword(email, password)
+            .then(() => {
+                // User logged in successfully
+                loginForm.style.display = 'none';
 
-          // Call function to fetch data
-          fetchDataFromFirestore();
-        })
-        .catch((error) => {
-          console.error('Error logging in: ', error);
-        });
+                // Call function to fetch data
+                fetchDataFromFirestore();
+            })
+            .catch((error) => {
+                console.error('Error logging in: ', error);
+            });
     }
-
-    // Function to fetch data from Firestore and display
-    function fetchDataFromFirestore() {
-      firestore.collection('data').get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            database = data;
-            addMenuButtons();
-          });
-        })
-        .catch((error) => {
-          console.error('Error fetching documents: ', error);
-        });
-    }
-
     // Call login function initially
-    login();
-  }
+login();
+}
+
+// Function to fetch data from Firestore and display
+function fetchDataFromFirestore() {
+    const blocksData = {};
+
+    firestore.collection('pages').get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            blocksData[doc.id] = doc.data();
+        });
+
+        database = blocksData;
+        addMenuButtons();
+    })
+    .catch((error) => {
+        console.error("Error fetching data: ", error);
+    });
+}
+
+
+
+
 
 
 
@@ -146,9 +137,7 @@ async function newDatabase() {
     }
 }
 
-function reverseBlock(index, blockHash) {
-    // Implement your logic for reversing a block here
-}
+
 
 
 async function fetchOldData(commitHash) {
@@ -192,42 +181,17 @@ async function reverseBlock(blockIndex, hash) {
     }
 }
 
-// function sendRequestToPhp(route, value) {
-//     const formData = new FormData();
-//     formData.append('JSON_PATH', route);
-//     formData.append('NEW_TITLE', value);
-
-//     fetch('server.php', {
-//         method: 'POST',
-//         body: formData
-//     })
-//     .then(response => {
-//         if (!response.ok) {
-//             throw new Error('Network response was not ok');
-//         }
-//         return response.text();
-//     })
-//     .then(data => {
-//         console.log(data); // Output the response to the console
-//     })
-//     .catch(error => {
-//         console.error('Fetch error:', error);
-//     });
-// }
 
 async function addMenuButtons() {
     const menuContainer = document.getElementById('menuContainer');
 
     try {
-        // var data = await fetchAllData();
-        const pagesData = database["pages"];
-
-        for (const page in pagesData) {
+        for (const page in database) {
             const button = document.createElement('button');
             button.textContent = page;
 
             button.addEventListener('click', () => {
-                currentPage = pagesData[page];
+                currentPage = database[page];
                 currentPage.name = page;
                 placeBlock();
             });
@@ -243,36 +207,49 @@ async function addMenuButtons() {
 placeBlock();
 
 
-// function sendBlockName() {
-// // Get the selected value from the dropdown
-// var selectedValue = document.getElementById("dropdown").value;
-// console.log(selectedValue);
 
-// // Create a new XMLHttpRequest object
-// var xhr = new XMLHttpRequest();
 
-// // Define the PHP file URL to send the data to
-// var phpFile = "addBlock.php";
 
-// // Create the data to be sent in the request
-// var data = new FormData();
-// data.append('blockName', selectedValue);
+document.querySelector('#submitButton').addEventListener('click', (event) => {
+    event.preventDefault();
+    const selectedBlock = document.querySelector('#dropdown').value;
+    addNewBlock(selectedBlock);
+});
 
-// // Set up the AJAX request
-// xhr.open("POST", phpFile, true);
 
-// // Set the event handler to handle the response from the PHP file
-// xhr.onreadystatechange = function() {
-//     if (xhr.readyState === 4 && xhr.status === 200) {
-//         // This is where you can handle the response from the PHP file if needed
-//         console.log(xhr.responseText);
-//     }
-// };
+async function addNewBlock(selectedBlock) {
+    try {
+        const pagesCollection = firestore.collection('pages'); // No 'data' prefix
+        const page1DocumentRef = pagesCollection.doc('page1');
+        const blocksCollectionRef = page1DocumentRef.collection('blocks'); // Subcollection for blocks
 
-// // Send the AJAX request with the data
-// xhr.send(data);
-// }
+        const newBlockDocRef = blocksCollectionRef.doc(selectedBlock);
 
-// document.getElementById("submitButton").addEventListener("click", sendBlockName);
+        const newBlockData = {
+            content: `Content of ${selectedBlock}`,
+            title: selectedBlock,
+            link: `https://example.com/${selectedBlock}`,
+            type: selectedBlock
+        };
 
-        
+        // Set the entire block data in the document with the selectedBlock ID
+        await newBlockDocRef.set(newBlockData);
+
+        console.log(`New block '${selectedBlock}' added successfully.`);
+    } catch (error) {
+        console.error('Error adding new block:', error);
+    }
+}
+
+// Add an event listener to the form submission
+document.querySelector('#submitButton').addEventListener('click', async (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+
+    // Get the selected block value from the dropdown
+    const selectedBlock = document.querySelector('#dropdown').value;
+
+    // Call the function to add a new block with the selected value
+    await addNewBlock(selectedBlock);
+});
+
+
