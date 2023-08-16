@@ -33,6 +33,8 @@ async function newDatabase() {
             .then(() => {
                 // User logged in successfully
                 loginForm.style.display = 'none';
+                const formContainer = document.getElementById('form-container');
+                formContainer.style.display = 'block';
 
                 addMenuButtons();
             })
@@ -68,11 +70,10 @@ async function placeBlock() {
 
     const blockContainer = document.getElementById('blockContainer');
     blockContainer.innerHTML = ''; // Clear the existing content
-    console.log(currentPage);
 
     const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
 
-    for (const [index, block] of Object.entries(pages)) { // Loop through the fetched pages data
+    for (const [index, block] of Object.entries(pages)) {
         const blockDiv = document.createElement('div');
         const typeLabel = document.createElement('label');
         typeLabel.textContent = block["title"] || block["type"];
@@ -110,12 +111,20 @@ async function placeBlock() {
             const reverseButton = document.createElement('button');
             reverseButton.textContent = 'Reverse';
             reverseButton.addEventListener('click', () => {
-                reverseBlock(index, block.hash); // Pass the block index and hash to reverseBlock function
+                reverseBlock(index, block.hash);
             });
             reverseDiv.appendChild(reverseButton);
 
             blockDiv.appendChild(reverseDiv);
         }
+
+        // Add Remove button
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.addEventListener('click', () => {
+            removeBlockAndPage(currentPage, index);
+        });
+        blockDiv.appendChild(removeButton);
 
         typeLabel.addEventListener('click', () => {
             const propertyDivs = blockDiv.querySelectorAll('div');
@@ -128,6 +137,22 @@ async function placeBlock() {
         blockContainer.appendChild(blockDiv);
     }
 }
+
+async function removeBlockAndPage(pageName, blockIndex) {
+    const confirmation = confirm(`Are you sure you want to remove the block ${blockIndex} from the page ${pageName}?`);
+    if (confirmation) {
+        try {
+            // Assuming you are using Firebase Firestore
+            const blockRef = firebase.firestore().doc(`pages/${pageName}/blocks/${blockIndex}`);
+            await blockRef.delete();
+            console.log(`Removed block ${blockIndex} from page ${pageName}`);
+            placeBlock(); // Re-render the blocks after removal
+        } catch (error) {
+            console.error("Error removing block:", error);
+        }
+    }
+}
+
 
 
 
@@ -195,9 +220,6 @@ async function addMenuButtons() {
 }
 
 
-placeBlock();
-
-
 
 
 
@@ -227,10 +249,13 @@ async function addNewBlock(selectedBlock) {
         await newBlockDocRef.set(newBlockData);
 
         console.log(`New block '${selectedBlock}' added successfully.`);
+
+        placeBlock(); // Refresh the blocks after adding a new block
     } catch (error) {
         console.error('Error adding new block:', error);
     }
 }
+
 
 // Add an event listener to the form submission
 document.querySelector('#submitButton').addEventListener('click', async (event) => {
