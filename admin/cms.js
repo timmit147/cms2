@@ -20,8 +20,7 @@ async function newDatabase() {
     firestore = firebase.firestore();
 
     // Reference to the <ul> element in the HTML
-    const dataList = document.getElementById('data-list');
-    const dataListContainer = document.getElementById('data-list-container');
+
     const loginForm = document.getElementById('login-form');
 
     // Function to log in
@@ -45,6 +44,8 @@ async function newDatabase() {
     // Call login function initially
 login();
 }
+
+
 
 // Function to fetch data from Firestore and display
 async function fetchDataFromFirestore(path) {
@@ -247,23 +248,14 @@ async function addMenuButtons() {
 }
 
 
-
-
-
-document.querySelector('#submitButton').addEventListener('click', (event) => {
-    event.preventDefault();
-    const selectedBlock = document.querySelector('#dropdown').value;
-    addNewBlock(selectedBlock);
-});
-
-
 async function addNewBlock(selectedBlock) {
     try {
         const pagesCollection = firestore.collection('pages'); // No 'data' prefix
         const page1DocumentRef = pagesCollection.doc(currentPage);
         const blocksCollectionRef = page1DocumentRef.collection('blocks'); // Subcollection for blocks
 
-        const newBlockDocRef = blocksCollectionRef.doc(selectedBlock);
+        // Generate a unique ID for the new block document
+        const newBlockDocRef = blocksCollectionRef.doc();
 
         const newBlockData = {
             content: `Content of ${selectedBlock}`,
@@ -272,7 +264,7 @@ async function addNewBlock(selectedBlock) {
             type: selectedBlock
         };
 
-        // Set the entire block data in the document with the selectedBlock ID
+        // Set the data for the new block document with the generated ID
         await newBlockDocRef.set(newBlockData);
 
         console.log(`New block '${selectedBlock}' added successfully.`);
@@ -282,6 +274,7 @@ async function addNewBlock(selectedBlock) {
         console.error('Error adding new block:', error);
     }
 }
+
 
 
 // Add an event listener to the form submission
