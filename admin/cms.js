@@ -114,16 +114,19 @@ async function placeBlock() {
     const blockContainer = document.getElementById('blockContainer');
     blockContainer.innerHTML = ''; // Clear the existing content
 
+    const pageTitle = document.createElement('h1'); // Create an h1 element for the page title
+    pageTitle.textContent = currentPage; // Set the text content to the current page name
+    blockContainer.appendChild(pageTitle); // Add the h1 element as the first child of the block container
+
     const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
     
-    // Create an array of objects with index and order
+    
     const blockArray = Object.entries(pages).map(([index, block]) => ({
         index,
-        order: block.order || 0, // Use 0 as default order value
+        order: block.order || 0,
         block,
     }));
 
-    // Sort the array based on order value
     const sortedBlocks = blockArray.sort((a, b) => a.order - b.order);
 
     for (const { index, block } of sortedBlocks) {
@@ -184,9 +187,9 @@ async function placeBlock() {
         
         addUpDownButtons(blockDiv, index, sortedBlocks.length, currentPage);
         blockContainer.appendChild(blockDiv);
-
     }
 }
+
 
 function addUpDownButtons(blockDiv, blockIndex, totalBlocks, pageName) {
     const upButton = document.createElement('button');
@@ -364,6 +367,8 @@ async function fetchOldData(commitHash) {
 async function addMenuButtons() {
     const pages = await fetchDataFromFirestore("pages");
     try {
+        const popup = document.getElementById('popup');
+
         for (const page in pages) {
             const button = document.createElement('button');
             button.textContent = page;
@@ -371,14 +376,23 @@ async function addMenuButtons() {
             button.addEventListener('click', () => {
                 currentPage = page;
                 placeBlock();
+                // Close the popup after selecting a page
+                popup.style.display = 'none';
             });
 
-            menuContainer.appendChild(button);
+            popup.appendChild(button);
         }
+
+        const addPageButton = document.getElementById('showPages');
+        addPageButton.addEventListener('click', () => {
+            // Show the popup when the "Add page" button is clicked
+            popup.style.display = 'block';
+        });
     } catch (error) {
         console.error('Error fetching data:', error);
     }
 }
+
 
 
 async function addNewBlock(selectedBlock) {
