@@ -182,39 +182,78 @@ async function placeBlock() {
             removeButton.style.display = removeButtonVisible ? 'inline' : 'none';
         });
         
-        addUpDownButtons(blockDiv, index, sortedBlocks.length);
+        addUpDownButtons(blockDiv, index, sortedBlocks.length, currentPage);
         blockContainer.appendChild(blockDiv);
-
-        blockContainer.appendChild(blockDiv);
-
 
     }
 }
 
-function addUpDownButtons(blockDiv, blockIndex, totalBlocks) {
+function addUpDownButtons(blockDiv, blockIndex, totalBlocks, pageName) {
     const upButton = document.createElement('button');
     upButton.textContent = 'Up';
-    upButton.addEventListener('click', () => {
+    upButton.addEventListener('click', async () => {
         console.log("up");
-
-        if (blockIndex > 0) {
-  
-        }
+            await swapBlocks(pageName, blockIndex,"up");
     });
 
     const downButton = document.createElement('button');
     downButton.textContent = 'Down';
-    downButton.addEventListener('click', () => {
+    downButton.addEventListener('click', async () => {
         console.log("down");
-
-        if (blockIndex < totalBlocks - 1) {
-  
-        }
+            await swapBlocks(pageName, blockIndex, "down");
     });
 
     blockDiv.appendChild(upButton);
     blockDiv.appendChild(downButton);
 }
+
+async function swapBlocks(pageName, index1, upDown) {
+    // example page1 WZiYT1y5tDXgPqbux3LD down
+    console.log(pageName, index1, upDown);
+    const db = firebase.firestore();
+    const pageRef = db.collection('pages').doc(pageName);
+    
+    try {
+        const pageSnapshot = await pageRef.get();
+        
+        if (!pageSnapshot.exists) {
+            console.log(`Page ${pageName} does not exist.`);
+            return;
+        }
+
+        const pageData = pageSnapshot.data();
+        const blocks = pageData.blocks || []; // Initialize with empty array if undefined
+
+        if (index1 < 0 || index1 >= blocks.length) {
+            console.log(`Invalid block index: ${index1}`);
+            return;
+        }
+
+        const index2 = upDown === 'up' ? index1 - 1 : index1 + 1;
+
+        if (index2 < 0 || index2 >= blocks.length) {
+            console.log(`Cannot swap block ${index1} with ${upDown} as there is no block at index ${index2}.`);
+            return;
+        }
+
+        // Swap the order values
+        const tempOrder = blocks[index1].order;
+        blocks[index1].order = blocks[index2].order;
+        blocks[index2].order = tempOrder;
+
+        // Update the blocks in Firestore
+        try {
+            await pageRef.update({ blocks });
+            console.log(`Swapped block ${index1} with block ${index2} on page ${pageName}`);
+            placeBlock(); // Re-render the blocks after swapping
+        } catch (error) {
+            console.error("Error updating blocks in Firestore:", error);
+        }
+    } catch (error) {
+        console.error("Error getting page data:", error);
+    }
+}
+
 
 
 
