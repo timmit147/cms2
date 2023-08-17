@@ -116,7 +116,10 @@ async function placeBlock() {
 
     const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
 
-    for (const [index, block] of Object.entries(pages)) {
+    const sortedBlocks = Object.values(pages).sort((a, b) => a.order - b.order);
+
+
+    for (const [index, block] of sortedBlocks.entries()) {
         const blockDiv = document.createElement('div');
         const typeLabel = document.createElement('label');
         typeLabel.textContent = block["title"] || block["type"];
@@ -296,9 +299,16 @@ async function addMenuButtons() {
 
 async function addNewBlock(selectedBlock) {
     try {
-        const pagesCollection = firestore.collection('pages'); // No 'data' prefix
+        const pagesCollection = firestore.collection('pages');
         const page1DocumentRef = pagesCollection.doc(currentPage);
-        const blocksCollectionRef = page1DocumentRef.collection('blocks'); // Subcollection for blocks
+        const blocksCollectionRef = page1DocumentRef.collection('blocks');
+
+        // Get the current count of blocks in the collection
+        const blocksSnapshot = await blocksCollectionRef.get();
+        const blockCount = blocksSnapshot.size;
+
+        // Calculate the order for the new block
+        const newBlockOrder = blockCount + 1;
 
         // Generate a unique ID for the new block document
         const newBlockDocRef = blocksCollectionRef.doc();
@@ -322,24 +332,32 @@ async function addNewBlock(selectedBlock) {
               link: "https://example.com/fitness-plan",
               type: "block3"
             }
-          ];
+        ];
 
-          function getBlockData(blockName) {
+        function getBlockData(blockName) {
             const block = objectWithBlocks.find(obj => obj.type === blockName);
             return block || null; // Return null if blockName is not found
-          }
-          
+        }
 
         // Set the data for the new block document with the generated ID
-        await newBlockDocRef.set(getBlockData(selectedBlock));
-
-        console.log(`New block '${selectedBlock}' added successfully.`);
+        const selectedBlockData = getBlockData(selectedBlock);
+        if (selectedBlockData) {
+            const newBlockData = {
+                ...selectedBlockData,
+                order: newBlockOrder
+            };
+            await newBlockDocRef.set(newBlockData);
+            console.log(`New block '${selectedBlock}' added successfully.`);
+        } else {
+            console.error(`Block '${selectedBlock}' not found.`);
+        }
 
         placeBlock(); // Refresh the blocks after adding a new block
     } catch (error) {
         console.error('Error adding new block:', error);
     }
 }
+
 
 
 
