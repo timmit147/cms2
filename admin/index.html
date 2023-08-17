@@ -7,23 +7,20 @@
     <title>Simple CMS</title>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script> <!-- Include Firebase Authentication script -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
 </head>
 
-<div id="login-form">
-    <h2>Login</h2>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="newDatabase()">Login</button>
-  </div>
-  
-
 <body id="page1">
+    <div id="login-form">
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+    </div>
+
     <div id="menuContainer">
         
     </div>
-
-
 
     <div id="form-container" style="display: none;">
         <form method="POST">
@@ -36,12 +33,12 @@
         </form>
     </div>
     
-    
     <div id="blockContainer">
         
     </div>
 
-</body>
-<script src="cms.js"></script>
+    <button id="logout-button" style="display: none;">Logout</button>
 
+    <script src="cms.js"></script>
+</body>
 </html>

@@ -1,5 +1,8 @@
 let currentPage = null;
 let firestore = null; // Declare firestore in a broader scope
+const loginForm = document.getElementById('login-form');
+
+newDatabase();
 
 async function newDatabase() {
     // Your Firebase configuration
@@ -19,31 +22,70 @@ async function newDatabase() {
     // Get a reference to the Firestore database
     firestore = firebase.firestore();
 
-    // Reference to the <ul> element in the HTML
+    // Firebase authentication state change listener
+// Firebase authentication state change listener
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        // User is signed in, proceed with your application logic
+        addMenuButtons();
+        console.log("you are logged in");
+        hideLoginForm(); // Hide the login form
+        showLogoutButton(); // Show the logout button
+        const formContainer = document.getElementById('form-container');
+        formContainer.style.display = 'block';
 
-    const loginForm = document.getElementById('login-form');
-
-    // Function to log in
-    function login() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        firebase.auth().signInWithEmailAndPassword(email, password)
-            .then(() => {
-                // User logged in successfully
-                loginForm.style.display = 'none';
-                const formContainer = document.getElementById('form-container');
-                formContainer.style.display = 'block';
-
-                addMenuButtons();
-            })
-            .catch((error) => {
-                console.error('Error logging in: ', error);
-            });
+    } else {
+        showLoginForm(); // Show the login form
+        hideLogoutButton(); // Hide the logout button
     }
-    // Call login function initially
-login();
+});
+
+// Function to hide the login form
+function hideLoginForm() {
+    const loginForm = document.getElementById('login-form');
+    loginForm.style.display = 'none';
 }
+
+// Function to show the login form
+function showLoginForm() {
+    const loginForm = document.getElementById('login-form');
+    loginForm.style.display = 'block';
+}
+
+// Function to show the logout button
+function showLogoutButton() {
+    const logoutButton = document.getElementById('logout-button');
+    logoutButton.style.display = 'block';
+}
+
+// Function to hide the logout button
+function hideLogoutButton() {
+    const logoutButton = document.getElementById('logout-button');
+    logoutButton.style.display = 'none';
+}
+
+document.getElementById('logout-button').addEventListener('click', () => {
+    firebase.auth().signOut().then(() => {
+        location.reload(); // Refresh the page after logging out
+    });
+});
+    
+}
+
+// Function to log in
+function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(() => {
+            return firebase.auth().signInWithEmailAndPassword(email, password);
+        })
+        .catch((error) => {
+            console.error('Error logging in: ', error);
+        });
+}
+
 
 
 
