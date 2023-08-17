@@ -192,14 +192,12 @@ function addUpDownButtons(blockDiv, blockIndex, totalBlocks, pageName) {
     const upButton = document.createElement('button');
     upButton.textContent = 'Up';
     upButton.addEventListener('click', async () => {
-        console.log("up");
             await swapBlocks(pageName, blockIndex,"up");
     });
 
     const downButton = document.createElement('button');
     downButton.textContent = 'Down';
     downButton.addEventListener('click', async () => {
-        console.log("down");
             await swapBlocks(pageName, blockIndex, "down");
     });
 
@@ -207,50 +205,93 @@ function addUpDownButtons(blockDiv, blockIndex, totalBlocks, pageName) {
     blockDiv.appendChild(downButton);
 }
 
-async function swapBlocks(pageName, index1, upDown) {
-    // example page1 WZiYT1y5tDXgPqbux3LD down
-    console.log(pageName, index1, upDown);
-    const db = firebase.firestore();
-    const pageRef = db.collection('pages').doc(pageName);
-    
+// Assuming you have the necessary Firebase initialization code here
+
+async function swapBlocks(pageName, blockId, upDown) {
+
     try {
-        const pageSnapshot = await pageRef.get();
-        
-        if (!pageSnapshot.exists) {
-            console.log(`Page ${pageName} does not exist.`);
+        const db = firebase.firestore();
+        const blockRef = db.collection('pages').doc(pageName).collection('blocks').doc(blockId);
+        const blockSnapshot = await blockRef.get();
+
+        if (!blockSnapshot.exists) {
+            console.log(`Block with ID ${blockId} does not exist.`);
             return;
         }
 
-        const pageData = pageSnapshot.data();
-        const blocks = pageData.blocks || []; // Initialize with empty array if undefined
+        const blockData = blockSnapshot.data();
 
-        if (index1 < 0 || index1 >= blocks.length) {
-            console.log(`Invalid block index: ${index1}`);
+        // Ensure the block has an 'order' property
+        if (!('order' in blockData)) {
+            console.log(`Block with ID ${blockId} does not have an 'order' property.`);
             return;
         }
 
-        const index2 = upDown === 'up' ? index1 - 1 : index1 + 1;
+        const blockOrder = blockData.order;
 
-        if (index2 < 0 || index2 >= blocks.length) {
-            console.log(`Cannot swap block ${index1} with ${upDown} as there is no block at index ${index2}.`);
-            return;
-        }
+        // Fetch all blocks and their orders
+        const blocksQuerySnapshot = await db.collection('pages').doc(pageName).collection('blocks').get();
+        const existingOrders = blocksQuerySnapshot.docs.map(doc => doc.data().order);
+        // Determine the target order based on the 'upDown' direction
+        const currentIndex = existingOrders.indexOf(blockOrder);
+let targetIndex;
+
+if (upDown === 'up') {
+    // Find the highest available order lower than the current block's order
+    const lowerOrders = existingOrders.filter(order => order < blockOrder);
+
+    if (lowerOrders.length > 0) {
+        targetIndex = existingOrders.indexOf(Math.max(...lowerOrders));
+    } else {
+        console.log(`Cannot swap block ${blockId} ${upDown} as it's already at the top.`);
+        return;
+    }
+} else {
+    // Find the next available order higher than the current block's order
+    const higherOrders = existingOrders.filter(order => order > blockOrder);
+
+    if (higherOrders.length > 0) {
+        targetIndex = existingOrders.indexOf(Math.min(...higherOrders));
+    } else {
+        console.log(`Cannot swap block ${blockId} ${upDown} as it's already at the bottom.`);
+        return;
+    }
+}
+
+if (targetIndex < 0 || targetIndex >= existingOrders.length) {
+    console.log(`Cannot swap block ${blockId} ${upDown} as there is no block with target order.`);
+    return;
+}
+
+const targetOrder = existingOrders[targetIndex];
+
+// Find the block to swap with based on target order
+const targetBlockSnapshot = blocksQuerySnapshot.docs.find(doc => doc.data().order === targetOrder);
+const targetBlockRef = targetBlockSnapshot.ref;
+
+// Swap the order values
+try {
+    await db.runTransaction(async (transaction) => {
+        const blockData = (await transaction.get(blockRef)).data();
+        const targetBlockData = (await transaction.get(targetBlockRef)).data();
 
         // Swap the order values
-        const tempOrder = blocks[index1].order;
-        blocks[index1].order = blocks[index2].order;
-        blocks[index2].order = tempOrder;
+        const tempOrder = blockData.order;
+        blockData.order = targetBlockData.order;
+        targetBlockData.order = tempOrder;
 
-        // Update the blocks in Firestore
-        try {
-            await pageRef.update({ blocks });
-            console.log(`Swapped block ${index1} with block ${index2} on page ${pageName}`);
-            placeBlock(); // Re-render the blocks after swapping
-        } catch (error) {
-            console.error("Error updating blocks in Firestore:", error);
-        }
+        // Update the blocks in the transaction
+        transaction.update(blockRef, blockData);
+        transaction.update(targetBlockRef, targetBlockData);
+    });
+
+    placeBlock(); // Re-render the blocks after swapping
+} catch (error) {
+    console.error("Error updating blocks in Firestore:", error);
+}
+
     } catch (error) {
-        console.error("Error getting page data:", error);
+        console.error("Error getting block data:", error);
     }
 }
 
@@ -262,7 +303,6 @@ async function swapBlocks(pageName, index1, upDown) {
 function handleInputKeydown(blockIndex, inputKey, inputField) {
     return (event) => {
         if (event.keyCode === 13) { // Enter key
-            console.log(`Page: ${currentPage}, Block: ${blockIndex}, Input: ${inputKey}`);
             const newValue = inputField.value;
             updateBlockProperty(currentPage, blockIndex, inputKey, newValue);
         }
@@ -275,7 +315,6 @@ async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) 
         const blockRef = firebase.firestore().doc(`pages/${pageName}/blocks/${blockIndex}`);
         const updateData = { [propertyKey]: newValue };
         await blockRef.update(updateData);
-        console.log(`Updated property ${propertyKey} of block ${blockIndex} on page ${pageName}`);
         placeBlock(); // Re-render the blocks after update
     } catch (error) {
         console.error("Error updating property:", error);
@@ -283,14 +322,12 @@ async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) 
 }
 
 async function removeBlockAndPage(pageName, blockIndex) {
-    console.log("test");
     const confirmation = confirm(`Are you sure you want to remove the block ${blockIndex} from the page ${pageName}?`);
     if (confirmation) {
         try {
             // Assuming you are using Firebase Firestore
             const blockRef = firebase.firestore().doc(`pages/${pageName}/blocks/${blockIndex}`);
             await blockRef.delete();
-            console.log(`Removed block ${blockIndex} from page ${pageName}`);
             placeBlock(); // Re-render the blocks after removal
         } catch (error) {
             console.error("Error removing block:", error);
