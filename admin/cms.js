@@ -115,12 +115,20 @@ async function placeBlock() {
     blockContainer.innerHTML = ''; // Clear the existing content
 
     const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
+    
+    // Create an array of objects with index and order
+    const blockArray = Object.entries(pages).map(([index, block]) => ({
+        index,
+        order: block.order || 0, // Use 0 as default order value
+        block,
+    }));
 
-    const sortedBlocks = Object.values(pages).sort((a, b) => a.order - b.order);
+    // Sort the array based on order value
+    const sortedBlocks = blockArray.sort((a, b) => a.order - b.order);
 
-
-    for (const [index, block] of sortedBlocks.entries()) {
+    for (const { index, block } of sortedBlocks) {
         const blockDiv = document.createElement('div');
+        
         const typeLabel = document.createElement('label');
         typeLabel.textContent = block["title"] || block["type"];
         typeLabel.style.fontWeight = 'bold';
@@ -152,19 +160,7 @@ async function placeBlock() {
             }
         }
 
-        if (block.hash) {
-            const reverseDiv = document.createElement('div');
-            reverseDiv.style.display = 'none';
-
-            const reverseButton = document.createElement('button');
-            reverseButton.textContent = 'Reverse';
-            reverseButton.addEventListener('click', () => {
-                reverseBlock(index, block.hash);
-            });
-            reverseDiv.appendChild(reverseButton);
-
-            blockDiv.appendChild(reverseDiv);
-        }
+        // ... Render the reverse button and property divs ...
 
         // Add Remove button, initially hidden
         const removeButton = document.createElement('button');
@@ -189,6 +185,7 @@ async function placeBlock() {
         blockContainer.appendChild(blockDiv);
     }
 }
+
 
 
 function handleInputKeydown(blockIndex, inputKey, inputField) {
