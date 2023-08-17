@@ -1,56 +1,4 @@
-let database = null;
-
 newDatabase()
-
-async function newDatabase() {
-    // Your Firebase configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8",
-        authDomain: "cms2-58eaf.firebaseapp.com",
-        projectId: "cms2-58eaf",
-        storageBucket: "cms2-58eaf.appspot.com",
-        messagingSenderId: "405806447010",
-        appId: "1:405806447010:web:e842ddf9737960fbd45afb",
-        measurementId: "G-VYBDR6G2EG"
-      };
-
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-
-    // Get a reference to the Firestore database
-    const firestore = firebase.firestore();
-
-    // Reference to the <ul> element in the HTML
-    const dataList = document.getElementById('data-list');
-    const dataListContainer = document.getElementById('data-list-container');
-
-    // Function to fetch data from Firestore and display
-    function fetchDataFromFirestore() {
-        firestore.collection('data').get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    database = data;
-                    placeBlock();
-                });
-            })
-            .catch((error) => {
-                console.error('Error fetching documents: ', error);
-            });
-    }
-
-    // Call the function to fetch data from Firestore
-    fetchDataFromFirestore();
-}
-
-
-
-
-
-
-
-
 
 async function newDatabase() {
     // Your Firebase configuration
@@ -149,7 +97,6 @@ async function placeBlock() {
     for (const blockKey in blocksData) {
       const block = blocksData[blockKey];
       const blockType = block['type'];
-  
       await addHtmlToBody(blockType);
       await addCssLink(blockType);
       await addJsScript(blockType);
