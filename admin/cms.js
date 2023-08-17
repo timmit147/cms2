@@ -31,8 +31,8 @@ firebase.auth().onAuthStateChanged((user) => {
         console.log("you are logged in");
         hideLoginForm(); // Hide the login form
         showLogoutButton(); // Show the logout button
-        const formContainer = document.getElementById('form-container');
-        formContainer.style.display = 'block';
+        const footerMenu = document.querySelector('.footerMenu');
+        footerMenu.style.display = 'flex';
 
     } else {
         showLoginForm(); // Show the login form
@@ -49,7 +49,7 @@ function hideLoginForm() {
 // Function to show the login form
 function showLoginForm() {
     const loginForm = document.getElementById('login-form');
-    loginForm.style.display = 'block';
+    loginForm.style.display = 'flex';
 }
 
 // Function to show the logout button
@@ -133,6 +133,8 @@ async function placeBlock() {
         blockWrapper.classList.add('block-wrapper'); // Add a class for styling
 
         const blockDiv = document.createElement('div');
+        blockDiv.classList.add('blockContent'); // Add a class for styling
+
 
         const typeLabel = document.createElement('label');
         typeLabel.textContent = block["title"] || block["type"];
@@ -148,6 +150,7 @@ async function placeBlock() {
             }
             if (block.hasOwnProperty(key)) {
                 const propertyDiv = document.createElement('div');
+                propertyDiv.classList.add('propertyDiv'); // Add a class for styling
                 propertyDiv.style.display = 'none';
 
                 const inputLabel = document.createElement('label');
@@ -176,11 +179,11 @@ async function placeBlock() {
         });
         blockDiv.appendChild(removeButton);
 
-        typeLabel.addEventListener('click', () => {
+        blockDiv.addEventListener('click', () => {
             const propertyDivs = blockDiv.querySelectorAll('div');
             propertiesVisible = !propertiesVisible;
             propertyDivs.forEach(div => {
-                div.style.display = propertiesVisible ? 'block' : 'none';
+                div.style.display = propertiesVisible ? 'flex' : 'none';
             });
 
             removeButtonVisible = !removeButtonVisible;
@@ -193,21 +196,19 @@ async function placeBlock() {
     }
 }
 
-
 function addUpDownButtons(blockDiv, blockIndex, totalBlocks, pageName) {
     const buttonsDiv = document.createElement('div'); // Create a div to contain the buttons
     buttonsDiv.classList.add('arrow-buttons'); // Add a class name for styling
 
-
     const upButton = document.createElement('button');
-    upButton.innerHTML = '&#8593;'; // Up arrow icon
+    upButton.innerHTML = '<i class="fas fa-angle-up"></i>'; // Font Awesome up arrow icon
     upButton.classList.add('arrow-button');
     upButton.addEventListener('click', async () => {
         await swapBlocks(pageName, blockIndex, "up");
     });
 
     const downButton = document.createElement('button');
-    downButton.innerHTML = '&#8595;'; // Down arrow icon
+    downButton.innerHTML = '<i class="fas fa-angle-down"></i>'; // Font Awesome down arrow icon
     downButton.classList.add('arrow-button');
     downButton.addEventListener('click', async () => {
         await swapBlocks(pageName, blockIndex, "down");
@@ -218,6 +219,7 @@ function addUpDownButtons(blockDiv, blockIndex, totalBlocks, pageName) {
 
     blockDiv.appendChild(buttonsDiv); // Add the div containing the buttons to the block div
 }
+
 
 
 // Assuming you have the necessary Firebase initialization code here

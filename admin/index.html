@@ -8,6 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body id="page1">
@@ -32,12 +33,12 @@
         <!-- Popup content will be dynamically generated here -->
     </div>
 
-    <div class="footerMenu">
+    <div class="footerMenu" style="display: none;">
 
         <button id="showPages">Pages</button>
 
         
-        <div id="form-container" style="display: none;">
+        <div id="form-container">
             <form method="POST">
                 <select name="block" id="dropdown">
                     <option value="block1">Block 1</option>
@@ -48,7 +49,7 @@
             </form>
         </div>
 
-        <button id="logout-button" style="display: none;">Logout</button>
+        <button id="logout-button">Logout</button>
 
 
     </div>

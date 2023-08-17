@@ -1,14 +1,12 @@
-body{
+body {
     margin: 0px;
 }
 
-#blockContainer{
+#blockContainer {
     margin: 20px;
 }
 
-#blockContainer > div{
-    padding: 10px;
-    gap: 10px;
+#blockContainer > div {
     border: 1px solid;
     display: flex;
     flex-direction: row;
@@ -16,10 +14,19 @@ body{
     align-items: start;
 }
 
-#blockContainer > div input,textarea{
+#blockContainer > div input, textarea {
     width: 50%;
 }
 
+.block-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+.blockContent {
+    flex: 1; /* Take up available vertical space within block-wrapper */
+    align-self: stretch;
+    padding: 10px;
+}
 
 #menuContainer {
     padding: 10px;
@@ -59,10 +66,30 @@ body{
     border: none;
     background: none;
     cursor: pointer;
+    font-size: 16px;
 }
 
 .arrow-buttons {
     display: flex;
     flex-direction: column;
     width: fit-content;
+    align-self: stretch;
+    padding: 5px 0px;
+}
+
+.propertyDiv {
+    gap: 10px;
+    justify-content: space-between;
+}
+
+div#login-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertically center align items */
+    align-items: center; /* Horizontally center align items */
+    width: 100vw;
+    height: 100vh;
+    gap: 10px;
+    position: absolute;
+    top: 0;
 }
