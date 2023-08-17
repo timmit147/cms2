@@ -326,17 +326,29 @@ function handleInputKeydown(blockIndex, inputKey, inputField) {
     };
 }
 
-async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) {
-    try {
-        // Assuming you are using Firebase Firestore
-        const blockRef = firebase.firestore().doc(`pages/${pageName}/blocks/${blockIndex}`);
-        const updateData = { [propertyKey]: newValue };
-        await blockRef.update(updateData);
-        placeBlock(); // Re-render the blocks after update
-    } catch (error) {
-        console.error("Error updating property:", error);
-    }
+function handleAddPageButtonClick() {
+    const pageNameInput = document.getElementById('pageNameInput');
+    const popup = document.getElementById('addPagePopup');
+    const saveButton = document.getElementById('saveButton');
+
+    popup.style.display = 'flex'; // Show the popup
+
+    saveButton.addEventListener('click', async () => {
+        const newPageName = pageNameInput.value;
+        if (newPageName) {
+            const pagesRef = firebase.firestore().collection('pages');
+            await pagesRef.doc(newPageName).set({});
+
+            popup.style.display = 'none'; // Hide the popup after saving
+            pageNameInput.value = ''; // Clear the input field
+
+            // Refresh the menu buttons after adding a new page
+            addMenuButtons();
+        }
+    });
 }
+
+
 
 async function removeBlockAndPage(pageName, blockIndex) {
     const confirmation = confirm(`Are you sure you want to remove the block ${blockIndex} from the page ${pageName}?`);
@@ -380,32 +392,42 @@ async function fetchOldData(commitHash) {
 
 async function addMenuButtons() {
     const pages = await fetchDataFromFirestore("pages");
-    try {
-        const popup = document.getElementById('popup');
+    const popup = document.getElementById('popup');
+    const pagesButton = document.getElementById('pagesButton');
 
-        for (const page in pages) {
-            const button = document.createElement('button');
-            button.textContent = page;
+    // Clear the existing buttons
+    popup.innerHTML = '';
 
-            button.addEventListener('click', () => {
-                currentPage = page;
-                placeBlock();
-                // Close the popup after selecting a page
-                popup.style.display = 'none';
-            });
+    const addPageButton = document.createElement('button');
+    addPageButton.textContent = "Add Page";
 
-            popup.appendChild(button);
-        }
+    // Event listener for the "Add Page" button
+    addPageButton.addEventListener('click', handleAddPageButtonClick);
 
-        const addPageButton = document.getElementById('showPages');
-        addPageButton.addEventListener('click', () => {
-            // Show the popup when the "Add page" button is clicked
-            popup.style.display = 'flex';
+    for (const page in pages) {
+        const button = document.createElement('button');
+        button.textContent = page;
+
+        button.addEventListener('click', () => {
+            currentPage = page;
+            placeBlock();
+            popup.style.display = 'none'; // Close the popup after selecting a page
         });
-    } catch (error) {
-        console.error('Error fetching data:', error);
+
+        popup.appendChild(button);
     }
+
+    popup.appendChild(addPageButton);
+
+    pagesButton.addEventListener('click', () => {
+        if (popup.style.display === 'flex') {
+            popup.style.display = 'none'; // Close the popup if it's open
+        } else {
+            popup.style.display = 'flex'; // Show the popup if it's closed
+        }
+    });
 }
+
 
 
 
