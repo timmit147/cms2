@@ -2,11 +2,31 @@
 async function getData() {
     const bodyId = document.body.id;
     const data = await fetchDataFromFirestore(`pages/${bodyId}/blocks`);
-    const block1Data = data["block1"];
-    console.log(block1Data);
-    document.querySelector("#block1 h1").textContent = block1Data["title"];
-    document.querySelector("#block1 p").textContent = block1Data["content"];
 
+    if (!data) {
+        console.log("Data not found");
+        return; // Exit the function if data doesn't exist
+    }
+
+    const block1Data = data["block1"];
+    
+    if (!block1Data) {
+        console.log("Block1 data not found");
+        return; // Exit the function if block1Data doesn't exist
+    }
+
+    console.log(block1Data);
+    
+    const titleElement = document.querySelector("#block1 h1");
+    const contentElement = document.querySelector("#block1 p");
+    
+    if (block1Data["title"]) {
+        titleElement.textContent = block1Data["title"];
+    }
+    
+    if (block1Data["content"]) {
+        contentElement.textContent = block1Data["content"];
+    }
 }
 
 getData();

@@ -90,17 +90,50 @@ function addJsScript(key) {
 }
 
 
+async function placeBlock(pageName) {
+    const firestorePath = `pages/${pageName}/blocks`;
+    const blocksData = await fetchDataFromFirestore(firestorePath);
 
-async function placeBlock() {
-    const blocksData = await fetchDataFromFirestore("pages/page1/blocks")
-      
+    // Clear previous content before adding new blocks
+    document.body.innerHTML = ''; // Clear the body content
+
     for (const blockKey in blocksData) {
-      const block = blocksData[blockKey];
-      const blockType = block['type'];
-      await addHtmlToBody(blockType);
-      await addCssLink(blockType);
-      await addJsScript(blockType);
+        const block = blocksData[blockKey];
+        const blockType = block['type'];
+        await addHtmlToBody(blockType);
+        await addCssLink(blockType);
+        await addJsScript(blockType);
     }
-  }
-  
-  
+}
+
+
+function handleHashbangChange() {
+    const hashbang = window.location.hash.substr(1); // Get hash without the '#!'
+    const path = window.location.pathname.substr(1); // Get path without the leading '/'
+    
+    let targetPage = hashbang || path; // Use hashbang if present, otherwise use path
+    
+    // Check if the targetPage is empty or matches "page1"
+    if (targetPage === "" || targetPage === "page1") {
+        targetPage = "page1"; // Change targetPage to "page1" by default or when it's "page1"
+    }
+    
+    // Redirect to the root URL if the target page doesn't exist
+    if (!isValidPage(targetPage)) {
+        window.location.href = "/";
+        return; // Stop further processing
+    }
+    
+    placeBlock(targetPage); // Place block based on the targetPage value
+}
+
+function isValidPage(page) {
+    return page === "page1" || page === "page2";
+}
+
+// Listen for hash changes and handle them
+window.addEventListener('hashchange', handleHashbangChange);
+
+// Initial handling based on the current hashbang
+handleHashbangChange();
+
