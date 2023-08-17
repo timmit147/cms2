@@ -118,6 +118,14 @@ async function placeBlock() {
     pageTitle.textContent = currentPage; // Set the text content to the current page name
     blockContainer.appendChild(pageTitle); // Add the h1 element as the first child of the block container
 
+     // Add Remove button next to the h1 element
+     const removePageButton = document.createElement('button');
+     removePageButton.textContent = 'Remove Page';
+     removePageButton.addEventListener('click', () => {
+         removePage(currentPage);
+     });
+     blockContainer.appendChild(removePageButton);
+
     const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
 
     const blockArray = Object.entries(pages).map(([index, block]) => ({
@@ -347,6 +355,23 @@ function handleAddPageButtonClick() {
         }
     });
 }
+
+async function removePage(pageName) {
+    const confirmation = confirm(`Are you sure you want to remove the page ${pageName}?`);
+    if (confirmation) {
+        try {
+            // Assuming you are using Firebase Firestore
+            const pageRef = firebase.firestore().doc(`pages/${pageName}`);
+            await pageRef.delete();
+
+            // Refresh the page
+            location.reload();
+        } catch (error) {
+            console.error("Error removing page:", error);
+        }
+    }
+}
+
 
 
 
