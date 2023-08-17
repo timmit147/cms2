@@ -181,10 +181,42 @@ async function placeBlock() {
             removeButtonVisible = !removeButtonVisible;
             removeButton.style.display = removeButtonVisible ? 'inline' : 'none';
         });
+        
+        addUpDownButtons(blockDiv, index, sortedBlocks.length);
+        blockContainer.appendChild(blockDiv);
 
         blockContainer.appendChild(blockDiv);
+
+
     }
 }
+
+function addUpDownButtons(blockDiv, blockIndex, totalBlocks) {
+    const upButton = document.createElement('button');
+    upButton.textContent = 'Up';
+    upButton.addEventListener('click', () => {
+        console.log("up");
+
+        if (blockIndex > 0) {
+  
+        }
+    });
+
+    const downButton = document.createElement('button');
+    downButton.textContent = 'Down';
+    downButton.addEventListener('click', () => {
+        console.log("down");
+
+        if (blockIndex < totalBlocks - 1) {
+  
+        }
+    });
+
+    blockDiv.appendChild(upButton);
+    blockDiv.appendChild(downButton);
+}
+
+
 
 
 
@@ -250,28 +282,7 @@ async function fetchOldData(commitHash) {
     }
 }
 
-async function reverseBlock(blockIndex, hash) {
-    try {
-        const oldData = await fetchOldData(hash);
-        if (oldData && oldData.pages) {
-            const pages = oldData.pages;
-            for (const page in pages) {
-                if (pages.hasOwnProperty(page)) {
-                    const reversedBlock = pages[page]["blocks"][blockIndex];
-                    for (const key in reversedBlock) {
-                        if (reversedBlock.hasOwnProperty(key)) {
-                            currentPage["blocks"][blockIndex][key] = reversedBlock[key];
-                        }
-                    }
-                    placeBlock();
-                    break; // Only process the first page found
-                }
-            }
-        }
-    } catch (error) {
-        console.error("Error:", error);
-    }
-}
+
 
 
 async function addMenuButtons() {
