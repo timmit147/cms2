@@ -119,8 +119,7 @@ async function placeBlock() {
     blockContainer.appendChild(pageTitle); // Add the h1 element as the first child of the block container
 
     const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
-    
-    
+
     const blockArray = Object.entries(pages).map(([index, block]) => ({
         index,
         order: block.order || 0,
@@ -130,8 +129,11 @@ async function placeBlock() {
     const sortedBlocks = blockArray.sort((a, b) => a.order - b.order);
 
     for (const { index, block } of sortedBlocks) {
+        const blockWrapper = document.createElement('div'); // Create a wrapper div
+        blockWrapper.classList.add('block-wrapper'); // Add a class for styling
+
         const blockDiv = document.createElement('div');
-        
+
         const typeLabel = document.createElement('label');
         typeLabel.textContent = block["title"] || block["type"];
         typeLabel.style.fontWeight = 'bold';
@@ -184,29 +186,39 @@ async function placeBlock() {
             removeButtonVisible = !removeButtonVisible;
             removeButton.style.display = removeButtonVisible ? 'inline' : 'none';
         });
-        
-        addUpDownButtons(blockDiv, index, sortedBlocks.length, currentPage);
-        blockContainer.appendChild(blockDiv);
+
+        blockWrapper.appendChild(blockDiv); // Add the block content to the wrapper
+        addUpDownButtons(blockWrapper, index, sortedBlocks.length, currentPage);
+        blockContainer.appendChild(blockWrapper); // Add the wrapper to the main container
     }
 }
 
 
 function addUpDownButtons(blockDiv, blockIndex, totalBlocks, pageName) {
+    const buttonsDiv = document.createElement('div'); // Create a div to contain the buttons
+    buttonsDiv.classList.add('arrow-buttons'); // Add a class name for styling
+
+
     const upButton = document.createElement('button');
-    upButton.textContent = 'Up';
+    upButton.innerHTML = '&#8593;'; // Up arrow icon
+    upButton.classList.add('arrow-button');
     upButton.addEventListener('click', async () => {
-            await swapBlocks(pageName, blockIndex,"up");
+        await swapBlocks(pageName, blockIndex, "up");
     });
 
     const downButton = document.createElement('button');
-    downButton.textContent = 'Down';
+    downButton.innerHTML = '&#8595;'; // Down arrow icon
+    downButton.classList.add('arrow-button');
     downButton.addEventListener('click', async () => {
-            await swapBlocks(pageName, blockIndex, "down");
+        await swapBlocks(pageName, blockIndex, "down");
     });
 
-    blockDiv.appendChild(upButton);
-    blockDiv.appendChild(downButton);
+    buttonsDiv.appendChild(upButton);
+    buttonsDiv.appendChild(downButton);
+
+    blockDiv.appendChild(buttonsDiv); // Add the div containing the buttons to the block div
 }
+
 
 // Assuming you have the necessary Firebase initialization code here
 
@@ -386,7 +398,7 @@ async function addMenuButtons() {
         const addPageButton = document.getElementById('showPages');
         addPageButton.addEventListener('click', () => {
             // Show the popup when the "Add page" button is clicked
-            popup.style.display = 'block';
+            popup.style.display = 'flex';
         });
     } catch (error) {
         console.error('Error fetching data:', error);
