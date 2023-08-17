@@ -261,15 +261,35 @@ async function addNewBlock(selectedBlock) {
         // Generate a unique ID for the new block document
         const newBlockDocRef = blocksCollectionRef.doc();
 
-        const newBlockData = {
-            content: `Content of ${selectedBlock}`,
-            title: selectedBlock,
-            link: `https://example.com/${selectedBlock}`,
-            type: selectedBlock
-        };
+        const objectWithBlocks = [
+            {
+              title: "Introduction to Programming",
+              content: "Learn the basics of programming with this comprehensive guide.",
+              link: "https://example.com/programming-intro",
+              type: "block1"
+            },
+            {
+              title: "Recipe Book",
+              content: "Explore a collection of delicious recipes from around the world.",
+              link: "https://example.com/recipe-book",
+              type: "block2"
+            },
+            {
+              title: "Fitness Workout Plan",
+              content: "Get fit and healthy with this step-by-step workout routine.",
+              link: "https://example.com/fitness-plan",
+              type: "block3"
+            }
+          ];
+
+          function getBlockData(blockName) {
+            const block = objectWithBlocks.find(obj => obj.type === blockName);
+            return block || null; // Return null if blockName is not found
+          }
+          
 
         // Set the data for the new block document with the generated ID
-        await newBlockDocRef.set(newBlockData);
+        await newBlockDocRef.set(getBlockData(selectedBlock));
 
         console.log(`New block '${selectedBlock}' added successfully.`);
 
