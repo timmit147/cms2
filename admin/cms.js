@@ -208,10 +208,17 @@ async function placeBlock() {
 // ... (previous code remains the same)
 
 // ... (previous code remains the same)
-const fieldOrder = ['logo', 'menu'];
 
 
 async function loopPageFields(currentPage) {
+    if (currentPage === 'settings') {
+        await loopSettingsPageFields(currentPage);
+    } else {
+        await loopDefaultPageFields(currentPage);
+    }
+}
+
+async function loopSettingsPageFields(currentPage) {
     const pageRef = firestore.collection('pages').doc(currentPage);
     const pageSnapshot = await pageRef.get();
 
@@ -219,67 +226,30 @@ async function loopPageFields(currentPage) {
         const pageData = pageSnapshot.data();
         const menu = pageData.menu || [];
 
+        // Fetch the list of pages from the Firestore collection
+        const pagesCollection = firestore.collection('pages');
+        const pagesQuerySnapshot = await pagesCollection.get();
+        const allPages = pagesQuerySnapshot.docs.map(doc => doc.id);
+
         const blockContainer = document.getElementById('blockContainer');
-        blockContainer.innerHTML = ''; // Clear the existing content
-        
+        blockContainer.innerHTML = '';
+
         const pageTitle = document.createElement('h1');
         pageTitle.textContent = currentPage;
         blockContainer.appendChild(pageTitle);
 
-        for (const field of fieldOrder) {
+        const excludedFields = ['menu', 'label']; // Add other field names you want to exclude
 
-            if (pageData.hasOwnProperty(field)) {
+        for (const field in pageData) {
+            if (pageData.hasOwnProperty(field) && !excludedFields.includes(field)) {
                 const fieldValue = pageData[field];
-                
+
                 const fieldLabel = document.createElement('label');
                 fieldLabel.textContent = field;
                 blockContainer.appendChild(fieldLabel);
 
-                if (field === 'menu') {
-                    const menuContainer = document.createElement('div');
-
-                    // Sort the menu items based on their index in the array
-                    const sortedMenu = menu.slice().sort((a, b) => menu.indexOf(a) - menu.indexOf(b));
-
-                    for (const page of sortedMenu) {
-                        const pageWrapper = document.createElement('div');
-                        pageWrapper.classList.add('page-wrapper');
-
-                        const pageCheckbox = document.createElement('input');
-                        pageCheckbox.type = 'checkbox';
-                        pageCheckbox.value = page;
-                        pageCheckbox.checked = fieldValue.includes(page);
-                        pageCheckbox.addEventListener('change', async () => {
-                            const selectedPages = Array.from(menuContainer.querySelectorAll('input:checked'), input => input.value);
-                            await updatePageField(currentPage, field, selectedPages);
-                        });
-
-                        const pageLabel = document.createElement('label');
-                        pageLabel.textContent = page;
-
-                        const upButton = document.createElement('button');
-                        upButton.innerHTML = '<i class="fas fa-chevron-up"></i>';
-                        upButton.classList.add('arrow-button');
-                        upButton.addEventListener('click', async () => {
-                            await movePage(currentPage, page, 'up');
-                        });
-
-                        const downButton = document.createElement('button');
-                        downButton.innerHTML = '<i class="fas fa-chevron-down"></i>';
-                        downButton.classList.add('arrow-button');
-                        downButton.addEventListener('click', async () => {
-                            await movePage(currentPage, page, 'down');
-                        });
-
-                        pageWrapper.appendChild(pageCheckbox);
-                        pageWrapper.appendChild(pageLabel);
-                        pageWrapper.appendChild(upButton);
-                        pageWrapper.appendChild(downButton);
-                        menuContainer.appendChild(pageWrapper);
-                    }
-
-                    blockContainer.appendChild(menuContainer);
-                } else {
+                if (typeof fieldValue === 'string' || typeof fieldValue === 'number') {
+                    // Add an input field for string or number fields
                     const inputField = document.createElement('input');
                     inputField.type = 'text';
                     inputField.value = fieldValue;
@@ -287,8 +257,130 @@ async function loopPageFields(currentPage) {
                         await updatePageField(currentPage, field, inputField.value);
                     });
                     blockContainer.appendChild(inputField);
+                } else {
+                    // For other field types, just display the field value
+                    const fieldValueElement = document.createElement('p');
+                    fieldValueElement.textContent = fieldValue.toString();
+                    blockContainer.appendChild(fieldValueElement);
                 }
-                
+
+                blockContainer.appendChild(document.createElement('br')); // Add line break
+            }
+        }
+
+        for (const page of menu) {
+            if (allPages.includes(page)) {
+                const pageWrapper = createPageWrapper(page, menu);
+                blockContainer.appendChild(pageWrapper);
+            }
+        }
+
+        // Add unchecked pages to the end
+        for (const page of allPages) {
+            if (!menu.includes(page)) {
+                const pageWrapper = createPageWrapper(page, menu);
+                blockContainer.appendChild(pageWrapper);
+            }
+        }
+    } else {
+        console.log(`Page ${currentPage} does not exist.`);
+    }
+}
+
+
+
+function createPageWrapper(page, menu) {
+    const pageWrapper = document.createElement('div');
+    pageWrapper.classList.add('page-wrapper');
+
+    const pageCheckbox = document.createElement('input');
+    pageCheckbox.type = 'checkbox';
+    pageCheckbox.value = page;
+    pageCheckbox.checked = menu.includes(page);
+    pageCheckbox.addEventListener('change', async () => {
+        if (pageCheckbox.checked) {
+            menu.push(page);
+        } else {
+            const pageIndex = menu.indexOf(page);
+            if (pageIndex !== -1) {
+                menu.splice(pageIndex, 1);
+            }
+        }
+        await updatePageField(currentPage, 'menu', menu);
+        await loopSettingsPageFields(currentPage); // Refresh the display
+    });
+
+    const pageLabel = document.createElement('label');
+    pageLabel.textContent = page;
+
+    const upButton = document.createElement('button');
+    upButton.innerHTML = 'Move Up';
+    upButton.addEventListener('click', async () => {
+        const pageIndex = menu.indexOf(page);
+        if (pageIndex > 0) {
+            [menu[pageIndex], menu[pageIndex - 1]] = [menu[pageIndex - 1], menu[pageIndex]];
+            await updatePageField(currentPage, 'menu', menu);
+            await loopSettingsPageFields(currentPage); // Refresh the display
+        }
+    });
+
+    const downButton = document.createElement('button');
+    downButton.innerHTML = 'Move Down';
+    downButton.addEventListener('click', async () => {
+        const pageIndex = menu.indexOf(page);
+        if (pageIndex < menu.length - 1) {
+            [menu[pageIndex], menu[pageIndex + 1]] = [menu[pageIndex + 1], menu[pageIndex]];
+            await updatePageField(currentPage, 'menu', menu);
+            await loopSettingsPageFields(currentPage); // Refresh the display
+        }
+    });
+
+    pageWrapper.appendChild(pageCheckbox);
+    pageWrapper.appendChild(pageLabel);
+    pageWrapper.appendChild(upButton);
+    pageWrapper.appendChild(downButton);
+
+    return pageWrapper;
+}
+
+async function loopDefaultPageFields(currentPage) {
+    const pageRef = firestore.collection('pages').doc(currentPage);
+    const pageSnapshot = await pageRef.get();
+
+    if (pageSnapshot.exists) {
+        const pageData = pageSnapshot.data();
+
+        const blockContainer = document.getElementById('blockContainer');
+        blockContainer.innerHTML = '';
+
+        const pageTitle = document.createElement('h1');
+        pageTitle.textContent = currentPage;
+        blockContainer.appendChild(pageTitle);
+
+        for (const field in pageData) {
+            if (pageData.hasOwnProperty(field)) {
+                const fieldValue = pageData[field];
+
+                const fieldLabel = document.createElement('label');
+                fieldLabel.textContent = field;
+                blockContainer.appendChild(fieldLabel);
+
+                if (typeof fieldValue === 'string' || typeof fieldValue === 'number') {
+                    // Add an input field for string or number fields
+                    const inputField = document.createElement('input');
+                    inputField.type = 'text';
+                    inputField.value = fieldValue;
+                    inputField.addEventListener('input', async () => {
+                        await updatePageField(currentPage, field, inputField.value);
+                    });
+                    blockContainer.appendChild(inputField);
+                } else {
+                    // For other field types, just display the field value
+                    const fieldValueElement = document.createElement('p');
+                    fieldValueElement.textContent = fieldValue.toString();
+                    blockContainer.appendChild(fieldValueElement);
+                }
+
                 blockContainer.appendChild(document.createElement('br')); // Add line break
             }
         }
@@ -296,6 +388,9 @@ async function loopPageFields(currentPage) {
         console.log(`Page ${currentPage} does not exist.`);
     }
 }
+
+
+
 
 // ... (rest of the code remains the same)
 
