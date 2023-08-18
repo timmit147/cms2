@@ -209,92 +209,127 @@ async function placeBlock() {
 
 // ... (previous code remains the same)
 
-
 async function loopPageFields(currentPage) {
+    const pageData = await getPageData(currentPage);
+
+    if (!pageData) {
+        console.log(`Page ${currentPage} does not exist.`);
+        return;
+    }
+
+    const blockContainer = document.getElementById('blockContainer');
+    blockContainer.innerHTML = '';
+
+    const pageTitle = document.createElement('h1');
+    pageTitle.textContent = currentPage;
+    blockContainer.appendChild(pageTitle);
+
+    const excludedFields = ['menu', 'label']; // Add other field names you want to exclude
+
+    for (const field in pageData) {
+        if (pageData.hasOwnProperty(field) && !excludedFields.includes(field)) {
+            const fieldValue = pageData[field];
+
+            const fieldLabel = document.createElement('label');
+            fieldLabel.textContent = field;
+            blockContainer.appendChild(fieldLabel);
+
+            if (typeof fieldValue === 'string') {
+                // Add an input field for string fields
+                const inputField = createInputField('text', fieldValue, async (value) => {
+                    await updatePageField(currentPage, field, value);
+                });
+                blockContainer.appendChild(inputField);
+            } else if (typeof fieldValue === 'number') {
+                // Add an input field for number fields
+                const inputField = createInputField('number', fieldValue, async (value) => {
+                    await updatePageField(currentPage, field, value);
+                });
+                blockContainer.appendChild(inputField);
+            } else if (typeof fieldValue === 'boolean') {
+                // Add a checkbox for boolean fields
+                const checkbox = createCheckbox(fieldValue, async (value) => {
+                    await updatePageField(currentPage, field, value);
+                });
+                blockContainer.appendChild(checkbox);
+            } else {
+                // Display the field value for other field types
+                const fieldValueElement = createFieldValueElement(fieldValue.toString());
+                blockContainer.appendChild(fieldValueElement);
+            }
+
+            blockContainer.appendChild(document.createElement('br')); // Add line break
+        }
+    }
+
     if (currentPage === 'settings') {
-        await loopSettingsPageFields(currentPage);
-    } else {
-        await loopDefaultPageFields(currentPage);
+        await displayMenuPages(pageData.menu);
+        await displayUnselectedPages(pageData.menu);
     }
 }
 
-async function loopSettingsPageFields(currentPage) {
+async function getPageData(currentPage) {
     const pageRef = firestore.collection('pages').doc(currentPage);
     const pageSnapshot = await pageRef.get();
 
     if (pageSnapshot.exists) {
-        const pageData = pageSnapshot.data();
-        const menu = pageData.menu || [];
-
-        // Fetch the list of pages from the Firestore collection
-        const pagesCollection = firestore.collection('pages');
-        const pagesQuerySnapshot = await pagesCollection.get();
-        const allPages = pagesQuerySnapshot.docs.map(doc => doc.id);
-
-        const blockContainer = document.getElementById('blockContainer');
-        blockContainer.innerHTML = '';
-
-        const pageTitle = document.createElement('h1');
-        pageTitle.textContent = currentPage;
-        blockContainer.appendChild(pageTitle);
-
-        const excludedFields = ['menu', 'label']; // Add other field names you want to exclude
-
-        for (const field in pageData) {
-            if (pageData.hasOwnProperty(field) && !excludedFields.includes(field)) {
-                const fieldValue = pageData[field];
-
-                const fieldLabel = document.createElement('label');
-                fieldLabel.textContent = field;
-                blockContainer.appendChild(fieldLabel);
-
-                if (typeof fieldValue === 'string' || typeof fieldValue === 'number') {
-                    // Add an input field for string or number fields
-                    const inputField = document.createElement('input');
-                    inputField.type = 'text';
-                    inputField.value = fieldValue;
-                
-                    inputField.addEventListener('keydown', async (event) => {
-                        if (event.key === 'Enter') {
-                            event.preventDefault();
-                            await updatePageField(currentPage, field, inputField.value);
-                            inputField.blur();
-                        }
-                    });
-                
-                    blockContainer.appendChild(inputField);
-                } else {
-                    // For other field types, just display the field value
-                    const fieldValueElement = document.createElement('p');
-                    fieldValueElement.textContent = fieldValue.toString();
-                    blockContainer.appendChild(fieldValueElement);
-                }
-                
-
-                blockContainer.appendChild(document.createElement('br')); // Add line break
-            }
-        }
-
-        for (const page of menu) {
-            if (allPages.includes(page)) {
-                const pageWrapper = createPageWrapper(page, menu);
-                blockContainer.appendChild(pageWrapper);
-            }
-        }
-
-        // Add unchecked pages to the end
-        for (const page of allPages) {
-            if (!menu.includes(page)) {
-                const pageWrapper = createPageWrapper(page, menu);
-                blockContainer.appendChild(pageWrapper);
-            }
-        }
+        return pageSnapshot.data();
     } else {
-        console.log(`Page ${currentPage} does not exist.`);
+        return null;
     }
 }
 
+function createInputField(type, value, changeCallback) {
+    const inputField = document.createElement('input');
+    inputField.type = type;
+    inputField.value = value;
 
+    inputField.addEventListener('input', async () => {
+        await changeCallback(inputField.value);
+    });
+
+    return inputField;
+}
+
+function createCheckbox(checked, changeCallback) {
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = checked;
+
+    checkbox.addEventListener('change', async () => {
+        await changeCallback(checkbox.checked);
+    });
+
+    return checkbox;
+}
+
+function createFieldValueElement(value) {
+    const fieldValueElement = document.createElement('p');
+    fieldValueElement.textContent = value;
+    return fieldValueElement;
+}
+
+async function displayMenuPages(menu) {
+    const allPages = await getAllPages();
+
+    for (const page of menu) {
+        if (allPages.includes(page)) {
+            const pageWrapper = createPageWrapper(page, menu);
+            blockContainer.appendChild(pageWrapper);
+        }
+    }
+}
+
+async function displayUnselectedPages(menu) {
+    const allPages = await getAllPages();
+
+    for (const page of allPages) {
+        if (!menu.includes(page)) {
+            const pageWrapper = createPageWrapper(page, menu);
+            blockContainer.appendChild(pageWrapper);
+        }
+    }
+}
 
 function createPageWrapper(page, menu) {
     const pageWrapper = document.createElement('div');
@@ -314,7 +349,7 @@ function createPageWrapper(page, menu) {
             }
         }
         await updatePageField(currentPage, 'menu', menu);
-        await loopSettingsPageFields(currentPage); // Refresh the display
+        await loopPageFields(currentPage); // Refresh the display
     });
 
     const pageLabel = document.createElement('label');
@@ -327,7 +362,7 @@ function createPageWrapper(page, menu) {
         if (pageIndex > 0) {
             [menu[pageIndex], menu[pageIndex - 1]] = [menu[pageIndex - 1], menu[pageIndex]];
             await updatePageField(currentPage, 'menu', menu);
-            await loopSettingsPageFields(currentPage); // Refresh the display
+            await loopPageFields(currentPage); // Refresh the display
         }
     });
 
@@ -338,7 +373,7 @@ function createPageWrapper(page, menu) {
         if (pageIndex < menu.length - 1) {
             [menu[pageIndex], menu[pageIndex + 1]] = [menu[pageIndex + 1], menu[pageIndex]];
             await updatePageField(currentPage, 'menu', menu);
-            await loopSettingsPageFields(currentPage); // Refresh the display
+            await loopPageFields(currentPage); // Refresh the display
         }
     });
 
@@ -350,50 +385,11 @@ function createPageWrapper(page, menu) {
     return pageWrapper;
 }
 
-async function loopDefaultPageFields(currentPage) {
-    const pageRef = firestore.collection('pages').doc(currentPage);
-    const pageSnapshot = await pageRef.get();
 
-    if (pageSnapshot.exists) {
-        const pageData = pageSnapshot.data();
-
-        const blockContainer = document.getElementById('blockContainer');
-        blockContainer.innerHTML = '';
-
-        const pageTitle = document.createElement('h1');
-        pageTitle.textContent = currentPage;
-        blockContainer.appendChild(pageTitle);
-
-        for (const field in pageData) {
-            if (pageData.hasOwnProperty(field)) {
-                const fieldValue = pageData[field];
-
-                const fieldLabel = document.createElement('label');
-                fieldLabel.textContent = field;
-                blockContainer.appendChild(fieldLabel);
-
-                if (typeof fieldValue === 'string' || typeof fieldValue === 'number') {
-                    // Add an input field for string or number fields
-                    const inputField = document.createElement('input');
-                    inputField.type = 'text';
-                    inputField.value = fieldValue;
-                    inputField.addEventListener('input', async () => {
-                        await updatePageField(currentPage, field, inputField.value);
-                    });
-                    blockContainer.appendChild(inputField);
-                } else {
-                    // For other field types, just display the field value
-                    const fieldValueElement = document.createElement('p');
-                    fieldValueElement.textContent = fieldValue.toString();
-                    blockContainer.appendChild(fieldValueElement);
-                }
-
-                blockContainer.appendChild(document.createElement('br')); // Add line break
-            }
-        }
-    } else {
-        console.log(`Page ${currentPage} does not exist.`);
-    }
+async function getAllPages() {
+    const pagesCollection = firestore.collection('pages');
+    const pagesQuerySnapshot = await pagesCollection.get();
+    return pagesQuerySnapshot.docs.map(doc => doc.id);
 }
 
 
