@@ -154,16 +154,23 @@ async function placeBlock() {
         let propertiesVisible = false;
         let removeButtonVisible = false;
 
+        
+
         for (const key in block) {
-            if (key === "image") {
+            if (block.hasOwnProperty("image") && key === "image") {
                 const imageInput = document.createElement('input');
                 imageInput.type = 'file';
+                imageInput.style.display = 'none'; // Hide the image input by default
                 imageInput.addEventListener('change', (event) => {
                     const selectedImage = event.target.files[0];
-                    handleImageUpload(selectedImage, blockIndex);
+                    handleImageUpload(selectedImage, index); // Pass the index to the function
                 });
                 blockDiv.appendChild(imageInput);
-                continue; // Skip adding the input field
+        
+                // Show the image input when the label is pressed
+                typeLabel.addEventListener('click', () => {
+                    imageInput.style.display = 'block';
+                });
             }
             if (key === "type" || key === "hash") {
                 continue;
@@ -198,7 +205,7 @@ async function placeBlock() {
         });
         blockDiv.appendChild(removeButton);
 
-        blockDiv.addEventListener('click', () => {
+        blockDiv.querySelector("label").addEventListener('click', () => {
             const propertyDivs = blockDiv.querySelectorAll('div');
             propertiesVisible = !propertiesVisible;
             propertyDivs.forEach(div => {
@@ -723,6 +730,7 @@ async function addMenuButtons() {
     });
 }
 
+const storage = firebase.storage();
 
 
 
@@ -779,6 +787,12 @@ async function addNewBlock(selectedBlock) {
                 ...selectedBlockData,
                 order: newBlockOrder
             };
+
+            if (selectedBlockData.image) {
+                // If the block supports an image, add the 'image' property here
+                newBlockData.image = ''; // Initialize with an empty string or other appropriate value
+            }
+
             await newBlockDocRef.set(newBlockData);
             console.log(`New block '${selectedBlock}' added successfully.`);
         } else {
@@ -791,29 +805,45 @@ async function addNewBlock(selectedBlock) {
     }
 }
 
-async function handleImageUpload(selectedImage, blockIndex) {
-    if (!selectedImage) {
-        return;
-    }
+
+async function handleImageUpload(file, blockIndex) {
+    const storageRef = firebase.storage().ref();
+    const imagesRef = storageRef.child('images');
 
     try {
-        // Assuming you have initialized Firebase Storage
-        const storageRef = firebase.storage().ref();
-        const imageRef = storageRef.child(`images/${currentPage}_${blockIndex}_${selectedImage.name}`);
-        const snapshot = await imageRef.put(selectedImage);
+        const imageRef = imagesRef.child(file.name);
+        await imageRef.put(file);
 
-        const imageUrl = await snapshot.ref.getDownloadURL();
-        updateBlockProperty(currentPage, blockIndex, "image", imageUrl);
-        console.log(`Image uploaded and saved: ${imageUrl}`);
+        const downloadURL = await imageRef.getDownloadURL();
+
+        // Update the block's data in Firestore with the image URL
+        const db = firebase.firestore();
+        const blockRef = db.collection('pages').doc(currentPage).collection('blocks').doc(blockIndex);
+
+        try {
+            await blockRef.update({
+                image: downloadURL // Update the 'image' property with the download URL
+            });
+            console.log(`Image URL stored in the block's data.`);
+        } catch (error) {
+            console.error('Error updating block with image URL:', error);
+        }
+
+        console.log('Image uploaded successfully');
     } catch (error) {
-        console.error("Error uploading image:", error);
+        console.error('Error uploading image:', error);
     }
 }
+
+  
 
 // ...
 
 function createBlockDiv(blockIndex, block) {
-    // ... (Your existing code)
+    const blockDiv = document.createElement('div');
+    blockDiv.classList.add('blockContent'); // Add a class for styling
+
+    // ... (Other block content creation)
 
     // Create an image input for blocks with "image" property
     if (block.hasOwnProperty("image")) {
@@ -826,8 +856,11 @@ function createBlockDiv(blockIndex, block) {
         blockDiv.appendChild(imageInput);
     }
 
-    // ... (Your existing code)
+    // ... (Other block content creation)
+
+    return blockDiv;
 }
+
 
 // ...
 
