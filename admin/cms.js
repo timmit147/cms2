@@ -667,31 +667,6 @@ async function removeBlockAndPage(pageName, blockIndex) {
 }
 
 
-
-
-
-
-async function fetchOldData(commitHash) {
-    try {
-        const response = await fetch(
-            `https://raw.githubusercontent.com/timmit147/cms/${commitHash}/database.js`
-        );
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok.");
-        }
-
-        const jsonData = await response.json();
-        return jsonData;
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        return null;
-    }
-}
-
-
-
-
 async function addMenuButtons() {
     const pages = await fetchDataFromFirestore("pages");
     const popup = document.getElementById('popup');
