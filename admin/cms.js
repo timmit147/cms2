@@ -72,7 +72,6 @@ document.getElementById('logout-button').addEventListener('click', () => {
     
 }
 
-// Function to log in
 function login() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -86,10 +85,6 @@ function login() {
         });
 }
 
-
-
-
-// Function to fetch data from Firestore and display
 async function fetchDataFromFirestore(path) {
     const allData = {};
 
@@ -104,7 +99,6 @@ async function fetchDataFromFirestore(path) {
         throw error; // Re-throw the error to be handled by the caller
     }
 }
-
 
 async function placeBlock() {
     if (!currentPage) {
@@ -145,7 +139,6 @@ async function placeBlock() {
         const blockDiv = document.createElement('div');
         blockDiv.classList.add('blockContent'); // Add a class for styling
 
-
         const typeLabel = document.createElement('label');
         typeLabel.textContent = block["title"] || block["type"];
         typeLabel.style.fontWeight = 'bold';
@@ -154,7 +147,6 @@ async function placeBlock() {
         let propertiesVisible = false;
         let removeButtonVisible = false;
 
-        
         for (const key in block) {
             if (key === "image") {
                 const imageInput = document.createElement('input');
@@ -187,7 +179,7 @@ async function placeBlock() {
                 blockDiv.appendChild(uploadButton); // Append the upload button
                 blockDiv.appendChild(imageInput);
                 blockDiv.appendChild(imagePreview); // Append the image preview element
-            } else if (key !== "type" && key !== "hash") {
+            } else if (key !== "type") {
                 const propertyDiv = document.createElement('div');
                 propertyDiv.classList.add('propertyDiv'); // Add a class for styling
                 propertyDiv.style.display = 'none';
@@ -206,10 +198,7 @@ async function placeBlock() {
                 blockDiv.appendChild(propertyDiv);
             }
         }
-        
 
-
-        // Add Remove button, initially hidden
         const removeButton = document.createElement('button');
         removeButton.textContent = 'Remove';
         removeButton.style.display = 'none';
@@ -229,15 +218,11 @@ async function placeBlock() {
             removeButton.style.display = removeButtonVisible ? 'inline' : 'none';
         });
 
-        blockWrapper.appendChild(blockDiv); // Add the block content to the wrapper
+        blockWrapper.appendChild(blockDiv);
         addUpDownButtons(blockWrapper, index, sortedBlocks.length, currentPage);
-        blockContainer.appendChild(blockWrapper); // Add the wrapper to the main container
+        blockContainer.appendChild(blockWrapper);
     }
 }
-
-// ... (previous code remains the same)
-
-// ... (previous code remains the same)
 
 async function loopPageFields(currentPage) {
     const pageData = await getPageData(currentPage);
@@ -414,7 +399,6 @@ function createPageWrapper(page, menu) {
 
     return pageWrapper;
 }
-
 
 async function getAllPages() {
     const pagesCollection = firestore.collection('pages');
