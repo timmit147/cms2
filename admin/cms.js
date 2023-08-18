@@ -155,45 +155,58 @@ async function placeBlock() {
         let removeButtonVisible = false;
 
         
-
         for (const key in block) {
-            if (block.hasOwnProperty("image") && key === "image") {
+            if (key === "image") {
                 const imageInput = document.createElement('input');
                 imageInput.type = 'file';
-                imageInput.style.display = 'none'; // Hide the image input by default
-                imageInput.addEventListener('change', (event) => {
+                imageInput.style.display = 'none';
+                
+                const imagePreview = document.createElement('img'); // Create an image element for preview
+                imagePreview.style.display = 'none'; // Hide the preview by default
+                
+                const uploadButton = document.createElement('button'); // Create a button for image upload
+                uploadButton.textContent = 'Upload Image';
+                
+                uploadButton.addEventListener('click', () => {
+                    imageInput.click(); // Trigger the file input click when the button is clicked
+                });
+                
+                imageInput.addEventListener('change', async (event) => {
                     const selectedImage = event.target.files[0];
-                    handleImageUpload(selectedImage, index); // Pass the index to the function
+                    const base64Image = await handleImageUpload(selectedImage);
+                
+                    if (base64Image) {
+                        block[key] = base64Image;
+                        imagePreview.src = base64Image; // Set the preview's src to the base64 image
+                        imagePreview.style.display = 'block'; // Display the preview
+                    } else {
+                        console.error('Error converting image to base64.');
+                    }
                 });
+                
+                blockDiv.appendChild(uploadButton); // Append the upload button
                 blockDiv.appendChild(imageInput);
-        
-                // Show the image input when the label is pressed
-                typeLabel.addEventListener('click', () => {
-                    imageInput.style.display = 'block';
-                });
-            }
-            if (key === "type" || key === "hash") {
-                continue;
-            }
-            if (block.hasOwnProperty(key)) {
+                blockDiv.appendChild(imagePreview); // Append the image preview element
+            } else if (key !== "type" && key !== "hash") {
                 const propertyDiv = document.createElement('div');
                 propertyDiv.classList.add('propertyDiv'); // Add a class for styling
                 propertyDiv.style.display = 'none';
-
+                
                 const inputLabel = document.createElement('label');
                 inputLabel.textContent = key;
                 inputLabel.style.fontWeight = 'bold';
                 propertyDiv.appendChild(inputLabel);
-
+                
                 const inputField = document.createElement('input');
                 inputField.type = 'text';
                 inputField.value = block[key];
                 inputField.addEventListener('keydown', handleInputKeydown(index, key, inputField));
                 propertyDiv.appendChild(inputField);
-
+                
                 blockDiv.appendChild(propertyDiv);
             }
         }
+        
 
 
         // Add Remove button, initially hidden
@@ -780,33 +793,13 @@ async function addNewBlock(selectedBlock) {
     }
 }
 
-
-async function handleImageUpload(file, blockIndex) {
-    const storageRef = firebase.storage().ref();
-    const imagesRef = storageRef.child('images');
-
+async function handleImageUpload(file) {
     try {
-        const imageRef = imagesRef.child(file.name);
-        await imageRef.put(file);
-
-        const downloadURL = await imageRef.getDownloadURL();
-
-        // Update the block's data in Firestore with the image URL
-        const db = firebase.firestore();
-        const blockRef = db.collection('pages').doc(currentPage).collection('blocks').doc(blockIndex);
-
-        try {
-            await blockRef.update({
-                image: downloadURL // Update the 'image' property with the download URL
-            });
-            console.log(`Image URL stored in the block's data.`);
-        } catch (error) {
-            console.error('Error updating block with image URL:', error);
-        }
-
-        console.log('Image uploaded successfully');
+        const base64Image = await getBase64(file);
+        return base64Image;
     } catch (error) {
-        console.error('Error uploading image:', error);
+        console.error('Error converting image to base64:', error);
+        return null;
     }
 }
 
@@ -826,7 +819,7 @@ function createBlockDiv(blockIndex, block) {
         imageInput.type = 'file';
         imageInput.addEventListener('change', (event) => {
             const selectedImage = event.target.files[0];
-            handleImageUpload(selectedImage, blockIndex);
+            handleImageUpload(selectedImage, blockIndex); // Pass the block index
         });
         blockDiv.appendChild(imageInput);
     }
@@ -834,6 +827,15 @@ function createBlockDiv(blockIndex, block) {
     // ... (Other block content creation)
 
     return blockDiv;
+}
+
+function getBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
 }
 
 
