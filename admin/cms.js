@@ -155,6 +155,16 @@ async function placeBlock() {
         let removeButtonVisible = false;
 
         for (const key in block) {
+            if (key === "image") {
+                const imageInput = document.createElement('input');
+                imageInput.type = 'file';
+                imageInput.addEventListener('change', (event) => {
+                    const selectedImage = event.target.files[0];
+                    handleImageUpload(selectedImage, blockIndex);
+                });
+                blockDiv.appendChild(imageInput);
+                continue; // Skip adding the input field
+            }
             if (key === "type" || key === "hash") {
                 continue;
             }
@@ -737,19 +747,23 @@ async function addNewBlock(selectedBlock) {
               title: "Introduction to Programming",
               content: "Learn the basics of programming with this comprehensive guide.",
               link: "https://example.com/programming-intro",
-              type: "block1"
+              type: "block1",
+              image: "https://example.com/programming-intro"
             },
             {
               title: "Recipe Book",
               content: "Explore a collection of delicious recipes from around the world.",
               link: "https://example.com/recipe-book",
-              type: "block2"
+              type: "block2",
+              image: "https://example.com/programming-intro"
+
             },
             {
               title: "Fitness Workout Plan",
               content: "Get fit and healthy with this step-by-step workout routine.",
               link: "https://example.com/fitness-plan",
-              type: "block3"
+              type: "block3",
+              image: "https://example.com/programming-intro"
             }
         ];
 
@@ -776,6 +790,62 @@ async function addNewBlock(selectedBlock) {
         console.error('Error adding new block:', error);
     }
 }
+
+async function handleImageUpload(selectedImage, blockIndex) {
+    if (!selectedImage) {
+        return;
+    }
+
+    try {
+        // Assuming you have initialized Firebase Storage
+        const storageRef = firebase.storage().ref();
+        const imageRef = storageRef.child(`images/${currentPage}_${blockIndex}_${selectedImage.name}`);
+        const snapshot = await imageRef.put(selectedImage);
+
+        const imageUrl = await snapshot.ref.getDownloadURL();
+        updateBlockProperty(currentPage, blockIndex, "image", imageUrl);
+        console.log(`Image uploaded and saved: ${imageUrl}`);
+    } catch (error) {
+        console.error("Error uploading image:", error);
+    }
+}
+
+// ...
+
+function createBlockDiv(blockIndex, block) {
+    // ... (Your existing code)
+
+    // Create an image input for blocks with "image" property
+    if (block.hasOwnProperty("image")) {
+        const imageInput = document.createElement('input');
+        imageInput.type = 'file';
+        imageInput.addEventListener('change', (event) => {
+            const selectedImage = event.target.files[0];
+            handleImageUpload(selectedImage, blockIndex);
+        });
+        blockDiv.appendChild(imageInput);
+    }
+
+    // ... (Your existing code)
+}
+
+// ...
+
+async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) {
+    try {
+        const blockRef = firestore.collection('pages').doc(pageName).collection('blocks').doc(blockIndex);
+        await blockRef.update({
+            [propertyKey]: newValue
+        });
+        console.log(`Block property '${propertyKey}' updated successfully.`);
+    } catch (error) {
+        console.error(`Error updating block property '${propertyKey}':`, error);
+    }
+}   
+
+
+
+
 
 
 
