@@ -114,9 +114,11 @@ async function placeBlock() {
     const blockContainer = document.getElementById('blockContainer');
     blockContainer.innerHTML = ''; // Clear the existing content
 
-    const pageTitle = document.createElement('h1'); // Create an h1 element for the page title
-    pageTitle.textContent = currentPage; // Set the text content to the current page name
-    blockContainer.appendChild(pageTitle); // Add the h1 element as the first child of the block container
+    const pageTitle = document.createElement('h1');
+    pageTitle.textContent = currentPage;
+    blockContainer.appendChild(pageTitle);
+
+    await loopPageFields(currentPage);
 
      // Add Remove button next to the h1 element
      const removePageButton = document.createElement('button');
@@ -176,7 +178,6 @@ async function placeBlock() {
             }
         }
 
-        // ... Render the reverse button and property divs ...
 
         // Add Remove button, initially hidden
         const removeButton = document.createElement('button');
@@ -203,6 +204,167 @@ async function placeBlock() {
         blockContainer.appendChild(blockWrapper); // Add the wrapper to the main container
     }
 }
+
+// ... (previous code remains the same)
+
+// ... (previous code remains the same)
+const fieldOrder = ['logo', 'menu'];
+
+
+async function loopPageFields(currentPage) {
+    const pageRef = firestore.collection('pages').doc(currentPage);
+    const pageSnapshot = await pageRef.get();
+
+    if (pageSnapshot.exists) {
+        const pageData = pageSnapshot.data();
+        const menu = pageData.menu || [];
+
+        const blockContainer = document.getElementById('blockContainer');
+        blockContainer.innerHTML = ''; // Clear the existing content
+        
+        const pageTitle = document.createElement('h1');
+        pageTitle.textContent = currentPage;
+        blockContainer.appendChild(pageTitle);
+
+        for (const field of fieldOrder) {
+
+            if (pageData.hasOwnProperty(field)) {
+                const fieldValue = pageData[field];
+                
+                const fieldLabel = document.createElement('label');
+                fieldLabel.textContent = field;
+                blockContainer.appendChild(fieldLabel);
+
+                if (field === 'menu') {
+                    const menuContainer = document.createElement('div');
+
+                    // Sort the menu items based on their index in the array
+                    const sortedMenu = menu.slice().sort((a, b) => menu.indexOf(a) - menu.indexOf(b));
+
+                    for (const page of sortedMenu) {
+                        const pageWrapper = document.createElement('div');
+                        pageWrapper.classList.add('page-wrapper');
+
+                        const pageCheckbox = document.createElement('input');
+                        pageCheckbox.type = 'checkbox';
+                        pageCheckbox.value = page;
+                        pageCheckbox.checked = fieldValue.includes(page);
+                        pageCheckbox.addEventListener('change', async () => {
+                            const selectedPages = Array.from(menuContainer.querySelectorAll('input:checked'), input => input.value);
+                            await updatePageField(currentPage, field, selectedPages);
+                        });
+
+                        const pageLabel = document.createElement('label');
+                        pageLabel.textContent = page;
+
+                        const upButton = document.createElement('button');
+                        upButton.innerHTML = '<i class="fas fa-chevron-up"></i>';
+                        upButton.classList.add('arrow-button');
+                        upButton.addEventListener('click', async () => {
+                            await movePage(currentPage, page, 'up');
+                        });
+
+                        const downButton = document.createElement('button');
+                        downButton.innerHTML = '<i class="fas fa-chevron-down"></i>';
+                        downButton.classList.add('arrow-button');
+                        downButton.addEventListener('click', async () => {
+                            await movePage(currentPage, page, 'down');
+                        });
+
+                        pageWrapper.appendChild(pageCheckbox);
+                        pageWrapper.appendChild(pageLabel);
+                        pageWrapper.appendChild(upButton);
+                        pageWrapper.appendChild(downButton);
+                        menuContainer.appendChild(pageWrapper);
+                    }
+
+                    blockContainer.appendChild(menuContainer);
+                } else {
+                    const inputField = document.createElement('input');
+                    inputField.type = 'text';
+                    inputField.value = fieldValue;
+                    inputField.addEventListener('input', async () => {
+                        await updatePageField(currentPage, field, inputField.value);
+                    });
+                    blockContainer.appendChild(inputField);
+                }
+                
+                blockContainer.appendChild(document.createElement('br')); // Add line break
+            }
+        }
+    } else {
+        console.log(`Page ${currentPage} does not exist.`);
+    }
+}
+
+// ... (rest of the code remains the same)
+
+
+// ... (previous code remains the same)
+
+async function movePage(currentPage, pageToMove, direction) {
+    try {
+        const pagesRef = firestore.collection('pages');
+        const pageRef = pagesRef.doc(currentPage);
+        const pageSnapshot = await pageRef.get();
+
+        if (pageSnapshot.exists) {
+            const pageData = pageSnapshot.data();
+            const menu = pageData.menu || [];
+
+            const currentIndex = menu.indexOf(pageToMove);
+            if (currentIndex === -1) {
+                console.log(`Page ${pageToMove} not found in the menu.`);
+                return;
+            }
+
+            let newIndex;
+            if (direction === 'up' && currentIndex > 0) {
+                newIndex = currentIndex - 1;
+            } else if (direction === 'down' && currentIndex < menu.length - 1) {
+                newIndex = currentIndex + 1;
+            } else {
+                console.log(`Cannot move ${pageToMove} ${direction} as it's already at the ${direction === 'up' ? 'top' : 'bottom'}.`);
+                return;
+            }
+
+            menu.splice(newIndex, 0, menu.splice(currentIndex, 1)[0]);
+            await updatePageField(currentPage, 'menu', menu);
+            
+            // Update the displayed menu order after moving a page
+            loopPageFields(currentPage);
+        } else {
+            console.log(`Page ${currentPage} does not exist.`);
+        }
+    } catch (error) {
+        console.error('Error moving page:', error);
+    }
+}
+
+// ... (rest of the code remains the same)
+
+
+
+
+
+async function updatePageField(pageName, field, newValue) {
+    try {
+        const pageRef = firestore.collection('pages').doc(pageName);
+        await pageRef.update({
+            [field]: newValue
+        });
+        console.log(`Field '${field}' updated successfully.`);
+    } catch (error) {
+        console.error(`Error updating field '${field}':`, error);
+    }
+}
+
+
+
+
+
+
+
 
 function addUpDownButtons(blockDiv, blockIndex, totalBlocks, pageName) {
     const buttonsDiv = document.createElement('div'); // Create a div to contain the buttons
