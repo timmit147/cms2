@@ -157,13 +157,26 @@ async function placeBlock() {
         
 
         for (const key in block) {
-            if (block.hasOwnProperty("image") && key === "image") {
+            if (key === "image") {
+                if (block[key]) { // Check if the image property has a value
+                    const imageElement = document.createElement('img');
+                    imageElement.src = block[key]; // Set the source of the image to the value
+                    blockDiv.appendChild(imageElement); // Append the image element to the blockDiv
+                }
+        
                 const imageInput = document.createElement('input');
                 imageInput.type = 'file';
                 imageInput.style.display = 'none'; // Hide the image input by default
                 imageInput.addEventListener('change', (event) => {
                     const selectedImage = event.target.files[0];
                     handleImageUpload(selectedImage, index); // Pass the index to the function
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const newImageElement = document.createElement('img');
+                        newImageElement.src = e.target.result;
+                        blockDiv.insertBefore(newImageElement, imageInput); // Insert the new image before the input
+                    };
+                    reader.readAsDataURL(selectedImage); // Read and convert the selected image to base64
                 });
                 blockDiv.appendChild(imageInput);
         
@@ -665,6 +678,10 @@ async function removeBlockAndPage(pageName, blockIndex) {
         }
     }
 }
+
+
+
+
 
 
 async function addMenuButtons() {
