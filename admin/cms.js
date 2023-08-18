@@ -253,9 +253,15 @@ async function loopSettingsPageFields(currentPage) {
                     const inputField = document.createElement('input');
                     inputField.type = 'text';
                     inputField.value = fieldValue;
-                    inputField.addEventListener('input', async () => {
-                        await updatePageField(currentPage, field, inputField.value);
+                
+                    inputField.addEventListener('keydown', async (event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault();
+                            await updatePageField(currentPage, field, inputField.value);
+                            inputField.blur();
+                        }
                     });
+                
                     blockContainer.appendChild(inputField);
                 } else {
                     // For other field types, just display the field value
@@ -263,6 +269,7 @@ async function loopSettingsPageFields(currentPage) {
                     fieldValueElement.textContent = fieldValue.toString();
                     blockContainer.appendChild(fieldValueElement);
                 }
+                
 
                 blockContainer.appendChild(document.createElement('br')); // Add line break
             }
