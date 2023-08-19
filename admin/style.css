@@ -1,6 +1,48 @@
 body {
     margin: 0px;
+    font-family: 'Open Sans', sans-serif;
 }
+
+input{
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+label{
+    font-weight: bold;
+}
+
+img{
+    width: 150px;
+}
+
+#login-form h1{
+    padding: 0px;
+    margin: 0px;
+}
+
+#login-form p{
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 16px;
+}
+
+#login-form button{
+    margin-top: 16px;
+}
+
+
+button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
 
 #blockContainer {
     margin: 20px;
@@ -85,11 +127,18 @@ body {
 div#login-form {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Vertically center align items */
-    align-items: center; /* Horizontally center align items */
-    width: 100vw;
-    height: 100vh;
-    gap: 10px;
-    position: absolute;
-    top: 0;
+    gap: 8px;
 }
+
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 40px;
+}
+
+@media (max-width: 767px) {
+    .container {
+      flex-direction: column;
+    }
