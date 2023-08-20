@@ -73,9 +73,13 @@ button:hover{
 
 
 #blockContainer {
-    margin: 20px;
-    height: inherit;
+    padding: 20px;
+    height: -webkit-fill-available;
+    overflow-y: scroll;
     width: 100%;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
 }
 
 #blockContainer > div {
@@ -98,6 +102,8 @@ button:hover{
     flex: 1; /* Take up available vertical space within block-wrapper */
     align-self: stretch;
     padding: 10px;
+    flex-direction: column;
+    display: flex;
 }
 
 #menuContainer {

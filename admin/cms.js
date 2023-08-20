@@ -32,8 +32,10 @@ firebase.auth().onAuthStateChanged((user) => {
         showLogoutButton(); // Show the logout button
         const footerMenu = document.querySelector('.footerMenu');
         footerMenu.style.display = 'flex';
+        const breadcrump = document.getElementsByName('.breadcrump');
+        breadcrump.textContent = currentPage;
         const blockContainer = document.querySelector('#blockContainer');
-        blockContainer.style.display = 'block';
+        blockContainer.style.display = 'flex';
 
     } else {
         showLoginForm(); // Show the login form
@@ -118,15 +120,32 @@ async function placeBlock() {
     const pageTitle = document.getElementsByName('.pageTitle');
     pageTitle.textContent = currentPage;
 
+ 
+
+
+
     await loopPageFields(currentPage);
 
+    const settings = document.createElement('h2');
+    settings.textContent = 'Settings';
+    blockContainer.appendChild(settings);
+
      // Add Remove button next to the h1 element
-     const removePageButton = document.createElement('button');
-     removePageButton.textContent = 'Remove Page';
-     removePageButton.addEventListener('click', () => {
+     const removePagelabel = document.createElement('label');
+     removePagelabel.textContent = 'Remove Page';
+     blockContainer.appendChild(removePagelabel);
+
+
+     const removePage = document.createElement('button');
+     removePage.textContent = 'Remove Page';
+     removePage.addEventListener('click', () => {
          removePage(currentPage);
      });
-     blockContainer.appendChild(removePageButton);
+     blockContainer.appendChild(removePage);
+
+     const blocksTitle = document.createElement('h2');
+     blocksTitle.textContent = 'Blocks';
+     blockContainer.appendChild(blocksTitle);
      
 
      
@@ -233,20 +252,41 @@ async function placeBlock() {
         blockWrapper.appendChild(blockDiv); // Add the block content to the wrapper
         addUpDownButtons(blockWrapper, index, sortedBlocks.length, currentPage);
         blockContainer.appendChild(blockWrapper); // Add the wrapper to the main container
-             // Add the form to the blockContainer
-    const formHTML = `
-    <form method="POST">
-        <select name="block" id="dropdown">
-            <option value="block1">Block 1</option>
-            <option value="block2">Block 2</option>
-            <option value="block3">Block 3</option>
-        </select>
-        <button type="submit" id="submitButton">Submit</button>
-    </form>
-`;
-blockContainer.insertAdjacentHTML('beforeend', formHTML);
+          
+         
     }
+
+       // Add the form to the blockContainer
+             const formHTML = `
+             <form method="POST">
+                 <select name="block" id="dropdown">
+                     <option value="block1">Block 1</option>
+                     <option value="block2">Block 2</option>
+                     <option value="block3">Block 3</option>
+                 </select>
+                 <button type="submit" id="submitButton">Submit</button>
+             </form>
+         `;
+         
+         // Add the form HTML to the blockContainer
+         blockContainer.insertAdjacentHTML('beforeend', formHTML);
+         
+         // Use event delegation to add an event listener to the blockContainer
+         blockContainer.addEventListener('click', async (event) => {
+             // Check if the clicked element is the submit button
+             if (event.target && event.target.id === 'submitButton') {
+                 event.preventDefault(); // Prevent the default form submission behavior
+         
+                 // Get the selected block value from the dropdown
+                 const selectedBlock = document.querySelector('#dropdown').value;
+         
+                 // Call the function to add a new block with the selected value
+                 await addNewBlock(selectedBlock);
+             }
+         });
 }
+
+
 
 // ... (previous code remains the same)
 
@@ -885,15 +925,5 @@ async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) 
 
 
 
-// Add an event listener to the form submission
-document.querySelector('#submitButton').addEventListener('click', async (event) => {
-    event.preventDefault(); // Prevent the default form submission behavior
-
-    // Get the selected block value from the dropdown
-    const selectedBlock = document.querySelector('#dropdown').value;
-
-    // Call the function to add a new block with the selected value
-    await addNewBlock(selectedBlock);
-});
 
 
