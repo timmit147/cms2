@@ -168,6 +168,13 @@ div#login-form {
     gap: 8px;
 }
 
+
+#login-form form{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 #form{
     display: flex;
     align-items: center;

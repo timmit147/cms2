@@ -32,8 +32,6 @@ firebase.auth().onAuthStateChanged((user) => {
         showLogoutButton(); // Show the logout button
         const footerMenu = document.querySelector('.footerMenu');
         footerMenu.style.display = 'flex';
-        const breadcrump = document.getElementsByName('.breadcrump');
-        breadcrump.textContent = currentPage;
         const blockContainer = document.querySelector('#blockContainer');
         blockContainer.style.display = 'flex';
 
@@ -122,6 +120,8 @@ async function placeBlock() {
     pageTitle.textContent = currentPage;
     blockContainer.appendChild(pageTitle);
 
+    const breadcrump = document.querySelector('.breadcrump');
+    breadcrump.textContent = currentPage;
 
  
 
@@ -268,12 +268,13 @@ async function placeBlock() {
      blockContainer.appendChild(removePagelabel);
 
 
-     const removePage = document.createElement('button');
-     removePage.textContent = 'Remove Page';
-     removePage.addEventListener('click', () => {
-         removePage(currentPage);
+     const removePageButton = document.createElement('button'); // Renamed variable
+     removePageButton.textContent = 'Remove Page';
+     removePageButton.addEventListener('click', () => {
+         // Call the correct function with the appropriate parameter
+         removePage(currentPage); // Assuming currentPageName is a string with the page's name
      });
-     blockContainer.appendChild(removePage);
+     blockContainer.appendChild(removePageButton);
          
          // Use event delegation to add an event listener to the blockContainer
          blockContainer.addEventListener('click', async (event) => {
