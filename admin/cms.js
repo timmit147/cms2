@@ -117,31 +117,13 @@ async function placeBlock() {
     const blockContainer = document.getElementById('blockContainer');
     blockContainer.innerHTML = ''; // Clear the existing content
 
-    const pageTitle = document.getElementsByName('.pageTitle');
+
+    const pageTitle = document.createElement('h1');
     pageTitle.textContent = currentPage;
+    blockContainer.appendChild(pageTitle);
+
 
  
-
-
-
-    await loopPageFields(currentPage);
-
-    const settings = document.createElement('h2');
-    settings.textContent = 'Settings';
-    blockContainer.appendChild(settings);
-
-     // Add Remove button next to the h1 element
-     const removePagelabel = document.createElement('label');
-     removePagelabel.textContent = 'Remove Page';
-     blockContainer.appendChild(removePagelabel);
-
-
-     const removePage = document.createElement('button');
-     removePage.textContent = 'Remove Page';
-     removePage.addEventListener('click', () => {
-         removePage(currentPage);
-     });
-     blockContainer.appendChild(removePage);
 
      const blocksTitle = document.createElement('h2');
      blocksTitle.textContent = 'Blocks';
@@ -270,6 +252,28 @@ async function placeBlock() {
          
          // Add the form HTML to the blockContainer
          blockContainer.insertAdjacentHTML('beforeend', formHTML);
+
+         
+    const settings = document.createElement('h2');
+    settings.textContent = 'Settings';
+    blockContainer.appendChild(settings);
+
+     await loopPageFields(currentPage);
+
+
+
+     // Add Remove button next to the h1 element
+     const removePagelabel = document.createElement('label');
+     removePagelabel.textContent = 'Remove Page';
+     blockContainer.appendChild(removePagelabel);
+
+
+     const removePage = document.createElement('button');
+     removePage.textContent = 'Remove Page';
+     removePage.addEventListener('click', () => {
+         removePage(currentPage);
+     });
+     blockContainer.appendChild(removePage);
          
          // Use event delegation to add an event listener to the blockContainer
          blockContainer.addEventListener('click', async (event) => {
@@ -301,11 +305,6 @@ async function loopPageFields(currentPage) {
     }
 
     const blockContainer = document.getElementById('blockContainer');
-    blockContainer.innerHTML = '';
-
-    const pageTitle = document.createElement('h1');
-    pageTitle.textContent = currentPage;
-    blockContainer.appendChild(pageTitle);
 
     const excludedFields = ['menu', 'label']; // Add other field names you want to exclude
 
@@ -343,12 +342,15 @@ async function loopPageFields(currentPage) {
 
             blockContainer.appendChild(document.createElement('br')); // Add line break
         }
+        
     }
+    
 
     if (currentPage === 'settings') {
         await displayMenuPages(pageData.menu);
         await displayUnselectedPages(pageData.menu);
     }
+    
 }
 
 async function getPageData(currentPage) {
