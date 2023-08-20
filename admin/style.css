@@ -1,13 +1,23 @@
 body {
     margin: 0px;
     font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow: hidden;
 }
 
 input{
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid black;
     border-radius: 4px;
     font-size: 16px;
+}
+
+input::placeholder{
+    color: black;
 }
 
 label{
@@ -21,6 +31,7 @@ img{
 #login-form h1{
     padding: 0px;
     margin: 0px;
+    font-size: 32px;
 }
 
 #login-form p{
@@ -33,8 +44,21 @@ img{
     margin-top: 16px;
 }
 
+button{
+    width: fit-content;
+    background-color: unset;
+    border: 0;
+    padding: 0;
+    text-decoration: underline;
+}
 
-button {
+button:hover{
+    cursor: pointer;
+    color: #21759B;
+    font-weight: bold;
+}
+
+.button1 {
     padding: 10px 20px;
     background-color: #3498db;
     color: white;
@@ -42,10 +66,16 @@ button {
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
+    width: fit-content;
+    text-decoration: none;
   }
+
+
 
 #blockContainer {
     margin: 20px;
+    height: inherit;
+    width: 100%;
 }
 
 #blockContainer > div {
@@ -78,28 +108,28 @@ button {
 }
 
 .footerMenu {
-    position: absolute;
-    bottom: 0;
-    background-color: black;
-    width: 100vw;
+    border-bottom: 1px solid;
+    border-top: 0px solid;
     padding: 10px;
     box-sizing: border-box;
-    display: flex;
     justify-content: space-between;
+    height: 50px;
+    width: 100%;
 }
 
 #popup {
     display: none;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0%;
+    left: 0%;
     background-color: white;
     padding: 20px;
     border: 1px solid #ccc;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     flex-direction: column;
     gap: 10px;
+    width: 100vw;
+    height: 100vh;
 }
 
 .arrow-button {
@@ -130,15 +160,32 @@ div#login-form {
     gap: 8px;
 }
 
-.container{
+#form{
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 100%;
+    width: 100%;
     gap: 40px;
 }
 
 @media (max-width: 767px) {
-    .container {
+    #form {
       flex-direction: column;
     }
+
+    body{
+        flex-direction: column;
+    }
+
+    
+.footerMenu {
+    border-bottom: 0px solid;
+    border-top: 1px solid;
+    padding: 10px;
+    box-sizing: border-box;
+    justify-content: space-between;
+    height: 50px;
+    width: 100%;
+}
+}

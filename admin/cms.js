@@ -1,6 +1,5 @@
 let currentPage = null;
 let firestore = null; // Declare firestore in a broader scope
-const loginForm = document.getElementById('login-form');
 
 newDatabase();
 
@@ -33,6 +32,8 @@ firebase.auth().onAuthStateChanged((user) => {
         showLogoutButton(); // Show the logout button
         const footerMenu = document.querySelector('.footerMenu');
         footerMenu.style.display = 'flex';
+        const blockContainer = document.querySelector('#blockContainer');
+        blockContainer.style.display = 'block';
 
     } else {
         showLoginForm(); // Show the login form
@@ -42,13 +43,13 @@ firebase.auth().onAuthStateChanged((user) => {
 
 // Function to hide the login form
 function hideLoginForm() {
-    const loginForm = document.getElementById('login-form');
+    const loginForm = document.getElementById('form');
     loginForm.style.display = 'none';
 }
 
 // Function to show the login form
 function showLoginForm() {
-    const loginForm = document.getElementById('login-form');
+    const loginForm = document.getElementById('form');
     loginForm.style.display = 'flex';
 }
 
@@ -114,9 +115,8 @@ async function placeBlock() {
     const blockContainer = document.getElementById('blockContainer');
     blockContainer.innerHTML = ''; // Clear the existing content
 
-    const pageTitle = document.createElement('h1');
+    const pageTitle = document.getElementsByName('.pageTitle');
     pageTitle.textContent = currentPage;
-    blockContainer.appendChild(pageTitle);
 
     await loopPageFields(currentPage);
 
@@ -127,6 +127,9 @@ async function placeBlock() {
          removePage(currentPage);
      });
      blockContainer.appendChild(removePageButton);
+     
+
+     
 
     const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
 
@@ -152,7 +155,6 @@ async function placeBlock() {
         blockDiv.appendChild(typeLabel);
 
         let propertiesVisible = false;
-        let removeButtonVisible = false;
 
         
 
@@ -212,7 +214,6 @@ async function placeBlock() {
         // Add Remove button, initially hidden
         const removeButton = document.createElement('button');
         removeButton.textContent = 'Remove';
-        removeButton.style.display = 'none';
         removeButton.addEventListener('click', () => {
             removeBlockAndPage(currentPage, index);
         });
@@ -232,6 +233,18 @@ async function placeBlock() {
         blockWrapper.appendChild(blockDiv); // Add the block content to the wrapper
         addUpDownButtons(blockWrapper, index, sortedBlocks.length, currentPage);
         blockContainer.appendChild(blockWrapper); // Add the wrapper to the main container
+             // Add the form to the blockContainer
+    const formHTML = `
+    <form method="POST">
+        <select name="block" id="dropdown">
+            <option value="block1">Block 1</option>
+            <option value="block2">Block 2</option>
+            <option value="block3">Block 3</option>
+        </select>
+        <button type="submit" id="submitButton">Submit</button>
+    </form>
+`;
+blockContainer.insertAdjacentHTML('beforeend', formHTML);
     }
 }
 
@@ -689,18 +702,14 @@ async function addMenuButtons() {
     const popup = document.getElementById('popup');
     const pagesButton = document.getElementById('pagesButton');
 
-    // Clear the existing buttons
-    popup.innerHTML = '';
-
-    const addPageButton = document.createElement('button');
-    addPageButton.textContent = "Add Page";
+    // Clear the existing buttons and title
 
     // Event listener for the "Add Page" button
-    addPageButton.addEventListener('click', handleAddPageButtonClick);
 
     for (const page in pages) {
         const button = document.createElement('button');
         button.textContent = page;
+        button.className = "button2"; // Add the class to the button
 
         button.addEventListener('click', () => {
             currentPage = page;
@@ -711,7 +720,6 @@ async function addMenuButtons() {
         popup.appendChild(button);
     }
 
-    popup.appendChild(addPageButton);
 
     pagesButton.addEventListener('click', () => {
         if (popup.style.display === 'flex') {
@@ -721,6 +729,8 @@ async function addMenuButtons() {
         }
     });
 }
+
+
 
 const storage = firebase.storage();
 

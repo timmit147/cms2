@@ -18,7 +18,7 @@
 
 <body id="page1">
 
-   <div class="container">
+   <div id="form">
     <div class="image">
       <img src="images/logo.png" alt="Image">
     </div>
@@ -30,7 +30,7 @@
         <input type="email" id="email" placeholder="Email">
         <label>Password</label>
         <input type="password" id="password" placeholder="Password">
-        <button onclick="login()">Login</button>
+        <button class="button1" onclick="login()">Login</button>
       </div>
     </div>
   </div>
@@ -38,23 +38,8 @@
 
 
     
-    <div id="blockContainer">
-        
-    </div>
-
-    <div id="popup">
-    </div>
-
-    <div id="addPagePopup" style="display: none;">
-        <input type="text" id="pageNameInput" placeholder="Enter page name">
-        <button id="saveButton">Save</button>
-    </div>
-
-    <div class="footerMenu" style="display: none;">
-
-        <button id="pagesButton">Pages</button>
-
-
+    <div id="blockContainer" style="display: none;">
+        <h1 class="pageTitle">test</h1>
         
         <div id="form-container">
             <form method="POST">
@@ -63,11 +48,34 @@
                     <option value="block2">Block 2</option>
                     <option value="block3">Block 3</option>
                 </select>
-                <button type="submit" id="submitButton">Submit</button>
+                <button  type="submit" id="submitButton">Submit</button>
             </form>
         </div>
+    </div>
+
+    <div id="popup">
+        <h1>Menu</h1>
+        <button class="createPage button2" onclick="handleAddPageButtonClick()">Create Page</button>
+
+    </div>
+
+    <div id="addPagePopup" style="display: none;" >
+        <input type="text" id="pageNameInput" placeholder="Enter page name">
+        <button id="saveButton">Save</button>
+    </div>
+
+    <div class="footerMenu" style="display: none;">
+
+
+
+        
+
 
         <button id="logout-button">Logout</button>
+
+
+        <button id="pagesButton">Pages</button>
+
 
 
     </div>
