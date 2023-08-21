@@ -73,7 +73,7 @@ button:hover{
 
 
 
-#blockContainer {
+#container {
     padding: 20px;
     height: -webkit-fill-available;
     overflow-y: scroll;
@@ -83,7 +83,7 @@ button:hover{
     box-sizing: border-box;
 }
 
-#blockContainer > div {
+.block-wrapper {
     border: 1px solid;
     display: flex;
     flex-direction: row;
@@ -91,7 +91,7 @@ button:hover{
     align-items: start;
 }
 
-#blockContainer > div input, textarea {
+#container > div input, textarea {
     width: 50%;
 }
 

@@ -32,8 +32,8 @@ firebase.auth().onAuthStateChanged((user) => {
         showLogoutButton(); // Show the logout button
         const footerMenu = document.querySelector('.footerMenu');
         footerMenu.style.display = 'flex';
-        const blockContainer = document.querySelector('#blockContainer');
-        blockContainer.style.display = 'flex';
+        const container = document.querySelector('#container');
+        container.style.display = 'flex';
 
     } else {
         showLoginForm(); // Show the login form
@@ -105,17 +105,34 @@ function clearContainer(target){
     target.innerHTML = ''; // Clear the existing content
 }
 
-
 function addTitle(target){
     const pageTitle = document.createElement('h1');
     pageTitle.textContent = currentPage;
     target.appendChild(pageTitle);
 }
 
-function changeBreadcrump(){
+function changeBreadcrump(page, block) {
     const breadcrump = document.querySelector('.breadcrump');
-    breadcrump.textContent = currentPage;
+
+    if (breadcrump) {
+        if (page && block) {
+            const pageLink = document.createElement('a');
+            pageLink.href = '#'; // You can set the appropriate URL here
+            pageLink.textContent = page;
+            pageLink.addEventListener('click', () => {
+                placeBlock();
+            });
+            
+            breadcrump.innerHTML = ''; // Clear existing content
+            breadcrump.appendChild(pageLink);
+            breadcrump.appendChild(document.createTextNode(' > ' + block));
+        } else if (page) {
+            breadcrump.textContent = page;
+        }
+    }
 }
+
+
 
 function addBlockTitle(target){
     const blocksTitle = document.createElement('h2');
@@ -123,7 +140,14 @@ function addBlockTitle(target){
     target.appendChild(blocksTitle);
 }
 
-async function getBlocks(){
+
+function ShowBlockContents(target, name){
+    const blocksTitle = document.createElement('h2');
+    blocksTitle.textContent = name;
+    target.appendChild(blocksTitle);
+}
+
+async function getBlocks() {
     const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
 
     const blockArray = Object.entries(pages).map(([index, block]) => ({
@@ -135,59 +159,46 @@ async function getBlocks(){
     const sortedBlocks = blockArray.sort((a, b) => a.order - b.order);
 
     for (const { index, block } of sortedBlocks) {
-        const blockWrapper = document.createElement('div'); // Create a wrapper div
-        blockWrapper.classList.add('block-wrapper'); // Add a class for styling
+        const blockWrapper = document.createElement('div');
+        blockWrapper.classList.add('block-wrapper');
 
         const blockDiv = document.createElement('div');
-        blockDiv.classList.add('blockContent'); // Add a class for styling
-
+        blockDiv.classList.add('blockContent');
 
         const typeLabel = document.createElement('label');
         typeLabel.textContent = block["title"] || block["type"];
         typeLabel.style.fontWeight = 'bold';
         blockDiv.appendChild(typeLabel);
-        
-        
+
         const hiddenDiv = document.createElement('div');
-        hiddenDiv.classList.add('hiddenDiv'); // Adding the class
-        hiddenDiv.style.display = 'none'; // Setting the display property to none
+        hiddenDiv.classList.add('hiddenDiv');
+        hiddenDiv.style.display = 'none';
         blockDiv.appendChild(hiddenDiv);
-        for (const key in block) {
 
-
-            if (key === "image") {
-
-            
-                if (block[key]) { // Check if the image property has a value
-                    const imageElement = document.createElement('img');
-                    imageElement.src = block[key]; // Set the source of the image to the value
-                    hiddenDiv.appendChild(imageElement); // Append the image element to the blockDiv
-                }
-        
-                const imageInput = document.createElement('input');
-                imageInput.type = 'file';
-                imageInput.addEventListener('change', (event) => {
-                    const selectedImage = event.target.files[0];
-                    handleImageUpload(selectedImage, index); // Pass the index to the function
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const newImageElement = document.createElement('img');
-                        newImageElement.src = e.target.result;
-                        hiddenDiv.insertBefore(newImageElement, imageInput); // Insert the new image before the input
-                    };
-                    reader.readAsDataURL(selectedImage); // Read and convert the selected image to base64
-                });
-                hiddenDiv.appendChild(imageInput);
-        
-                typeLabel.addEventListener('click', () => {
-                    if (hiddenDiv.style.display === 'none') {
-                        hiddenDiv.style.display = 'flex';
-                    } else {
-                        hiddenDiv.style.display = 'none';
-                    }
-                });
-             
+        if (block.hasOwnProperty('image')) {
+            if (block.image) {
+                const imageElement = document.createElement('img');
+                imageElement.src = block.image;
+                hiddenDiv.appendChild(imageElement);
             }
+
+            const imageInput = document.createElement('input');
+            imageInput.type = 'file';
+            imageInput.addEventListener('change', (event) => {
+                const selectedImage = event.target.files[0];
+                handleImageUpload(selectedImage, index);
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const newImageElement = document.createElement('img');
+                    newImageElement.src = e.target.result;
+                    hiddenDiv.insertBefore(newImageElement, imageInput);
+                };
+                reader.readAsDataURL(selectedImage);
+            });
+            hiddenDiv.appendChild(imageInput);
+        }
+
+        for (const key in block) {
             if (key === "type") {
                 continue;
             }
@@ -210,7 +221,6 @@ async function getBlocks(){
             }
         }
 
-
         const removeButton = document.createElement('button');
         removeButton.textContent = 'Remove';
         removeButton.addEventListener('click', () => {
@@ -218,15 +228,20 @@ async function getBlocks(){
         });
         hiddenDiv.appendChild(removeButton);
 
-
-        hiddenDiv.querySelector("label").addEventListener('click', () => {
-            const propertyDivs = hiddenDiv.querySelectorAll('div');
-            propertiesVisible = !propertiesVisible;
-        });
-
-        blockWrapper.appendChild(blockDiv); 
+        blockWrapper.appendChild(blockDiv);
         addUpDownButtons(blockWrapper, index, sortedBlocks.length, currentPage);
-        blockContainer.appendChild(blockWrapper);     
+        container.appendChild(blockWrapper);
+
+        typeLabel.addEventListener('click', () => {
+            const container = document.querySelector("#container");
+            clearContainer(container);
+            ShowBlockContents(container, typeLabel.textContent);
+            changeBreadcrump(currentPage,typeLabel.textContent);
+
+            const hiddenDivContents = hiddenDiv.cloneNode(true);
+            container.appendChild(hiddenDivContents);
+            hiddenDivContents.style.display = 'flex';
+        });
     }
 }
 
@@ -242,19 +257,19 @@ function addForm(){
         </form>
     `;
 
-    blockContainer.insertAdjacentHTML('beforeend', formHTML);
+    container.insertAdjacentHTML('beforeend', formHTML);
 }
 
 async function addSettings(){
     const settings = document.createElement('h2');
     settings.textContent = 'Settings';
-    blockContainer.appendChild(settings);
+    container.appendChild(settings);
 
      await loopPageFields(currentPage);
 
      const removePagelabel = document.createElement('label');
      removePagelabel.textContent = 'Remove Page';
-     blockContainer.appendChild(removePagelabel);
+     container.appendChild(removePagelabel);
 
 
      const removePageButton = document.createElement('button'); // Renamed variable
@@ -262,9 +277,9 @@ async function addSettings(){
      removePageButton.addEventListener('click', () => {
          removePage(currentPage); 
      });
-     blockContainer.appendChild(removePageButton);
+     container.appendChild(removePageButton);
          
-         blockContainer.addEventListener('click', async (event) => {
+         container.addEventListener('click', async (event) => {
              if (event.target && event.target.id === 'submitButton') {
                  event.preventDefault(); 
          
@@ -276,11 +291,11 @@ async function addSettings(){
 }
 
 async function placeBlock() {
-    const blockContainer = document.getElementById('blockContainer');
-    clearContainer(blockContainer);
-    addTitle(blockContainer);
-    changeBreadcrump();
-    addBlockTitle(blockContainer);
+    const container = document.getElementById('container');
+    clearContainer(container);
+    addTitle(container);
+    changeBreadcrump(currentPage);
+    addBlockTitle(container);
     await getBlocks();
     addForm();
     addSettings();
@@ -294,7 +309,7 @@ async function loopPageFields(currentPage) {
         return;
     }
 
-    const blockContainer = document.getElementById('blockContainer');
+    const container = document.getElementById('container');
 
     const excludedFields = ['menu', 'label']; // Add other field names you want to exclude
 
@@ -304,33 +319,33 @@ async function loopPageFields(currentPage) {
 
             const fieldLabel = document.createElement('label');
             fieldLabel.textContent = field;
-            blockContainer.appendChild(fieldLabel);
+            container.appendChild(fieldLabel);
 
             if (typeof fieldValue === 'string') {
                 // Add an input field for string fields
                 const inputField = createInputField('text', fieldValue, async (value) => {
                     await updatePageField(currentPage, field, value);
                 });
-                blockContainer.appendChild(inputField);
+                container.appendChild(inputField);
             } else if (typeof fieldValue === 'number') {
                 // Add an input field for number fields
                 const inputField = createInputField('number', fieldValue, async (value) => {
                     await updatePageField(currentPage, field, value);
                 });
-                blockContainer.appendChild(inputField);
+                container.appendChild(inputField);
             } else if (typeof fieldValue === 'boolean') {
                 // Add a checkbox for boolean fields
                 const checkbox = createCheckbox(fieldValue, async (value) => {
                     await updatePageField(currentPage, field, value);
                 });
-                blockContainer.appendChild(checkbox);
+                container.appendChild(checkbox);
             } else {
                 // Display the field value for other field types
                 const fieldValueElement = createFieldValueElement(fieldValue.toString());
-                blockContainer.appendChild(fieldValueElement);
+                container.appendChild(fieldValueElement);
             }
 
-            blockContainer.appendChild(document.createElement('br')); // Add line break
+            container.appendChild(document.createElement('br')); // Add line break
         }
         
     }
@@ -390,7 +405,7 @@ async function displayMenuPages(menu) {
     for (const page of menu) {
         if (allPages.includes(page)) {
             const pageWrapper = createPageWrapper(page, menu);
-            blockContainer.appendChild(pageWrapper);
+            container.appendChild(pageWrapper);
         }
     }
 }
@@ -401,7 +416,7 @@ async function displayUnselectedPages(menu) {
     for (const page of allPages) {
         if (!menu.includes(page)) {
             const pageWrapper = createPageWrapper(page, menu);
-            blockContainer.appendChild(pageWrapper);
+            container.appendChild(pageWrapper);
         }
     }
 }
@@ -821,28 +836,6 @@ async function handleImageUpload(file, blockIndex) {
     } catch (error) {
         console.error('Error uploading image:', error);
     }
-}
-
-function createBlockDiv(blockIndex, block) {
-    const blockDiv = document.createElement('div');
-    blockDiv.classList.add('blockContent'); // Add a class for styling
-
-    // ... (Other block content creation)
-
-    // Create an image input for blocks with "image" property
-    if (block.hasOwnProperty("image")) {
-        const imageInput = document.createElement('input');
-        imageInput.type = 'file';
-        imageInput.addEventListener('change', (event) => {
-            const selectedImage = event.target.files[0];
-            handleImageUpload(selectedImage, blockIndex);
-        });
-        blockDiv.appendChild(imageInput);
-    }
-
-    // ... (Other block content creation)
-
-    return blockDiv;
 }
 
 async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) {
