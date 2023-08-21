@@ -3,7 +3,7 @@ name: Run Firebase Fetch
 on:
   push:
     branches:
-      - main  # Change this to the appropriate branch
+      - main
 
 jobs:
   build:
@@ -36,8 +36,10 @@ jobs:
         result="${{ steps.fetch.outputs.result }}"
         pr_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
 
-        comment="Fetch Result: $result"
-        
+        # Create a comment listing the block names from the fetched data
+        comment="Fetched Block Names:\n$result"
+
+        # Post the comment on the pull request
         response=$(curl -X POST \
           -H "Authorization: Bearer $ACCESS_TOKEN" \
           -d "{\"body\":\"$comment\"}" \
