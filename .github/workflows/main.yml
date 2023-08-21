@@ -23,3 +23,6 @@ jobs:
 
       - name: Fetch and Display Pages
         run: node admin/fetchPages.js
+
+      - name: Display output
+      run: cat admin/output.json # Assuming you're saving the output in a file named "output.json"
