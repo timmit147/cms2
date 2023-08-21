@@ -30,20 +30,17 @@ jobs:
 
     - name: Post Fetch Result as Comment
       if: steps.fetch.outcome == 'success'
-      uses: actions/github-script@v4
-      with:
-        script: |
-          const result = '${{ steps.fetch.outputs.result }}';
-          const token = process.env.ACCESS_TOKEN;
-          const octokit = new Octokit({ auth: token });
+      env:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      run: |
+        result="${{ steps.fetch.outputs.result }}"
+        pr_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
 
-          // Get pull request number from the event payload
-          const prNumber = context.payload.pull_request.number;
-
-          // Create a comment with the fetch result
-          await octokit.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: prNumber,
-            body: `Fetch Result: ${result}`,
-          });
+        comment="Fetch Result: $result"
+        
+        response=$(curl -X POST \
+          -H "Authorization: Bearer $ACCESS_TOKEN" \
+          -d "{\"body\":\"$comment\"}" \
+          "https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${pr_number}/comments")
+          
+        echo "Comment response: $response"
