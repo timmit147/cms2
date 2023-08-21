@@ -1,5 +1,5 @@
 let currentPage = null;
-let firestore = null; // Declare firestore in a broader scope
+let firestore = null;
 
 newDatabase();
 
@@ -73,7 +73,6 @@ document.getElementById('logout-button').addEventListener('click', () => {
     
 }
 
-// Function to log in
 function login() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -87,10 +86,6 @@ function login() {
         });
 }
 
-
-
-
-// Function to fetch data from Firestore and display
 async function fetchDataFromFirestore(path) {
     const allData = {};
 
@@ -291,9 +286,6 @@ async function placeBlock() {
     addSettings();
 }
 
-
-
-
 async function loopPageFields(currentPage) {
     const pageData = await getPageData(currentPage);
 
@@ -468,20 +460,11 @@ function createPageWrapper(page, menu) {
     return pageWrapper;
 }
 
-
 async function getAllPages() {
     const pagesCollection = firestore.collection('pages');
     const pagesQuerySnapshot = await pagesCollection.get();
     return pagesQuerySnapshot.docs.map(doc => doc.id);
 }
-
-
-
-
-// ... (rest of the code remains the same)
-
-
-// ... (previous code remains the same)
 
 async function movePage(currentPage, pageToMove, direction) {
     try {
@@ -522,12 +505,6 @@ async function movePage(currentPage, pageToMove, direction) {
     }
 }
 
-// ... (rest of the code remains the same)
-
-
-
-
-
 async function updatePageField(pageName, field, newValue) {
     try {
         const pageRef = firestore.collection('pages').doc(pageName);
@@ -539,13 +516,6 @@ async function updatePageField(pageName, field, newValue) {
         console.error(`Error updating field '${field}':`, error);
     }
 }
-
-
-
-
-
-
-
 
 function addUpDownButtons(blockDiv, blockIndex, totalBlocks, pageName) {
     const buttonsDiv = document.createElement('div'); // Create a div to contain the buttons
@@ -570,10 +540,6 @@ function addUpDownButtons(blockDiv, blockIndex, totalBlocks, pageName) {
 
     blockDiv.appendChild(buttonsDiv); // Add the div containing the buttons to the block div
 }
-
-
-
-// Assuming you have the necessary Firebase initialization code here
 
 async function swapBlocks(pageName, blockId, upDown) {
 
@@ -663,11 +629,6 @@ try {
     }
 }
 
-
-
-
-
-
 function handleInputKeydown(blockIndex, inputKey, inputField) {
     return (event) => {
         if (event.keyCode === 13) { // Enter key
@@ -715,9 +676,6 @@ async function removePage(pageName) {
     }
 }
 
-
-
-
 async function removeBlockAndPage(pageName, blockIndex) {
     const confirmation = confirm(`Are you sure you want to remove the block ${blockIndex} from the page ${pageName}?`);
     if (confirmation) {
@@ -731,11 +689,6 @@ async function removeBlockAndPage(pageName, blockIndex) {
         }
     }
 }
-
-
-
-
-
 
 async function addMenuButtons() {
     const pages = await fetchDataFromFirestore("pages");
@@ -769,12 +722,6 @@ async function addMenuButtons() {
         }
     });
 }
-
-
-
-const storage = firebase.storage();
-
-
 
 async function addNewBlock(selectedBlock) {
     try {
@@ -847,7 +794,6 @@ async function addNewBlock(selectedBlock) {
     }
 }
 
-
 async function handleImageUpload(file, blockIndex) {
     const storageRef = firebase.storage().ref();
     const imagesRef = storageRef.child('images');
@@ -877,10 +823,6 @@ async function handleImageUpload(file, blockIndex) {
     }
 }
 
-  
-
-// ...
-
 function createBlockDiv(blockIndex, block) {
     const blockDiv = document.createElement('div');
     blockDiv.classList.add('blockContent'); // Add a class for styling
@@ -903,9 +845,6 @@ function createBlockDiv(blockIndex, block) {
     return blockDiv;
 }
 
-
-// ...
-
 async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) {
     try {
         const blockRef = firestore.collection('pages').doc(pageName).collection('blocks').doc(blockIndex);
@@ -917,13 +856,3 @@ async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) 
         console.error(`Error updating block property '${propertyKey}':`, error);
     }
 }   
-
-
-
-
-
-
-
-
-
-
