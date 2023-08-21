@@ -34,4 +34,4 @@ function fetchData(apiUrl) {
     });
   }
   
-  fetchData(apiUrl);
+  fetchData(apiUrl); 
