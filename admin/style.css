@@ -71,6 +71,10 @@ button:hover{
     text-decoration: none;
   }
 
+  .block{
+    display: flex;
+    justify-content: space-between;
+  }
 
 
 #container {
@@ -151,7 +155,6 @@ button:hover{
 
 .arrow-buttons {
     display: flex;
-    flex-direction: column;
     width: fit-content;
     align-self: stretch;
     padding: 5px 0px;

@@ -159,11 +159,18 @@ function loopSortedBlocks(blockArray){
 
        const container =  document.querySelector('#container');
 
-        const typeLabel = document.createElement('label');
-        typeLabel.textContent = block["title"] || block["type"];
-        typeLabel.style.fontWeight = 'bold';
-        container.appendChild(typeLabel);
-        addUpDownButtons(container, index, sortedBlocks.length, currentPage);
+       const typeLabel = document.createElement('label');
+       typeLabel.textContent = block["title"] || block["type"];
+       typeLabel.style.fontWeight = 'bold';
+       
+       const divContainer = document.createElement('div'); // Creating the div container
+       divContainer.className = 'block'; // Replace 'your-class-name' with the actual class name you want
+       
+       divContainer.appendChild(typeLabel); // Placing the typeLabel inside the div
+       addUpDownButtons(divContainer, index, sortedBlocks.length, currentPage); // Adding buttons to the div
+       
+       container.appendChild(divContainer); // Placing the whole div container inside the 'container'
+       
 
 
         
