@@ -29,5 +29,4 @@ jobs:
       run: cat admin/output.log  # This assumes you're logging to a file named 'output.log'
 
     - name: Display Fetch Result
-      if: steps.fetch.outcome == 'success'
       run: echo "Fetch Result: ${{ steps.fetch.outputs.result }}"
