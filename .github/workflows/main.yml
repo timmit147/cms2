@@ -22,7 +22,7 @@ jobs:
       - name: Create HTML Pages
         run: |
           echo "Creating HTML pages"
-          pages=${{ steps.run-js.outputs.stdout }}
+          pages="${{ steps.run-js.outputs.stdout }}"
           IFS=', ' read -ra pagesArray <<< "$pages"
           for page in "${pagesArray[@]}"; do
             lowercasePage=$(echo $page | tr '[:upper:]' '[:lower:]')
@@ -31,7 +31,7 @@ jobs:
             echo "$content" > "$GITHUB_WORKSPACE/$filename"
             echo "Created $filename"
           done
-          
+
       - name: Commit and Push Changes
         run: |
           git config --global user.name "timmit147"
