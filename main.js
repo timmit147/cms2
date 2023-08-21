@@ -106,45 +106,47 @@ async function placeBlock(pageName) {
     }
 }
 
+placeBlock(document.body.id);
 
-async function handleHashbangChange() {
-    const hashbang = window.location.hash.substr(1); // Get hash without the '#!'
-    const path = window.location.pathname.substr(1); // Get path without the leading '/'
 
-    let targetPage = hashbang || path; // Use hashbang if present, otherwise use path
+// async function handleHashbangChange() {
+//     const hashbang = window.location.hash.substr(1); // Get hash without the '#!'
+//     const path = window.location.pathname.substr(1); // Get path without the leading '/'
 
-    // Check if the targetPage is empty or matches "page1"
-    if (targetPage === "" || targetPage === "page1") {
-        targetPage = "page1"; // Change targetPage to "page1" by default or when it's "page1"
-    }
+//     let targetPage = hashbang || path; // Use hashbang if present, otherwise use path
 
-    // Check if the target page is both valid and published
-    const isPageValidAndPublished = await isValidAndPublishedPage(targetPage);
+//     // Check if the targetPage is empty or matches "page1"
+//     if (targetPage === "" || targetPage === "page1") {
+//         targetPage = "page1"; // Change targetPage to "page1" by default or when it's "page1"
+//     }
 
-    if (!isPageValidAndPublished) {
-        window.location.href = "/";
-        return; // Stop further processing
-    }
+//     // Check if the target page is both valid and published
+//     const isPageValidAndPublished = await isValidAndPublishedPage(targetPage);
 
-    placeBlock(targetPage); // Place block based on the targetPage value
-}
+//     if (!isPageValidAndPublished) {
+//         window.location.href = "/";
+//         return; // Stop further processing
+//     }
 
-async function isValidAndPublishedPage(page) {
-    const pageRef = firestore.collection('pages').doc(page);
-    const pageSnapshot = await pageRef.get();
+//     placeBlock(targetPage); // Place block based on the targetPage value
+// }
 
-    if (pageSnapshot.exists) {
-        const pageData = pageSnapshot.data();
-        return pageData.published === true;
-    }
+// async function isValidAndPublishedPage(page) {
+//     const pageRef = firestore.collection('pages').doc(page);
+//     const pageSnapshot = await pageRef.get();
 
-    return false;
-}
+//     if (pageSnapshot.exists) {
+//         const pageData = pageSnapshot.data();
+//         return pageData.published === true;
+//     }
 
-// Listen for hash changes and handle them
-window.addEventListener('hashchange', handleHashbangChange);
+//     return false;
+// }
 
-// Initial handling based on the current hashbang
-handleHashbangChange();
+// // Listen for hash changes and handle them
+// window.addEventListener('hashchange', handleHashbangChange);
+
+// // Initial handling based on the current hashbang
+// handleHashbangChange();
 
 
