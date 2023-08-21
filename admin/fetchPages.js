@@ -10,6 +10,8 @@ const firebaseConfig = {
     appId: "1:405806447010:web:e842ddf9737960fbd45afb",
     measurementId: "G-VYBDR6G2EG"
   };
+  
+admin.initializeApp(firebaseConfig);
 
 const firestore = admin.firestore();
 
@@ -17,7 +19,7 @@ async function fetchDataFromFirestore() {
   try {
     const collectionRef = firestore.collection('pages');
     const querySnapshot = await collectionRef.get();
-    
+
     querySnapshot.forEach(doc => {
       console.log(`Document ID: ${doc.id}, Data: ${JSON.stringify(doc.data())}`);
     });
