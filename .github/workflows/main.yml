@@ -1,48 +1,25 @@
-name: Run Firebase Fetch
+name: Fetch Pages Data
 
 on:
   push:
     branches:
-      - main
+      - main  # Adjust this to your repository's main branch
 
 jobs:
-  build:
+  fetch_pages_data:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14  # Use the version you need
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Run Firebase Fetch
-      id: fetch
-      run: node admin/fetchPages.js  # Replace with the actual filename
-
-    - name: Show log output
-      run: cat admin/output.log  # This assumes you're logging to a file named 'output.log'
-
-    - name: Post Fetch Result as Comment
-      if: steps.fetch.outcome == 'success'
-      env:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      run: |
-        result="${{ steps.fetch.outputs.result }}"
-        pr_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-
-        # Create a comment listing the block names from the fetched data
-        comment="Fetched Block Names:\n$result"
-
-        # Post the comment on the pull request
-        response=$(curl -X POST \
-          -H "Authorization: Bearer $ACCESS_TOKEN" \
-          -d "{\"body\":\"$comment\"}" \
-          "https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${pr_number}/comments")
-          
-        echo "Comment response: $response"
+      - name: Run fetchPages.js
+        run: node admin/fetchPages.js
