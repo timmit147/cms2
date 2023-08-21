@@ -1,4 +1,4 @@
-const https = require('https'); // Import the built-in https module
+const https = require('https');
 
 const apiKey = "AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8";
 const collectionName = "pages";
@@ -18,11 +18,8 @@ function fetchData(apiUrl) {
       try {
         const jsonData = JSON.parse(data);
         if (jsonData.documents) {
-          jsonData.documents.forEach(doc => {
-            console.log(doc.fields);
-          });
-          console.log(jsonData.documents);
-
+          const names = jsonData.documents.map(item => item.name);
+          console.log(names);
         }
       } catch (error) {
         console.error("Error parsing JSON:", error);
@@ -33,4 +30,4 @@ function fetchData(apiUrl) {
   });
 }
 
-fetchData(apiUrl); // Call the function directly
+fetchData(apiUrl);
