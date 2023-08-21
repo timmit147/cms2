@@ -1,7 +1,7 @@
-const admin = require('firebase-admin');
 
-// Initialize Firebase Admin SDK
-const firebaseConfig = {
+  const admin = require('firebase-admin');
+
+  const firebaseConfig = {
     apiKey: "AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8",
     authDomain: "cms2-58eaf.firebaseapp.com",
     projectId: "cms2-58eaf",
@@ -11,22 +11,27 @@ const firebaseConfig = {
     measurementId: "G-VYBDR6G2EG"
   };
   
-admin.initializeApp(firebaseConfig);
-
-const firestore = admin.firestore();
-
-async function fetchDataFromFirestore() {
-  try {
-    const collectionRef = firestore.collection('pages');
-    const querySnapshot = await collectionRef.get();
-
-    querySnapshot.forEach(doc => {
-      console.log(`Document ID: ${doc.id}, Data: ${JSON.stringify(doc.data())}`);
-    });
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    process.exit(1); // Exit with an error status code
+  // Initialize Firebase Admin SDK with the configuration
+  admin.initializeApp({
+    credential: admin.credential.applicationDefault(),
+    databaseURL: `https://${firebaseConfig.projectId}.firebaseio.com`
+  });
+  
+  const firestore = admin.firestore();
+  
+  async function fetchDataFromFirestore() {
+    try {
+      const collectionRef = firestore.collection('pages');
+      const querySnapshot = await collectionRef.get();
+  
+      querySnapshot.forEach(doc => {
+        console.log(`Document ID: ${doc.id}, Data: ${JSON.stringify(doc.data())}`);
+      });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      process.exit(1); // Exit with an error status code
+    }
   }
-}
-
-fetchDataFromFirestore();
+  
+  fetchDataFromFirestore();
+  
