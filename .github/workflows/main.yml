@@ -25,4 +25,4 @@ jobs:
       run: node admin/fetchPages.js  # Replace with the actual filename
 
     - name: Show log output
-      run: cat output.log  # This assumes you're logging to a file named 'output.log'
+      run: cat admin/output.log  # This assumes you're logging to a file named 'output.log'
