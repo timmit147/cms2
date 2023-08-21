@@ -106,32 +106,29 @@ async function fetchDataFromFirestore(path) {
     }
 }
 
-
-async function placeBlock() {
-    if (!currentPage) {
-        return;
-    }
-
-    const blockContainer = document.getElementById('blockContainer');
-    blockContainer.innerHTML = ''; // Clear the existing content
+function clearContainer(target){
+    target.innerHTML = ''; // Clear the existing content
+}
 
 
+function addTitle(target){
     const pageTitle = document.createElement('h1');
     pageTitle.textContent = currentPage;
-    blockContainer.appendChild(pageTitle);
+    target.appendChild(pageTitle);
+}
 
+function changeBreadcrump(){
     const breadcrump = document.querySelector('.breadcrump');
     breadcrump.textContent = currentPage;
+}
 
- 
+function addBlockTitle(target){
+    const blocksTitle = document.createElement('h2');
+    blocksTitle.textContent = 'Blocks';
+    target.appendChild(blocksTitle);
+}
 
-     const blocksTitle = document.createElement('h2');
-     blocksTitle.textContent = 'Blocks';
-     blockContainer.appendChild(blocksTitle);
-     
-
-     
-
+async function getBlocks(){
     const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
 
     const blockArray = Object.entries(pages).map(([index, block]) => ({
@@ -154,22 +151,26 @@ async function placeBlock() {
         typeLabel.textContent = block["title"] || block["type"];
         typeLabel.style.fontWeight = 'bold';
         blockDiv.appendChild(typeLabel);
-
-        let propertiesVisible = false;
-
         
-
+        
+        const hiddenDiv = document.createElement('div');
+        hiddenDiv.classList.add('hiddenDiv'); // Adding the class
+        hiddenDiv.style.display = 'none'; // Setting the display property to none
+        blockDiv.appendChild(hiddenDiv);
         for (const key in block) {
+
+
             if (key === "image") {
+
+            
                 if (block[key]) { // Check if the image property has a value
                     const imageElement = document.createElement('img');
                     imageElement.src = block[key]; // Set the source of the image to the value
-                    blockDiv.appendChild(imageElement); // Append the image element to the blockDiv
+                    hiddenDiv.appendChild(imageElement); // Append the image element to the blockDiv
                 }
         
                 const imageInput = document.createElement('input');
                 imageInput.type = 'file';
-                imageInput.style.display = 'none'; // Hide the image input by default
                 imageInput.addEventListener('change', (event) => {
                     const selectedImage = event.target.files[0];
                     handleImageUpload(selectedImage, index); // Pass the index to the function
@@ -177,24 +178,27 @@ async function placeBlock() {
                     reader.onload = (e) => {
                         const newImageElement = document.createElement('img');
                         newImageElement.src = e.target.result;
-                        blockDiv.insertBefore(newImageElement, imageInput); // Insert the new image before the input
+                        hiddenDiv.insertBefore(newImageElement, imageInput); // Insert the new image before the input
                     };
                     reader.readAsDataURL(selectedImage); // Read and convert the selected image to base64
                 });
-                blockDiv.appendChild(imageInput);
+                hiddenDiv.appendChild(imageInput);
         
-                // Show the image input when the label is pressed
                 typeLabel.addEventListener('click', () => {
-                    imageInput.style.display = 'block';
+                    if (hiddenDiv.style.display === 'none') {
+                        hiddenDiv.style.display = 'flex';
+                    } else {
+                        hiddenDiv.style.display = 'none';
+                    }
                 });
+             
             }
-            if (key === "type" || key === "hash") {
+            if (key === "type") {
                 continue;
             }
             if (block.hasOwnProperty(key)) {
                 const propertyDiv = document.createElement('div');
-                propertyDiv.classList.add('propertyDiv'); // Add a class for styling
-                propertyDiv.style.display = 'none';
+                propertyDiv.classList.add('propertyDiv');
 
                 const inputLabel = document.createElement('label');
                 inputLabel.textContent = key;
@@ -207,62 +211,52 @@ async function placeBlock() {
                 inputField.addEventListener('keydown', handleInputKeydown(index, key, inputField));
                 propertyDiv.appendChild(inputField);
 
-                blockDiv.appendChild(propertyDiv);
+                hiddenDiv.appendChild(propertyDiv);
             }
         }
 
 
-        // Add Remove button, initially hidden
         const removeButton = document.createElement('button');
         removeButton.textContent = 'Remove';
         removeButton.addEventListener('click', () => {
             removeBlockAndPage(currentPage, index);
         });
-        blockDiv.appendChild(removeButton);
+        hiddenDiv.appendChild(removeButton);
 
-        blockDiv.querySelector("label").addEventListener('click', () => {
-            const propertyDivs = blockDiv.querySelectorAll('div');
+
+        hiddenDiv.querySelector("label").addEventListener('click', () => {
+            const propertyDivs = hiddenDiv.querySelectorAll('div');
             propertiesVisible = !propertiesVisible;
-            propertyDivs.forEach(div => {
-                div.style.display = propertiesVisible ? 'flex' : 'none';
-            });
-
-            removeButtonVisible = !removeButtonVisible;
-            removeButton.style.display = removeButtonVisible ? 'inline' : 'none';
         });
 
-        blockWrapper.appendChild(blockDiv); // Add the block content to the wrapper
+        blockWrapper.appendChild(blockDiv); 
         addUpDownButtons(blockWrapper, index, sortedBlocks.length, currentPage);
-        blockContainer.appendChild(blockWrapper); // Add the wrapper to the main container
-          
-         
+        blockContainer.appendChild(blockWrapper);     
     }
+}
 
-       // Add the form to the blockContainer
-             const formHTML = `
-             <form method="POST">
-                 <select name="block" id="dropdown">
-                     <option value="block1">Block 1</option>
-                     <option value="block2">Block 2</option>
-                     <option value="block3">Block 3</option>
-                 </select>
-                 <button type="submit" id="submitButton">Submit</button>
-             </form>
-         `;
-         
-         // Add the form HTML to the blockContainer
-         blockContainer.insertAdjacentHTML('beforeend', formHTML);
+function addForm(){
+    const formHTML = `
+        <form method="POST">
+            <select name="block" id="dropdown">
+                <option value="block1">Block 1</option>
+                <option value="block2">Block 2</option>
+                <option value="block3">Block 3</option>
+            </select>
+            <button type="submit" id="submitButton">Submit</button>
+        </form>
+    `;
 
-         
+    blockContainer.insertAdjacentHTML('beforeend', formHTML);
+}
+
+async function addSettings(){
     const settings = document.createElement('h2');
     settings.textContent = 'Settings';
     blockContainer.appendChild(settings);
 
      await loopPageFields(currentPage);
 
-
-
-     // Add Remove button next to the h1 element
      const removePagelabel = document.createElement('label');
      removePagelabel.textContent = 'Remove Page';
      blockContainer.appendChild(removePagelabel);
@@ -271,31 +265,34 @@ async function placeBlock() {
      const removePageButton = document.createElement('button'); // Renamed variable
      removePageButton.textContent = 'Remove Page';
      removePageButton.addEventListener('click', () => {
-         // Call the correct function with the appropriate parameter
-         removePage(currentPage); // Assuming currentPageName is a string with the page's name
+         removePage(currentPage); 
      });
      blockContainer.appendChild(removePageButton);
          
-         // Use event delegation to add an event listener to the blockContainer
          blockContainer.addEventListener('click', async (event) => {
-             // Check if the clicked element is the submit button
              if (event.target && event.target.id === 'submitButton') {
-                 event.preventDefault(); // Prevent the default form submission behavior
+                 event.preventDefault(); 
          
-                 // Get the selected block value from the dropdown
                  const selectedBlock = document.querySelector('#dropdown').value;
          
-                 // Call the function to add a new block with the selected value
                  await addNewBlock(selectedBlock);
              }
          });
 }
 
+async function placeBlock() {
+    const blockContainer = document.getElementById('blockContainer');
+    clearContainer(blockContainer);
+    addTitle(blockContainer);
+    changeBreadcrump();
+    addBlockTitle(blockContainer);
+    await getBlocks();
+    addForm();
+    addSettings();
+}
 
 
-// ... (previous code remains the same)
 
-// ... (previous code remains the same)
 
 async function loopPageFields(currentPage) {
     const pageData = await getPageData(currentPage);
