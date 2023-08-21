@@ -101,9 +101,22 @@ async function fetchDataFromFirestore(path) {
     }
 }
 
-function clearContainer(target){
-    target.innerHTML = '';
+function clearContainer(target) {
+      // Create a new body element to replace the existing one
+      const newBody = document.createElement('body');
+
+      // Move all child nodes (including event listeners) from the old body to the new body
+      while (document.body.firstChild) {
+          newBody.appendChild(document.body.firstChild);
+      }
+  
+      // Replace the existing body with the new body
+      document.body.parentNode.replaceChild(newBody, document.body);
+  
+      // Note: The old body and its event listeners will be garbage collected
+      target.innerHTML = '';
 }
+
 
 
 function addTitle(target){
@@ -289,15 +302,16 @@ async function addSettings(){
      });
      container.appendChild(removePageButton);
          
-         container.addEventListener('click', async (event) => {
-             if (event.target && event.target.id === 'submitButton') {
-                 event.preventDefault(); 
-         
-                 const selectedBlock = document.querySelector('#dropdown').value;
-         
-                 await addNewBlock(selectedBlock);
-             }
-         });
+     function handleButtonClick() {
+        const selectedBlock = document.querySelector('#dropdown').value;
+        addNewBlock(selectedBlock);
+    }
+    
+    document.getElementById('submitButton').onclick = async function(event) {
+        event.preventDefault();
+        handleButtonClick();
+    };
+    
 }
 
 async function placeBlock() {
@@ -812,7 +826,6 @@ async function addNewBlock(selectedBlock) {
         } else {
             console.error(`Block '${selectedBlock}' not found.`);
         }
-
         placeBlock(); // Refresh the blocks after adding a new block
     } catch (error) {
         console.error('Error adding new block:', error);
