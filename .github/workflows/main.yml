@@ -34,10 +34,10 @@ jobs:
           
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "Your Name"
-          git config --global user.email "youremail@example.com"
-          git add .
-          git commit -m "Add generated HTML pages"
+          git config --global user.name "timmit147"
+          git config --global user.email "timmeeuwsen@hotmail.nl"
+          git add html-pages/
+          git diff-index --quiet HEAD || git commit -m "Add generated HTML pages"
           git push origin HEAD:main
         env:
           GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
