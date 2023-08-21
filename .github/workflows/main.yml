@@ -1,0 +1,60 @@
+name: Fetch Firestore Data
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Firestore Data Fetch
+        run: |
+          npm install firebase-admin
+          node - <<SCRIPT
+          const admin = require('firebase-admin');
+          admin.initializeApp({
+            apiKey: process.env.FIREBASE_API_KEY,
+            authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+            projectId: process.env.FIREBASE_PROJECT_ID,
+            storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+            messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+            appId: process.env.FIREBASE_APP_ID,
+            measurementId: process.env.FIREBASE_MEASUREMENT_ID
+          });
+          const firestore = admin.firestore();
+          async function fetchDataFromFirestore() {
+            try {
+              const collectionRef = firestore.collection('pages');
+              const querySnapshot = await collectionRef.get();
+              querySnapshot.forEach(doc => {
+                console.log(`Document ID: ${doc.id}, Data: ${JSON.stringify(doc.data())}`);
+              });
+            } catch (error) {
+              console.error('Error fetching data:', error);
+              process.exit(1); // Exit with an error status code
+            }
+          }
+          fetchDataFromFirestore();
+          SCRIPT
+        env:
+          FIREBASE_API_KEY: AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8
+          FIREBASE_AUTH_DOMAIN: cms2-58eaf.firebaseapp.com
+          FIREBASE_PROJECT_ID: cms2-58eaf
+          FIREBASE_STORAGE_BUCKET: cms2-58eaf.appspot.com
+          FIREBASE_MESSAGING_SENDER_ID: 405806447010
+          FIREBASE_APP_ID: 1:405806447010:web:e842ddf9737960fbd45afb
+          FIREBASE_MEASUREMENT_ID: G-VYBDR6G2EG
