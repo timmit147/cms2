@@ -24,7 +24,7 @@ jobs:
     - name: Run Firebase script
       run: node admin/fetchPages.js
       env:
-        FIREBASE_API_KEY: AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8
+          FIREBASE_API_KEY: AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8
           FIREBASE_AUTH_DOMAIN: cms2-58eaf.firebaseapp.com
           FIREBASE_PROJECT_ID: cms2-58eaf
           FIREBASE_STORAGE_BUCKET: cms2-58eaf.appspot.com
