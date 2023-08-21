@@ -1,34 +1,14 @@
-name: Fetch Data from Firestore
+name: FunHelloJob
 
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 jobs:
-  fetch-data:
+  hello_job:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Install firebase dependencies
-      run: npm install firebase-admin
-
-    - name: Run Firebase script
-      run: node admin/fetchPages.js
-
-    - name: Upload log file
-      uses: actions/upload-artifact@v2
-      with:
-        name: firebase-logs
-        path: admin/firebase-output.log
+    - name: Display Hello 3 Times
+      run: |
+        for i in 1 2 3; do
+          echo "Hello $i"
+        done
