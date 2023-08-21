@@ -28,5 +28,22 @@ jobs:
     - name: Show log output
       run: cat admin/output.log  # This assumes you're logging to a file named 'output.log'
 
-    - name: Display Fetch Result
-      run: echo "Fetch Result: ${{ steps.fetch.outputs.result }}"
+    - name: Post Fetch Result as Comment
+      if: steps.fetch.outcome == 'success'
+      uses: actions/github-script@v4
+      with:
+        script: |
+          const result = '${{ steps.fetch.outputs.result }}';
+          const token = process.env.ACCESS_TOKEN;
+          const octokit = new Octokit({ auth: token });
+
+          // Get pull request number from the event payload
+          const prNumber = context.payload.pull_request.number;
+
+          // Create a comment with the fetch result
+          await octokit.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: prNumber,
+            body: `Fetch Result: ${result}`,
+          });
