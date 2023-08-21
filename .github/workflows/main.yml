@@ -1,28 +1,14 @@
-name: Fetch Pages Data
+name: Run JavaScript Function
 
-on:
-  push:
-    branches:
-      - main  # Adjust this to your repository's main branch
+on: [push]
 
 jobs:
-  fetch_pages_data:
+  run-function:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14  # Use the version you need
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run fetchPages.js
-        run: node admin/fetchPages.js
         
-      - name: Display output
-        run: cat admin/output.json # Assuming you're saving the output in a file named "output.json"
+      - name: Run JavaScript Function
+        run: node admin/fetchPages.js
