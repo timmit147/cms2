@@ -28,6 +28,8 @@ async function fetchPagesData() {
 
         // Call any other functions that need to use pagesData here
 
+        return pagesData; // Return the data so it can be accessed outside the function
+
     } catch (error) {
         console.error("Error fetching data: ", error);
         throw error;
@@ -35,4 +37,7 @@ async function fetchPagesData() {
 }
 
 // Call the fetchPagesData function to start fetching data
-fetchPagesData();
+const result = await fetchPagesData();
+
+// Print the result for GitHub Actions to capture
+console.log(JSON.stringify(result));
