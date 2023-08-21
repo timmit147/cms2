@@ -37,7 +37,11 @@ async function fetchPagesData() {
 }
 
 // Call the fetchPagesData function to start fetching data
-const result = await fetchPagesData();
+async function main() {
+    const result = await fetchPagesData();
 
-// Print the result for GitHub Actions to capture
-console.log(JSON.stringify(result));
+    // Print the result for GitHub Actions to capture
+    console.log(JSON.stringify(result));
+}
+
+main(); // Call the main function to initiate the process
