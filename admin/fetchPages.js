@@ -1,5 +1,3 @@
-const https = require('https'); // Import the built-in https module
-
 const apiKey = "AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8";
 const collectionName = "pages";
 const projectId = "cms2-58eaf";
@@ -7,35 +5,27 @@ const projectId = "cms2-58eaf";
 const apiUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/${collectionName}?key=${apiKey}`;
 
 function fetchData(apiUrl) {
-    https.get(apiUrl, response => {
-      let data = '';
-  
-      response.on('data', chunk => {
-        data += chunk;
-      });
-  
-      response.on('end', () => {
-        try {
-          const jsonData = JSON.parse(data);
-          if (jsonData.documents) {
-            jsonData.documents.forEach(doc => {
-              if (doc.fields) {
-                const fields = doc.fields;
-                for (const field in fields) {
-                  if (fields.hasOwnProperty(field)) {
-                    console.log(`${field}:`, fields[field]);
-                  }
-                }
-              }
-            });
-          }
-        } catch (error) {
-          console.error("Error parsing JSON:", error);
-        }
-      });
-    }).on('error', error => {
+  fetch(apiUrl) // Perform the actual fetch call
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.documents) {
+        // data.documents.forEach(doc => {
+        //   console.log(doc.fields); // Access the fields of each document
+        // });
+        console.log(data.documents);
+      }
+    })
+    .catch(error => {
       console.error("Error fetching data:", error);
     });
-  }
+}
 
-fetchData(apiUrl); // Call the function directly
+console.log(fetchData(apiUrl));
+  
+  
+  
