@@ -1,25 +1,25 @@
-name: Fetch Pages Data
+name: Fetch and Display Firebase Page Names
 
 on:
   push:
     branches:
-      - main  # Adjust this to your repository's main branch
+      - main
 
 jobs:
-  fetch_pages_data:
+  fetch-pages:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14  # Use the version you need
+          node-version: '14'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run fetchPages.js
+      - name: Fetch and Display Pages
         run: node admin/fetchPages.js
