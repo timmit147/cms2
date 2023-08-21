@@ -1,5 +1,6 @@
-const firebase = require('firebase/app'); // Import Firebase
-require('firebase/firestore'); // Import Firestore
+const firebase = require('https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js');
+require('https://www.gstatic.com/firebasejs/9.0.2/firebase-firestore.js');
+
 
 async function fetchPagesData() {
     const firebaseConfig = {
