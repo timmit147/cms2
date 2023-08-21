@@ -1,12 +1,12 @@
-name: Fetch Data from Firestore
+name: Run Firebase Fetch
 
 on:
   push:
     branches:
-      - main
+      - main  # Change this to the appropriate branch
 
 jobs:
-  fetch-data:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,14 +21,8 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Install firebase-admin
-      run: npm install firebase-admin
+    - name: Run Firebase Fetch
+      run: node admin/fetchPages.js  # Replace with the actual filename
 
-    - name: Run Firebase script
-      run: node admin/fetchPages.js
-
-    - name: Upload log file
-      uses: actions/upload-artifact@v2
-      with:
-        name: firebase-logs
-        path: admin/firebase-output.log
+    - name: Show log output
+      run: cat output.log  # This assumes you're logging to a file named 'output.log'
