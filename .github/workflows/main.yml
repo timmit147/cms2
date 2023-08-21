@@ -28,7 +28,7 @@ jobs:
             lowercasePage=$(echo $page | tr '[:upper:]' '[:lower:]')
             filename="${lowercasePage}.html"
             content="<html><head><title>${page}</title></head><body><h1>${page}</h1></body></html>"
-            echo "$content" > "$filename"
+            echo "$content" > "$GITHUB_WORKSPACE/$filename"
             echo "Created $filename"
           done
           
@@ -36,7 +36,7 @@ jobs:
         run: |
           git config --global user.name "timmit147"
           git config --global user.email "timmeeuwsen@hotmail.nl"
-          git add html-pages/
+          git add .
           git diff-index --quiet HEAD || git commit -m "Add generated HTML pages"
           git push origin HEAD:main
         env:
