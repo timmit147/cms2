@@ -1,14 +1,25 @@
-name: FunHelloJob
+name: FetchFirebaseData
 
 on: [push]
 
 jobs:
-  hello_job:
+  fetch_firebase_data_job:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Display Hello 3 Times
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install Firebase CLI
+      run: npm install -g firebase-tools
+
+    - name: Fetch Data from Firebase
       run: |
-        for i in 1 2 3; do
-          echo "Hello $i"
-        done
+        firebase use cms2-58eaf
+        result=$(firebase database:get /pages)
+        echo "Firebase Data: $result"
