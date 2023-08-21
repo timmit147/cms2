@@ -23,6 +23,7 @@ jobs:
 
       - name: Run Firestore Data Fetch
         run: |
+          npm install firebase-admin
           node - <<SCRIPT
           const admin = require('firebase-admin');
           admin.initializeApp({
