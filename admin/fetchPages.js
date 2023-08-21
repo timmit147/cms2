@@ -25,11 +25,6 @@ async function fetchPagesData() {
         });
 
         console.log("Pages data:", pagesData);
-        const fetchResult = "This is the result of the fetch operation.";
-console.log(fetchResult);
-
-// Exiting the script
-process.exit(0);
 
         // Call any other functions that need to use pagesData here
 
