@@ -1,37 +1,38 @@
+async function fetchPagesData() {
+    // Your Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8",
+        authDomain: "cms2-58eaf.firebaseapp.com",
+        projectId: "cms2-58eaf",
+        storageBucket: "cms2-58eaf.appspot.com",
+        messagingSenderId: "405806447010",
+        appId: "1:405806447010:web:e842ddf9737960fbd45afb",
+        measurementId: "G-VYBDR6G2EG"
+      };
 
-  const admin = require('firebase-admin');
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8",
-    authDomain: "cms2-58eaf.firebaseapp.com",
-    projectId: "cms2-58eaf",
-    storageBucket: "cms2-58eaf.appspot.com",
-    messagingSenderId: "405806447010",
-    appId: "1:405806447010:web:e842ddf9737960fbd45afb",
-    measurementId: "G-VYBDR6G2EG"
-  };
-  
-  // Initialize Firebase Admin SDK with the configuration
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-    databaseURL: `https://${firebaseConfig.projectId}.firebaseio.com`
-  });
-  
-  const firestore = admin.firestore();
-  
-  async function fetchDataFromFirestore() {
+    // Get a reference to the Firestore database
+    const firestore = firebase.firestore();
+
+    const pagesData = {};
+
     try {
-      const collectionRef = firestore.collection('pages');
-      const querySnapshot = await collectionRef.get();
-  
-      querySnapshot.forEach(doc => {
-        console.log(`Document ID: ${doc.id}, Data: ${JSON.stringify(doc.data())}`);
-      });
+        const querySnapshot = await firestore.collection('/pages').get();
+        querySnapshot.forEach((doc) => {
+            pagesData[doc.id] = doc.data();
+        });
+
+        console.log("Pages data:", pagesData);
+
+        // Call any other functions that need to use pagesData here
+
     } catch (error) {
-      console.error('Error fetching data:', error);
-      process.exit(1); // Exit with an error status code
+        console.error("Error fetching data: ", error);
+        throw error;
     }
-  }
-  
-  fetchDataFromFirestore();
-  
+}
+
+// Call the fetchPagesData function to start fetching data
+fetchPagesData();
