@@ -30,8 +30,7 @@ jobs:
       - name: Create HTML Pages
         run: |
           page_names="${{ steps.run-js.outputs.page_names }}"
-          IFS=', ' read -r -a page_array <<< "$page_names"
-          for page in "${page_array[@]}"; do
+          for page in $page_names; do
             echo "<html><body><h1>${page}</h1></body></html>" > "${page}.html"
           done
 
