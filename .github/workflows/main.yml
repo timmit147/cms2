@@ -10,7 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ... other steps ...
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Dependencies
+        run: npm install
 
       - name: Run JavaScript Function
         id: run-js
