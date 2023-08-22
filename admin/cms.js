@@ -1,5 +1,13 @@
-let currentPage = document.getElementsByTagName("body")[0].id;;
+let currentPage = document.getElementsByTagName("body")[0].id;
 let firestore = null;
+
+function myFunction() {
+    if(localStorage.getItem('page')){
+        currentPage = localStorage.getItem('page');
+    }
+  }
+
+window.addEventListener("load", myFunction);
 
 startScript();
 
@@ -792,6 +800,7 @@ container.appendChild(logoutButton);
 
             button.addEventListener('click', () => {
                 currentPage = page;
+                localStorage.setItem('page', page);
                 placeBlock();
             });
 
