@@ -100,14 +100,22 @@ async function placeBlock(pageName) {
     const firestorePath = `pages/${pageName}/blocks`;
     const blocksData = await fetchDataFromFirestore(firestorePath);
 
+    // Convert the blocksData object into an array of blocks
+    const blockArray = Object.entries(blocksData).map(([blockKey, block]) => ({
+        blockKey,
+        ...block
+    }));
+
+    // Sort the blocks based on the "order" property
+    const sortedBlocks = blockArray.sort((a, b) => a.order - b.order);
+
     // Clear previous content before adding new blocks
     document.body.innerHTML = ''; // Clear the body content
 
-    for (const blockKey in blocksData) {
-        const block = blocksData[blockKey];
-        const blockType = block['type'];
-        await addHtmlToBody(blockKey,blockType);
+    for (const block of sortedBlocks) {
+        await addHtmlToBody(block.blockKey, block.type);
     }
 }
+
 
 placeBlock(document.body.id);
