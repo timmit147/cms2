@@ -25,10 +25,8 @@ jobs:
         id: run-js
         run: |
           output=$(node admin/fetchPages.js)
-          IFS=',' read -ra pages <<< "$output"
-          for page in "${pages[@]}"; do
-            echo "$page"
-          done
+          pages=$(echo "$output" | tr -d '[],"')
+          echo "$pages"
 
       - name: Debug Fetched Data
         run: |
