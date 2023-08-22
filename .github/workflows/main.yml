@@ -27,8 +27,8 @@ jobs:
 
       - name: Create HTML Pages
         run: |
-          echo "${{ steps.run-js.outputs.stdout }}" > pages.txt
-          cat pages.txt | while read -r page; do
+          page_names="${{ steps.run-js.outputs.stdout }}"
+          for page in $page_names; do
             echo "<html><body><h1>${page}</h1></body></html>" > "${page}.html"
           done
 
