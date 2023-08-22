@@ -130,7 +130,7 @@ button:hover{
 
 #container {
     padding: 20px;
-    height: -webkit-fill-available;
+    height: 100vh;
     overflow-y: scroll;
     width: 100%;
     flex-direction: column;
@@ -254,6 +254,6 @@ div#login-form {
 .footerMenu {
     border-bottom: 0px solid;
     border-top: 1px solid;
-    height: 200px;
+    height: 50px;
 }
 }
