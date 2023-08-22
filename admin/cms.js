@@ -191,7 +191,7 @@ function loopSortedBlocks(blockArray){
                 }
                 if (block.hasOwnProperty(key)) {
 
-                    if (key.includes("image") || key.includes("logo")) {
+                    if (key.includes("image") || key.includes("Image") || key.includes("logo")) {
                         const imageField = document.createElement('div');
                 imageField.className = 'image-field'; // You can add a class name for styling if needed
                 
@@ -223,8 +223,6 @@ function loopSortedBlocks(blockArray){
                 container.appendChild(imageField);
                 continue;
                     }
-
-                    console.log(key);
 
                     const propertyDiv = document.createElement('div');
                     propertyDiv.classList.add('propertyDiv');
@@ -703,7 +701,8 @@ async function removePage(pageName) {
             await pageRef.delete();
 
             // Refresh the page
-            location.reload();
+            const pages = await fetchDataFromFirestore("pages");
+            reloadMenu(pages);
         } catch (error) {
             console.error("Error removing page:", error);
         }
@@ -742,7 +741,8 @@ function handleAddPageButtonClick() {
             pageNameInput.value = ''; // Clear the input field
 
             // Refresh the menu buttons after adding a new page
-            addMenuButtons();
+            const pages = await fetchDataFromFirestore("pages");
+            reloadMenu(pages);
         }
     });
 }
@@ -752,7 +752,12 @@ async function addMenuButtons() {
     const pagesButton = document.getElementById('pagesButton');
 
     pagesButton.addEventListener('click', () => {
-        const container = document.querySelector("#container");
+        reloadMenu(pages);
+    });
+}
+
+async function reloadMenu(pages){
+    const container = document.querySelector("#container");
         clearContainer(container);
 
         const h1 = document.createElement('h1');
@@ -770,14 +775,12 @@ logoutButton.textContent = "Logout";
 logoutButton.id = "logout-button";
 container.appendChild(logoutButton);
 
-// Add event listener to the logout button
-logoutButton.addEventListener('click', () => {
-    firebase.auth().signOut().then(() => {
-        location.reload();
+    // Add event listener to the logout button
+    logoutButton.addEventListener('click', () => {
+        firebase.auth().signOut().then(() => {
+            location.reload();
+        });
     });
-});
-
-
         for (const page in pages) {
             const button = document.createElement('button');
             button.textContent = page;
@@ -790,7 +793,6 @@ logoutButton.addEventListener('click', () => {
 
             container.appendChild(button);
         }
-    });
 }
 
 
