@@ -31,8 +31,8 @@ jobs:
         for page in $pages; do
           # Convert to lowercase and replace spaces with underscores in the filename
           filename=$(echo "$page" | tr '[:upper:]' '[:lower:]' | tr ' ' '_').html
-          cp index.html "$filename"
-          sed -i "s/{{title}}/$page/g" "$filename"
+          cp template.html "$filename"
+          sed -i "s/{{title}}/$page/g; s/{{pagename}}/$page/g" "$filename"
         done
 
 
