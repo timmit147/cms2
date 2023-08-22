@@ -24,23 +24,16 @@ jobs:
       - name: Run JavaScript Function
         id: run-js
         run: node admin/fetchPages.js
-        # Capture the output as a variable
-        env:
-          FETCHED_DATA: ${{ steps.run-js.outputs.stdout }}
 
       - name: Debug Fetched Data
         run: |
           echo "Fetched data:"
-          echo "$FETCHED_DATA"
-          # Decode the fetched data using jq and capture in DECODED_DATA
-          DECODED_DATA=$(echo "$FETCHED_DATA" | jq -r '.[]')
-          echo "Decoded data: $DECODED_DATA"
+          echo "${{ steps.run-js.outputs.stdout }}"
 
       - name: Generate HTML Pages
         run: |
           mkdir generated_pages
-          IFS=$'\n' # Set the IFS (Internal Field Separator) to newline to handle spaces in page names
-          for page in $DECODED_DATA; do
+          for page in ${{ steps.run-js.outputs.stdout }}; do
             echo "<html><head><title>$page</title></head><body><h1>$page Page</h1></body></html>" > "generated_pages/$page.html"
           done
 
