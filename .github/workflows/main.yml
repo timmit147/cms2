@@ -25,13 +25,15 @@ jobs:
       id: run-js
       run: |
         output=$(node admin/fetchPages.js)
-        pages=$(echo "$output" | tr -d '[],"')
-        formatted_pages=$(echo "$pages" | sed 's/ /\n/g')
+        pages=$(echo "$output" | jq -r '.[]')  # Assuming your output is in JSON array format
 
-        for page in $formatted_pages; do
-          filename=$(echo "$page" | tr '[:upper:]' '[:lower:]').html
+        # Assuming you're in the appropriate directory
+        for page in $pages; do
+          # Convert to lowercase and replace spaces with underscores in the filename
+          filename=$(echo "$page" | tr '[:upper:]' '[:lower:]' | tr ' ' '_').html
           echo "<html><head><title>$page</title></head><body><h1>$page</h1></body></html>" > "$filename"
         done
+
 
     - name: Commit and Push Changes
       run: |
