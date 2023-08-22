@@ -6,6 +6,12 @@ const objectWithBlocks = [
         content: "Content",
         type: "imageBlock",
         image: ""
+    },
+    {
+        title: "Footer title",
+        content: "footer text",
+        type: "footer",
+        image: ""
     }
 ];
 
@@ -13,6 +19,7 @@ const formHTML = `
 <form method="POST">
     <select name="block" id="dropdown">
         <option value="imageBlock">Image block</option>
+        <option value="footer">Footer</option>
     </select>
     <button type="Add page" id="submitButton">Block toevoegen</button>
 </form>
