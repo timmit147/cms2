@@ -136,6 +136,8 @@ button:hover{
     flex-direction: column;
     gap: 16px;
     box-sizing: border-box;
+    position: fixed;
+    bottom: 0;
 }
 
 .block-wrapper {
@@ -175,6 +177,8 @@ button:hover{
     height: 10vh;
     width: 100%;
     align-items: center;
+    position: fixed;
+    top: 0;
 }
 
 #popup {
@@ -255,5 +259,12 @@ div#login-form {
 .footerMenu {
     border-bottom: 0px solid;
     border-top: 1px solid;
+    top: unset;
+    bottom: 0;
+}
+
+#container{
+    top: 0;
+    bottom: unset;
 }
 }
