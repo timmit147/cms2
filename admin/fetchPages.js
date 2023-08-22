@@ -23,7 +23,8 @@ function fetchData(apiUrl) {
               const pathSegments = item.name.split('/');
               return pathSegments[pathSegments.length - 1];
             });
-            console.log(names);
+            console.log(JSON.stringify(names));
+
           }
         } catch (error) {
           console.error("Error parsing JSON:", error);

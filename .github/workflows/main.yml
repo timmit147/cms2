@@ -10,16 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install Dependencies
-        run: npm install
+      # ... other steps ...
 
       - name: Run JavaScript Function
         id: run-js
@@ -29,11 +20,13 @@ jobs:
         run: |
           echo "Fetched data:"
           echo "${{ steps.run-js.outputs.stdout }}"
+          FETCHED_DATA=$(echo "${{ steps.run-js.outputs.stdout }}" | jq -r '.')
+          echo "Decoded data: $FETCHED_DATA"
 
       - name: Generate HTML Pages
         run: |
           mkdir generated_pages
-          for page in ${{ steps.run-js.outputs.stdout }}; do
+          for page in $FETCHED_DATA; do
             echo "<html><head><title>$page</title></head><body><h1>$page Page</h1></body></html>" > "generated_pages/$page.html"
           done
 
