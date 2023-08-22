@@ -27,14 +27,16 @@ jobs:
         output=$(node admin/fetchPages.js)
         pages=$(echo "$output" | tr -d '[],"')
         formatted_pages=$(echo "$pages" | sed 's/ /\n/g')
+
         for page in $formatted_pages; do
           filename=$(echo "$page" | tr '[:upper:]' '[:lower:]').html
-          echo "<html><head><title>$page</title></head><body><h1>$page</h1></body></html>" > "$GITHUB_WORKSPACE/$filename"
+          echo "<html><head><title>$page</title></head><body><h1>$page</h1></body></html>" > "$filename"
         done
-        
-        # Add generated HTML files to the Git staging area
-        git add .
 
-        # Commit and push changes
+    - name: Commit and Push Changes
+      run: |
         git config --global user.name "timmit147"
-        git config --global user.email "timmeeu
+        git config --global user.email "timmeeuwsen@hotmail.nl"
+        git add .
+        git diff-index --quiet HEAD || git commit -m "Add generated HTML pages"
+        git push origin HEAD:main
