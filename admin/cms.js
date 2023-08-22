@@ -183,14 +183,20 @@ function loopSortedBlocks(blockArray){
             const container = document.querySelector("#container");
             clearContainer(container);
             ShowBlockContents(container, typeLabel.textContent);
-            changeBreadcrump(currentPage,typeLabel.textContent);
+            changeBreadcrump(currentPage,typeLabel.textContent);          
+    
+            for (const key in block) {
+                if (key === "type") {
+                    continue;
+                }
+                if (block.hasOwnProperty(key)) {
 
-            if (block.hasOwnProperty('image')) {
-                const imageField = document.createElement('div');
+                    if (key.includes("image") || key.includes("logo")) {
+                        const imageField = document.createElement('div');
                 imageField.className = 'image-field'; // You can add a class name for styling if needed
                 
-                const blocksTitle = document.createElement('h2');
-                blocksTitle.textContent = "Image";
+                const blocksTitle = document.createElement('label');
+                blocksTitle.textContent = key;
                 imageField.appendChild(blocksTitle);
             
                 if (block.image) {
@@ -215,13 +221,11 @@ function loopSortedBlocks(blockArray){
                 imageField.appendChild(imageInput);
             
                 container.appendChild(imageField);
-            }            
-    
-            for (const key in block) {
-                if (key === "type") {
-                    continue;
-                }
-                if (block.hasOwnProperty(key)) {
+                continue;
+                    }
+
+                    console.log(key);
+
                     const propertyDiv = document.createElement('div');
                     propertyDiv.classList.add('propertyDiv');
     
