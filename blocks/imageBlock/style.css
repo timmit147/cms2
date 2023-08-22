@@ -1,0 +1,5 @@
+.imageBlock{
+    background-color: yellow;
+    overflow: hidden;
+    padding: 20px;
+}
