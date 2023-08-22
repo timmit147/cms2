@@ -25,6 +25,11 @@ jobs:
         id: run-js
         run: node admin/fetchPages.js
 
+      - name: Debug Fetched Data
+        run: |
+          echo "Fetched data:"
+          echo "${{ steps.run-js.outputs.stdout }}"
+
       - name: Generate HTML Pages
         run: |
           mkdir generated_pages
