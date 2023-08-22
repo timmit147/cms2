@@ -2,28 +2,6 @@ let currentPage = document.getElementsByTagName("body")[0].id;
 let firestore = null;
 const objectWithBlocks = [
     {
-      title: "Introduction to Programming",
-      content: "Learn the basics of programming with this comprehensive guide.",
-      link: "https://example.com/programming-intro",
-      type: "block1",
-      image: "https://example.com/programming-intro"
-    },
-    {
-      title: "Recipe Book",
-      content: "Explore a collection of delicious recipes from around the world.",
-      link: "https://example.com/recipe-book",
-      type: "block2",
-      image: "https://example.com/programming-intro"
-
-    },
-    {
-      title: "Fitness Workout Plan",
-      content: "Get fit and healthy with this step-by-step workout routine.",
-      link: "https://example.com/fitness-plan",
-      type: "block3",
-      image: "https://example.com/programming-intro"
-    },
-    {
         title: "Image block title",
         content: "Content",
         type: "imageBlock",
@@ -34,9 +12,6 @@ const objectWithBlocks = [
 const formHTML = `
 <form method="POST">
     <select name="block" id="dropdown">
-        <option value="block1">Block 1</option>
-        <option value="block2">Block 2</option>
-        <option value="block3">Block 3</option>
         <option value="imageBlock">Image block</option>
     </select>
     <button type="Add page" id="submitButton">Block toevoegen</button>
