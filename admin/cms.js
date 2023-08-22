@@ -44,9 +44,10 @@ firebase.auth().onAuthStateChanged((user) => {
         showLoginForm(); // Show the login form
         hideLogoutButton(); // Hide the logout button
     }
-    
-
+        placeBlock();
 });
+
+
 
 // Function to hide the login form
 function hideLoginForm() {
@@ -242,6 +243,11 @@ function loopSortedBlocks(blockArray){
                 }
             }
     
+            const inputLabel = document.createElement('label');
+                    inputLabel.textContent = "Remove block";
+                    inputLabel.style.fontWeight = 'bold';
+                    container.appendChild(inputLabel);
+
             const removeButton = document.createElement('button');
             removeButton.textContent = 'Remove';
             removeButton.addEventListener('click', () => {
@@ -278,7 +284,7 @@ function addForm(){
                 <option value="block2">Block 2</option>
                 <option value="block3">Block 3</option>
             </select>
-            <button type="Add page" id="submitButton">Submit</button>
+            <button type="Add page" id="submitButton">Block toevoegen</button>
         </form>
     `;
 
@@ -701,8 +707,7 @@ async function removePage(pageName) {
             await pageRef.delete();
 
             // Refresh the page
-            const pages = await fetchDataFromFirestore("pages");
-            reloadMenu(pages);
+            reloadMenu();
         } catch (error) {
             console.error("Error removing page:", error);
         }
@@ -741,22 +746,21 @@ function handleAddPageButtonClick() {
             pageNameInput.value = ''; // Clear the input field
 
             // Refresh the menu buttons after adding a new page
-            const pages = await fetchDataFromFirestore("pages");
-            reloadMenu(pages);
+            reloadMenu();
         }
     });
 }
 
 async function addMenuButtons() {
-    const pages = await fetchDataFromFirestore("pages");
     const pagesButton = document.getElementById('pagesButton');
 
     pagesButton.addEventListener('click', () => {
-        reloadMenu(pages);
+        reloadMenu();
     });
 }
 
-async function reloadMenu(pages){
+async function reloadMenu(){
+    const pages = await fetchDataFromFirestore("pages");
     const container = document.querySelector("#container");
         clearContainer(container);
 
