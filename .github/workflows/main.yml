@@ -23,7 +23,10 @@ jobs:
 
       - name: Run JavaScript Function
         id: run-js
-        run: node admin/fetchPages.js
+        run: |
+          node admin/fetchPages.js | while read line; do
+            echo "$line"
+          done
 
       - name: Debug Fetched Data
         run: |
