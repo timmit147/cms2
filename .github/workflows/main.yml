@@ -1,35 +1,35 @@
-name: Generate HTML Pages
+name: Generate and Push HTML Pages
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  generate-html-pages:
+  build:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v2
-        
+
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'  # Specify the desired Node.js version
-        
+          node-version: '14'
+
+      - name: Install Dependencies
+        run: npm install
+
       - name: Run JavaScript Function
         id: run-js
         run: node admin/fetchPages.js
-        
+
       - name: Create HTML Pages
         run: |
-          echo "Creating HTML pages"
-          pages="${{ steps.run-js.outputs.stdout }}"
-          IFS=', ' read -ra pagesArray <<< "$pages"
-          for page in "${pagesArray[@]}"; do
-            lowercasePage=$(echo $page | tr '[:upper:]' '[:lower:]')
-            filename="${lowercasePage}.html"
-            content="<html><head><title>${page}</title></head><body><h1>${page}</h1></body></html>"
-            echo "$content" > "$GITHUB_WORKSPACE/$filename"
-            echo "Created $filename"
+          echo "${{ steps.run-js.outputs.stdout }}" > pages.txt
+          cat pages.txt | while read -r page; do
+            echo "<html><body><h1>${page}</h1></body></html>" > "${page}.html"
           done
 
       - name: Commit and Push Changes
@@ -39,5 +39,3 @@ jobs:
           git add .
           git diff-index --quiet HEAD || git commit -m "Add generated HTML pages"
           git push origin HEAD:main
-        env:
-          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
