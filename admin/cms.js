@@ -12,6 +12,10 @@ const objectWithBlocks = [
         content: "footer text",
         type: "footer",
         image: ""
+    },
+    {
+        type: "menu",
+        logo: ""
     }
 ];
 
@@ -20,6 +24,7 @@ const formHTML = `
     <select name="block" id="dropdown">
         <option value="imageBlock">Image block</option>
         <option value="footer">Footer</option>
+        <option value="menu">Menu</option>
     </select>
     <button type="Add page" id="submitButton">Block toevoegen</button>
 </form>
