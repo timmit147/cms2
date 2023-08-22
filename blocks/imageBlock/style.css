@@ -1,5 +1,25 @@
 .imageBlock{
-    background-color: yellow;
     overflow: hidden;
-    padding: 20px;
+    padding: 100px 50px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    display: flex;
+    gap: 50px;
+    align-items: center;
+}
+
+.imageBlock > *{
+    width: 50%;
+}
+
+.image{
+    height: fit-content;
+    border-radius: 50px;
+}
+
+@media (max-width: 767px) {
+    .imageBlock{
+        flex-direction: column;
+        padding: 20px 20px;
+        text-align: center;
+    }
 }

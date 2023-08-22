@@ -1,5 +1,4 @@
 async function getData() {
-    console.log(window.key);
     const key = window.key;
     const bodyId = document.body.id;
     const data = await fetchDataFromFirestore(`pages/${bodyId}/blocks`);
@@ -23,6 +22,8 @@ async function getData() {
     
     const titleElement = document.querySelector(`#${key} h1`);
     const contentElement = document.querySelector(`#${key} p`);
+    const imageElement = document.querySelector(`#${key} .image`);
+
     
     if (blockData["title"]) {
         titleElement.textContent = blockData["title"];
@@ -30,6 +31,10 @@ async function getData() {
     
     if (blockData["content"]) {
         contentElement.textContent = blockData["content"];
+    }
+
+    if (blockData["image"]) {
+        imageElement.src = blockData["image"];  // Replace 'new_image_url.jpg' with the actual URL of the new image
     }
 }
 

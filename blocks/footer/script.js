@@ -1,5 +1,4 @@
 async function getData() {
-    console.log(window.key);
     const key = window.key;
     const bodyId = document.body.id;
     const data = await fetchDataFromFirestore(`pages/${bodyId}/blocks`);
