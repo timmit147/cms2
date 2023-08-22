@@ -24,18 +24,22 @@ jobs:
       - name: Run JavaScript Function
         id: run-js
         run: node admin/fetchPages.js
+        # Capture the output as a variable
+        env:
+          FETCHED_DATA: ${{ steps.run-js.outputs.stdout }}
 
       - name: Debug Fetched Data
         run: |
           echo "Fetched data:"
-          echo "${{ steps.run-js.outputs.stdout }}"
-          FETCHED_DATA=$(echo "${{ steps.run-js.outputs.stdout }}" | jq -r '.')
-          echo "Decoded data: $FETCHED_DATA"
+          echo "$FETCHED_DATA"
+          # Decode the fetched data using jq
+          DECODED_DATA=$(echo "$FETCHED_DATA" | jq -r '.')
+          echo "Decoded data: $DECODED_DATA"
 
       - name: Generate HTML Pages
         run: |
           mkdir generated_pages
-          for page in $FETCHED_DATA; do
+          for page in $DECODED_DATA; do
             echo "<html><head><title>$page</title></head><body><h1>$page Page</h1></body></html>" > "generated_pages/$page.html"
           done
 
