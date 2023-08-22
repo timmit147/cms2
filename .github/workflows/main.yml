@@ -23,11 +23,13 @@ jobs:
 
       - name: Run JavaScript Function
         id: run-js
-        run: node admin/fetchPages.js
+        run: |
+          page_names=$(node admin/fetchPages.js)
+          echo "::set-output name=page_names::$page_names"
 
       - name: Create HTML Pages
         run: |
-          page_names="${{ steps.run-js.outputs.stdout }}"
+          page_names="${{ steps.run-js.outputs.page_names }}"
           for page in $page_names; do
             echo "<html><body><h1>${page}</h1></body></html>" > "${page}.html"
           done
