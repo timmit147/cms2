@@ -9,12 +9,70 @@ body {
     overflow: hidden;
 }
 
-input{
+.form-container {
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Style for the select dropdown */
+select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+select:hover,
+select:focus {
+    border-color: #66afe9;
+    box-shadow: 0 2px 8px rgba(102, 175, 233, 0.6);
+}
+
+/* Style for the submit button */
+#submitButton {
+    display: block;
+    padding: 10px;
+    background-color: black;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    text-decoration: none;
+}
+
+form {
+    display: flex;
+    gap: 8px;
+}
+
+#submitButton:hover {
+    background-color: #0056b3;
+}
+
+input[type="text"]{
     padding: 8px;
     border: 1px solid black;
     border-radius: 4px;
     font-size: 16px;
     width: fit-content;
+}
+
+input[type="file"] {
+    min-height: 30px;
+}
+
+.image-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 input::placeholder{
@@ -95,10 +153,6 @@ button:hover{
     align-items: start;
 }
 
-#container > div input, textarea {
-    width: 50%;
-}
-
 .block-wrapper {
     display: flex;
     flex-direction: row;
@@ -161,8 +215,10 @@ button:hover{
 }
 
 .propertyDiv {
-    gap: 10px;
+    gap: 8px;
     justify-content: space-between;
+    display: flex;
+    flex-direction: column;
 }
 
 .hiddenDiv{

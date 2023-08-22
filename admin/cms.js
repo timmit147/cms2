@@ -186,12 +186,19 @@ function loopSortedBlocks(blockArray){
             changeBreadcrump(currentPage,typeLabel.textContent);
 
             if (block.hasOwnProperty('image')) {
+                const imageField = document.createElement('div');
+                imageField.className = 'image-field'; // You can add a class name for styling if needed
+                
+                const blocksTitle = document.createElement('h2');
+                blocksTitle.textContent = "Image";
+                imageField.appendChild(blocksTitle);
+            
                 if (block.image) {
                     const imageElement = document.createElement('img');
                     imageElement.src = block.image;
-                    container.appendChild(imageElement);
+                    imageField.appendChild(imageElement);
                 }
-    
+            
                 const imageInput = document.createElement('input');
                 imageInput.type = 'file';
                 imageInput.addEventListener('change', (event) => {
@@ -201,12 +208,14 @@ function loopSortedBlocks(blockArray){
                     reader.onload = (e) => {
                         const newImageElement = document.createElement('img');
                         newImageElement.src = e.target.result;
-                        hiddenDiv.insertBefore(newImageElement, imageInput);
+                        imageField.insertBefore(newImageElement, imageInput);
                     };
                     reader.readAsDataURL(selectedImage);
                 });
-                container.appendChild(imageInput);
-            }
+                imageField.appendChild(imageInput);
+            
+                container.appendChild(imageField);
+            }            
     
             for (const key in block) {
                 if (key === "type") {
@@ -267,7 +276,7 @@ function addForm(){
                 <option value="block2">Block 2</option>
                 <option value="block3">Block 3</option>
             </select>
-            <button type="submit" id="submitButton">Submit</button>
+            <button type="Add page" id="submitButton">Submit</button>
         </form>
     `;
 
