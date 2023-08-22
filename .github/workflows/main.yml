@@ -1,4 +1,4 @@
-name: Generate and Push HTML Pages
+name: Generate and Upload HTML Files
 
 on:
   push:
@@ -6,45 +6,36 @@ on:
       - main
 
 jobs:
-  build:
+  generate-html:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
+    - name: Install dependencies
+      run: npm install
 
-      - name: Install Dependencies
-        run: npm install
+    - name: Run JavaScript Function
+      id: run-js
+      run: |
+        output=$(node admin/fetchPages.js)
+        pages=$(echo "$output" | tr -d '[],"')
+        formatted_pages=$(echo "$pages" | sed 's/ /\n/g')
+        for page in $formatted_pages; do
+          filename=$(echo "$page" | tr '[:upper:]' '[:lower:]').html
+          echo "<html><head><title>$page</title></head><body><h1>$page</h1></body></html>" > "$GITHUB_WORKSPACE/$filename"
+        done
 
-      - name: Run JavaScript Function
-        id: run-js
-        run: |
-          output=$(node admin/fetchPages.js)
-          pages=$(echo "$output" | tr -d '[],"')
-          formatted_pages=$(echo "$pages" | sed 's/ /\n/g')
-          echo "$formatted_pages"
-
-      - name: Debug Fetched Data
-        run: |
-          echo "Fetched data:"
-          echo "${{ steps.run-js.outputs.stdout }}"
-
-      - name: Generate HTML Pages
-        run: |
-          mkdir generated_pages
-          for page in ${{ steps.run-js.outputs.stdout }}; do
-            echo "<html><head><title>$page</title></head><body><h1>$page Page</h1></body></html>" > "generated_pages/$page.html"
-          done
-
-      - name: Commit and Push Changes
-        run: |
-          git config --global user.name "timmit147"
-          git config --global user.email "timmeeuwsen@hotmail.nl"
-          git add generated_pages
-          git diff-index --quiet HEAD || git commit -m "Add generated HTML pages"
-          git push origin HEAD:main
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name "timmit147"
+        git config --global user.email "timmeeuwsen@hotmail.nl"
+        git add .
+        git diff-index --quiet HEAD || git commit -m "Add generated HTML pages"
+        git push origin HEAD:main
