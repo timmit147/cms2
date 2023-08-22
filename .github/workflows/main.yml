@@ -26,7 +26,8 @@ jobs:
         run: |
           output=$(node admin/fetchPages.js)
           pages=$(echo "$output" | tr -d '[],"')
-          echo "$pages"
+          formatted_pages=$(echo "$pages" | sed 's/ /\n/g')
+          echo "$formatted_pages"
 
       - name: Debug Fetched Data
         run: |
