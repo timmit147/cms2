@@ -31,23 +31,8 @@ jobs:
         for page in $pages; do
           # Convert to lowercase and replace spaces with underscores in the filename
           filename=$(echo "$page" | tr '[:upper:]' '[:lower:]' | tr ' ' '_').html
-          echo '<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>'"$page"'</title>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-</head>
-<body id="'$page'">
-
-</body>
-
-<script src="main.js"></script>
-
-</html>' > "$filename"
+          cp index.html "$filename"
+          sed -i "s/{{title}}/$page/g" "$filename"
         done
 
 
