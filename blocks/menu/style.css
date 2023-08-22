@@ -2,7 +2,6 @@
     background-color: black;
     height: 50px;
     gap: 8px;
-    align-items: center;
     padding: 20px;
 }
 
@@ -14,4 +13,5 @@ ul.menu-list {
     display: flex;
     gap: 8px;
     list-style-type: none;
+    padding: 0px;
 }

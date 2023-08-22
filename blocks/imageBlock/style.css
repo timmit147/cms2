@@ -22,4 +22,7 @@
         padding: 20px 20px;
         text-align: center;
     }
+    .imageBlock > *{
+        width: 100%;
+    }
 }
