@@ -21,14 +21,14 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-     - name: Run JavaScript Function
-        id: run-js
-        run: |
-          output=$(node admin/fetchPages.js)
-          IFS=',' read -ra pages <<< "$output"
-          for page in "${pages[@]}"; do
-            echo "$page"
-          done
+      - name: Run JavaScript Function
+          id: run-js
+          run: |
+            output=$(node admin/fetchPages.js)
+            IFS=',' read -ra pages <<< "$output"
+            for page in "${pages[@]}"; do
+              echo "$page"
+            done
 
       - name: Debug Fetched Data
         run: |
