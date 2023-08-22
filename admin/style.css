@@ -138,6 +138,7 @@ button:hover{
     box-sizing: border-box;
     position: fixed;
     bottom: 0;
+    padding-bottom: 10vh;
 }
 
 .block-wrapper {
@@ -179,6 +180,7 @@ button:hover{
     align-items: center;
     position: fixed;
     top: 0;
+    background-color: white;
 }
 
 #popup {
