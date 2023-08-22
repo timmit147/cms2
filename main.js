@@ -39,10 +39,15 @@ async function fetchDataFromFirestore(path) {
 
 
 
-async function addHtmlToBody(key) {
-    const response = await fetch(`./blocks/${key}/body.html`);
+async function addHtmlToBody(blockKey,blockType) {
+    const response = await fetch(`./blocks/${blockType}/body.html`);
     const htmlContent = await response.text();
     document.body.insertAdjacentHTML('beforeend', htmlContent);
+    window.key = blockKey;   
+    await addCssLink(blockType);
+    const imageBlockElement = document.querySelector(`#${blockType}`);
+    imageBlockElement.id = blockKey;
+    await addJsScript(blockType,blockKey);
 }
 
 function addCssLink(key) {
@@ -68,11 +73,11 @@ function addCssLink(key) {
 }
 
 
-function addJsScript(key) {
-    const url = `blocks/${key}/script.js`;
+async function addJsScript(blockType,blockKey) {
+    const url = `blocks/${blockType}/script.js`;
     const head = document.getElementsByTagName('head')[0];
     const scripts = document.getElementsByTagName('script');
-    let isScriptAlreadyAdded = false;
+    let isScriptAlreadyAdded = false; 
 
     for (let i = 0; i < scripts.length; i++) {
         if (scripts[i].src === url) {
@@ -86,6 +91,7 @@ function addJsScript(key) {
         script.type = 'text/javascript';
         script.src = url;
         head.appendChild(script);
+        
     }
 }
 
@@ -100,53 +106,8 @@ async function placeBlock(pageName) {
     for (const blockKey in blocksData) {
         const block = blocksData[blockKey];
         const blockType = block['type'];
-        await addHtmlToBody(blockType);
-        await addCssLink(blockType);
-        await addJsScript(blockType);
+        await addHtmlToBody(blockKey,blockType);
     }
 }
 
 placeBlock(document.body.id);
-
-
-// async function handleHashbangChange() {
-//     const hashbang = window.location.hash.substr(1); // Get hash without the '#!'
-//     const path = window.location.pathname.substr(1); // Get path without the leading '/'
-
-//     let targetPage = hashbang || path; // Use hashbang if present, otherwise use path
-
-//     // Check if the targetPage is empty or matches "page1"
-//     if (targetPage === "" || targetPage === "page1") {
-//         targetPage = "page1"; // Change targetPage to "page1" by default or when it's "page1"
-//     }
-
-//     // Check if the target page is both valid and published
-//     const isPageValidAndPublished = await isValidAndPublishedPage(targetPage);
-
-//     if (!isPageValidAndPublished) {
-//         window.location.href = "/";
-//         return; // Stop further processing
-//     }
-
-//     placeBlock(targetPage); // Place block based on the targetPage value
-// }
-
-// async function isValidAndPublishedPage(page) {
-//     const pageRef = firestore.collection('pages').doc(page);
-//     const pageSnapshot = await pageRef.get();
-
-//     if (pageSnapshot.exists) {
-//         const pageData = pageSnapshot.data();
-//         return pageData.published === true;
-//     }
-
-//     return false;
-// }
-
-// // Listen for hash changes and handle them
-// window.addEventListener('hashchange', handleHashbangChange);
-
-// // Initial handling based on the current hashbang
-// handleHashbangChange();
-
-
