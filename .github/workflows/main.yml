@@ -23,22 +23,19 @@ jobs:
 
       - name: Run JavaScript Function
         id: run-js
-        run: |
-          page_names=$(node admin/fetchPages.js)
-          echo "page_names=${page_names}" >> $GITHUB_ENV
+        run: node admin/fetchPages.js
 
-      - name: Create HTML Pages
+      - name: Generate HTML Pages
         run: |
-          page_names=${{ steps.run-js.outputs.page_names }}
-          IFS=',' read -ra pages <<< "$page_names"
-          for page in "${pages[@]}"; do
-            echo "<html><body><h1>${page}</h1></body></html>" > "${page}.html"
+          mkdir generated_pages
+          for page in ${{ steps.run-js.outputs.stdout }}; do
+            echo "<html><head><title>$page</title></head><body><h1>$page Page</h1></body></html>" > "generated_pages/$page.html"
           done
 
       - name: Commit and Push Changes
         run: |
           git config --global user.name "timmit147"
           git config --global user.email "timmeeuwsen@hotmail.nl"
-          git add .
+          git add generated_pages
           git diff-index --quiet HEAD || git commit -m "Add generated HTML pages"
           git push origin HEAD:main
