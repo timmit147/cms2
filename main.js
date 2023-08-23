@@ -43,15 +43,15 @@ async function addHtmlToBody(blockKey,blockType) {
     const response = await fetch(`./blocks/${blockType}/body.html`);
     const htmlContent = await response.text();
     document.body.insertAdjacentHTML('beforeend', htmlContent);
-    await windowsKey(blockKey);
-    await addCssLink(blockType);
-    const imageBlockElement = document.querySelector(`#${blockType}`);
-    imageBlockElement.id = blockKey;
+    await windowsKey(blockKey,blockType);
     await addJsScript(blockType,blockKey);
+    await addCssLink(blockType);
 }
 
-function windowsKey(blockKey){
+function windowsKey(blockKey,blockType){
     window.key = blockKey;   
+    const imageBlockElement = document.querySelector(`#${blockType}`);
+    imageBlockElement.id = blockKey;
 }
 
 function addCssLink(key) {
@@ -77,7 +77,7 @@ function addCssLink(key) {
 }
 
 
-async function addJsScript(blockType,blockKey) {
+async function addJsScript(blockType) {
     const url = `blocks/${blockType}/script.js`;
     const head = document.getElementsByTagName('head')[0];
     const scripts = document.getElementsByTagName('script');
