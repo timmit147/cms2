@@ -321,29 +321,33 @@ function addForm(){
 
 async function addSettings(){
 
-     await loopPageFields(currentPage);
-
-     const removePagelabel = document.createElement('label');
-     removePagelabel.textContent = 'Remove Page';
-     container.appendChild(removePagelabel);
+    await loopPageFields(currentPage);
 
 
-     const removePageButton = document.createElement('button'); // Renamed variable
-     removePageButton.textContent = 'Remove Page';
-     removePageButton.addEventListener('click', () => {
-         removePage(currentPage); 
-     });
-     container.appendChild(removePageButton);
-         
-     function handleButtonClick() {
-        const selectedBlock = document.querySelector('#dropdown').value;
-        addNewBlock(selectedBlock);
-    }
+    if (currentPage !== "homepage" && currentPage !== "settings") {
+        const removePagelabel = document.createElement('label');
+        removePagelabel.textContent = 'Remove Page';
+        container.appendChild(removePagelabel);
+
+        const removePageButton = document.createElement('button');
+        removePageButton.textContent = 'Remove Page';
+        removePageButton.addEventListener('click', () => {
+            removePage(currentPage); 
+        });
+        container.appendChild(removePageButton);
+        function handleButtonClick() {
+            const selectedBlock = document.querySelector('#dropdown').value;
+            addNewBlock(selectedBlock);
+        }
+     
     
-    document.getElementById('submitButton').onclick = async function(event) {
-        event.preventDefault();
-        handleButtonClick();
-    };
+        document.getElementById('submitButton').onclick = async function(event) {
+            event.preventDefault();
+            handleButtonClick();
+        };
+        
+    }
+
     
 }
 
@@ -518,7 +522,6 @@ function createPageWrapper(page, menu) {
         if (pageIndex > 0) {
             [menu[pageIndex], menu[pageIndex - 1]] = [menu[pageIndex - 1], menu[pageIndex]];
             await updatePageField(currentPage, 'menu', menu);
-            await loopPageFields(currentPage); // Refresh the display
         }
             placeBlock();
     });
@@ -530,7 +533,6 @@ function createPageWrapper(page, menu) {
         if (pageIndex < menu.length - 1) {
             [menu[pageIndex], menu[pageIndex + 1]] = [menu[pageIndex + 1], menu[pageIndex]];
             await updatePageField(currentPage, 'menu', menu);
-            await loopPageFields(currentPage); // Refresh the display
         }
             placeBlock();
     });
