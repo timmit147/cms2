@@ -7,13 +7,23 @@ async function getData() {
         console.log("Data not found");
         return;
     }
+    
 
-    const blockData = data[key];
+    let blockData; // Define blockData outside the conditional blocks
+
+    if (localStorage.getItem(key)) {
+        blockData = JSON.parse(localStorage.getItem(key)); // Parse the stored JSON
+        blockData = data[key];
+    } else {
+        blockData = data[key];
+        localStorage.setItem(key, JSON.stringify(data[key]));
+    }
     
     if (!blockData) {
         console.log(`${key} data not found`);
         return; 
     }
+    
 
     const titleElement = document.querySelector(`#${key} h1`);
     const contentElement = document.querySelector(`#${key} p`);
