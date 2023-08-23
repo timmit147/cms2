@@ -12,8 +12,6 @@ async function getData() {
 
     const blockData = data['settings']['menu'];
 
-    console.log(blockData);
-
     
     if (!blockData) {
         console.log(`${key} data not found`);
