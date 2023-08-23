@@ -43,11 +43,15 @@ async function addHtmlToBody(blockKey,blockType) {
     const response = await fetch(`./blocks/${blockType}/body.html`);
     const htmlContent = await response.text();
     document.body.insertAdjacentHTML('beforeend', htmlContent);
-    window.key = blockKey;   
+    await windowsKey(blockKey);
     await addCssLink(blockType);
     const imageBlockElement = document.querySelector(`#${blockType}`);
     imageBlockElement.id = blockKey;
     await addJsScript(blockType,blockKey);
+}
+
+function windowsKey(blockKey){
+    window.key = blockKey;   
 }
 
 function addCssLink(key) {
