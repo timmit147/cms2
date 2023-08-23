@@ -155,12 +155,6 @@ function addTitle(target){
     target.appendChild(pageTitle);
 }
 
-function addContent(target){
-    const pageContent = document.createElement('p');
-    pageContent.textContent = "On this page you can add and change blocks and change the settings";
-    target.appendChild(pageContent);
-}
-
 function changeBreadcrump(page, block) {
     const breadcrump = document.querySelector('.breadcrump');
 
@@ -355,7 +349,6 @@ async function placeBlock() {
     const container = document.getElementById('container');
     clearContainer(container);
     addTitle(container);
-    addContent(container);
 
     changeBreadcrump(currentPage);
     if(currentPage != "settings"){

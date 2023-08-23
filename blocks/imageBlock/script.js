@@ -5,21 +5,16 @@ async function getData() {
 
     if (!data) {
         console.log("Data not found");
-        return; // Exit the function if data doesn't exist
+        return;
     }
 
-    // const imageBlockElements = Object.values(data).filter(item => item.type === "imageBlock");
-
     const blockData = data[key];
-
     
     if (!blockData) {
         console.log(`${key} data not found`);
-        return; // Exit the function if blockData doesn't exist
+        return; 
     }
 
-
-    
     const titleElement = document.querySelector(`#${key} h1`);
     const contentElement = document.querySelector(`#${key} p`);
     const imageElement = document.querySelector(`#${key} .image`);
@@ -35,6 +30,11 @@ async function getData() {
 
     if (blockData["image"]) {
         imageElement.src = blockData["image"];  // Replace 'new_image_url.jpg' with the actual URL of the new image
+    }
+
+    if(blockData){
+        document.querySelector(`#${key} .imageBlock`).style.display = "flex";
+        document.querySelector(`#${key} .loading`).style.display = "none";
     }
 }
 

@@ -11,6 +11,11 @@
     width: 50%;
 }
 
+.loading {
+    padding: 50px;
+    text-align: center;
+}
+
 .image{
     height: fit-content;
     border-radius: 50px;
