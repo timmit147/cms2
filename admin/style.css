@@ -9,6 +9,11 @@ body {
     overflow: hidden;
 }
 
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
 
 /* Style for the select dropdown */
 select {
@@ -172,7 +177,7 @@ button:hover{
 .footerMenu {
     border-bottom: 1px solid;
     border-top: 0px solid;
-    padding: 10px;
+    padding: 20px;
     box-sizing: border-box;
     justify-content: space-between;
     height: 10vh;

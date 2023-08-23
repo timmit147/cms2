@@ -155,6 +155,12 @@ function addTitle(target){
     target.appendChild(pageTitle);
 }
 
+function addContent(target){
+    const pageContent = document.createElement('p');
+    pageContent.textContent = "On this page you can add and change blocks and change the settings";
+    target.appendChild(pageContent);
+}
+
 function changeBreadcrump(page, block) {
     const breadcrump = document.querySelector('.breadcrump');
 
@@ -345,6 +351,8 @@ async function placeBlock() {
     const container = document.getElementById('container');
     clearContainer(container);
     addTitle(container);
+    addContent(container);
+
     changeBreadcrump(currentPage);
     if(currentPage != "settings"){
         addBlockTitle(container);
@@ -401,7 +409,6 @@ async function loopPageFields(currentPage) {
                 container.appendChild(fieldValueElement);
             }
 
-            container.appendChild(document.createElement('br')); // Add line break
         }
         
     }
@@ -496,10 +503,10 @@ function createPageWrapper(page, menu) {
         }
         await updatePageField(currentPage, 'menu', menu);
         await loopPageFields(currentPage); // Refresh the display
-        const container = document.querySelector("#container");
-            clearContainer(container);
             placeBlock();
     });
+
+    
 
     const pageLabel = document.createElement('label');
     pageLabel.textContent = page;
@@ -513,8 +520,6 @@ function createPageWrapper(page, menu) {
             await updatePageField(currentPage, 'menu', menu);
             await loopPageFields(currentPage); // Refresh the display
         }
-        const container = document.querySelector("#container");
-            clearContainer(container);
             placeBlock();
     });
 
@@ -527,8 +532,6 @@ function createPageWrapper(page, menu) {
             await updatePageField(currentPage, 'menu', menu);
             await loopPageFields(currentPage); // Refresh the display
         }
-        const container = document.querySelector("#container");
-            clearContainer(container);
             placeBlock();
     });
 
@@ -750,36 +753,46 @@ async function removeBlockAndPage(pageName, blockIndex) {
     }
 }
 
-function handleAddPageButtonClick() {
+async function handleAddPageButtonClick() {
     console.log("test");
-    const pageNameInput = document.getElementById('pageNameInput');
-    const popup = document.getElementById('addPagePopup');
-    const saveButton = document.getElementById('saveButton');
 
-    popup.style.display = 'flex'; // Show the popup
+    // Prompt the user for the new page name
+    const newPageName = prompt("Enter the name of the new page:");
 
-    saveButton.addEventListener('click', async () => {
-        const newPageName = pageNameInput.value;
-        if (newPageName) {
-            const pagesRef = firebase.firestore().collection('pages');
+    if (newPageName) {
+        const pagesRef = firebase.firestore().collection('pages');
+        
+        try {
             await pagesRef.doc(newPageName).set({});
-
-            popup.style.display = 'none'; // Hide the popup after saving
-            pageNameInput.value = ''; // Clear the input field
-
+            
             // Refresh the menu buttons after adding a new page
             reloadMenu();
+            
+            // Show a success message
+            alert(`Page "${newPageName}" has been added successfully.`);
+        } catch (error) {
+            console.error("An error occurred:", error);
         }
-    });
+    }
 }
+
+
 
 async function addMenuButtons() {
     const pagesButton = document.getElementById('pagesButton');
 
-    pagesButton.addEventListener('click', () => {
-        reloadMenu();
-    });
+    pagesButton.onclick = () => {
+        if (pagesButton.classList.contains('menu-open')) {
+            placeBlock();
+            pagesButton.classList.remove('menu-open');
+        } else {
+            reloadMenu();
+            pagesButton.classList.add('menu-open');
+        }
+    };
 }
+
+
 
 async function reloadMenu(){
     const pages = await fetchDataFromFirestore("pages");
@@ -790,11 +803,55 @@ async function reloadMenu(){
         h1.textContent = "Menu";
         container.appendChild(h1);
 
+        const pagesArray = Object.keys(pages); 
+
+        const homepageIndex = pagesArray.indexOf('homepage');
+        if (homepageIndex !== -1) {
+            pagesArray.splice(homepageIndex, 1); 
+            pagesArray.unshift('homepage');
+        }
+
+        for (const page of pagesArray) {
+            if (page === 'settings') {
+                continue; 
+            }
+
+            const button = document.createElement('button');
+            button.textContent = page.charAt(0).toUpperCase() + page.slice(1);
+            button.className = "button2";
+
+            button.addEventListener('click', () => {
+                currentPage = page;
+                localStorage.setItem('page', page);
+                placeBlock();
+                pagesButton.classList.remove('menu-open');
+            });
+
+            container.appendChild(button);
+        }
+
+        container.appendChild(document.createElement('br')); // Add line break
+
         const createPageButton = document.createElement('button');
         createPageButton.textContent = "Create Page";
         createPageButton.className = "createPage button2";
         createPageButton.onclick = handleAddPageButtonClick; // Set the onclick handler
         container.appendChild(createPageButton);
+
+        for (const page in pages) {
+            if (page === 'settings') {
+                const button = document.createElement('button');
+                button.textContent = page.charAt(0).toUpperCase() + page.slice(1);
+                button.className = "button2";
+            
+                button.addEventListener('click', () => {
+                    currentPage = page;
+                    localStorage.setItem('page', page);
+                    placeBlock();
+                });
+                container.appendChild(button);            }
+        }
+
 
         const logoutButton = document.createElement('button');
 logoutButton.textContent = "Logout";
@@ -807,19 +864,7 @@ container.appendChild(logoutButton);
             location.reload();
         });
     });
-        for (const page in pages) {
-            const button = document.createElement('button');
-            button.textContent = page;
-            button.className = "button2";
-
-            button.addEventListener('click', () => {
-                currentPage = page;
-                localStorage.setItem('page', page);
-                placeBlock();
-            });
-
-            container.appendChild(button);
-        }
+    
 }
 
 
