@@ -40,12 +40,12 @@ async function fetchDataFromFirestore(path) {
 
 
 async function addHtmlToBody(blockKey,blockType) {
+    await addCssLink(blockType);
     const response = await fetch(`./blocks/${blockType}/body.html`);
     const htmlContent = await response.text();
     document.body.insertAdjacentHTML('beforeend', htmlContent);
     await windowsKey(blockKey,blockType);
     await addJsScript(blockType,blockKey);
-    await addCssLink(blockType);
 }
 
 function windowsKey(blockKey,blockType){

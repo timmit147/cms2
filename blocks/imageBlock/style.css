@@ -14,12 +14,27 @@
 .loading {
     padding: 50px;
     text-align: center;
+    text-align: -webkit-center;
 }
 
 .image{
     height: fit-content;
     border-radius: 50px;
 }
+
+.loadingImage {
+    width: 50px; /* Adjust the width and height according to your needs */
+    height: 50px;
+    border: 5px solid rgba(0, 0, 0, 0.1); /* Border color of the spinner */
+    border-top: 5px solid #3498db; /* Color of the spinner */
+    border-radius: 50%;
+    animation: spin 1s linear infinite; /* Animation properties */
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 
 @media (max-width: 767px) {
     .imageBlock{
@@ -31,3 +46,4 @@
         width: 100%;
     }
 }
+
