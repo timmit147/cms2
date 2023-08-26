@@ -1,6 +1,8 @@
 async function getData() {
-    const key = window.key;
     const bodyId = document.body.id;
+    const blockId = document.querySelector('.temp').id;
+    document.querySelector('.temp').classList.remove('temp');
+    
     const data = await fetchDataFromFirestore(`pages/${bodyId}/blocks`);
 
     if (!data) {
@@ -9,23 +11,23 @@ async function getData() {
     }
     
 
-    let blockData = data[key];
+    let blockData = data[blockId];
 
-    if (localStorage.getItem(key)) {
-        blockData = JSON.parse(localStorage.getItem(key)); // Parse the stored JSON
+    if (localStorage.getItem(blockId)) {
+        blockData = JSON.parse(localStorage.getItem(blockId)); // Parse the stored JSON
     }
 
-    localStorage.setItem(key, JSON.stringify(data[key]));
+    localStorage.setItem(blockId, JSON.stringify(data[blockId]));
 
     if (!blockData) {
-        console.log(`${key} data not found`);
+        console.log(`${blockId} data not found`);
         return; 
     }
     
 
-    const titleElement = document.querySelector(`#${key} h1`);
-    const contentElement = document.querySelector(`#${key} p`);
-    const imageElement = document.querySelector(`#${key} .image`);
+    const titleElement = document.querySelector(`#${blockId} h1`);
+    const contentElement = document.querySelector(`#${blockId} p`);
+    const imageElement = document.querySelector(`#${blockId} .image`);
 
     
     if (titleElement) {
@@ -41,8 +43,8 @@ async function getData() {
     }
 
     if(blockData){
-        document.querySelector(`#${key} .imageBlock`).style.display = "flex";
-        document.querySelector(`#${key} .loading`).style.display = "none";
+        document.querySelector(`#${blockId} .imageBlock`).style.display = "flex";
+        document.querySelector(`#${blockId} .loading`).style.display = "none";
     }
 }
 
