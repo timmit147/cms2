@@ -270,7 +270,11 @@ async function loopSortedBlocks(blockArray){
                     const inputField = document.createElement('input');
                     inputField.type = 'text';
                     inputField.value = block[key];
-                    inputField.addEventListener('keydown', handleInputKeydown(index, key, inputField));
+                    inputField.addEventListener('keydown', function(event) {
+                        if (event.key === 'Enter') {
+                            handleInputKeydown(index, key, inputField, event);
+                        }
+                    });
                     propertyDiv.appendChild(inputField);
     
                     container.appendChild(propertyDiv);
@@ -718,12 +722,8 @@ try {
 
 async function handleInputKeydown(blockIndex, inputKey, inputField) {
     const currentPage = await getCurrentPage();
-    return (event) => {
-        if (event.keyCode === 13) { // Enter key
-            const newValue = inputField.value;
-            updateBlockProperty(currentPage, blockIndex, inputKey, newValue);
-        }
-    };
+    const newValue = inputField.value;
+    updateBlockProperty(currentPage, blockIndex, inputKey, newValue);
 }
 
 async function removePage(pageName) {
