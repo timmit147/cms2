@@ -110,13 +110,13 @@ button{
     background-color: unset;
     border: 0;
     padding: 0;
-    text-decoration: underline;
 }
 
 button:hover{
     cursor: pointer;
     color: #21759B;
     font-weight: bold;
+    text-decoration: underline;
 }
 
 .button1 {

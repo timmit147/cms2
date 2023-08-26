@@ -48,15 +48,11 @@ async function addHtmlToBody(blockKey,blockType) {
     await addJsScript(blockType,blockKey);
 }
 
+
 function changeId(blockKey,blockType){
     document.querySelector(`#${blockType}`).id = blockKey;
 }
 
-function windowsKey(blockKey,blockType){
-    window.key = blockKey;   
-    const imageBlockElement = document.querySelector(`#${blockType}`);
-    imageBlockElement.id = blockKey;
-}
 
 function addCssLink(key) {
     const url = `blocks/${key}/style.css`;

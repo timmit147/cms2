@@ -17,6 +17,10 @@ const objectWithBlocks = [
     {
         type: "menu",
         logo: ""
+    },
+    {
+        type: "color",
+        color: "red"
     }
 ];
 
@@ -26,6 +30,7 @@ const formHTML = `
         <option value="imageBlock">Image block</option>
         <option value="footer">Footer</option>
         <option value="menu">Menu</option>
+        <option value="color">Color block</option>
     </select>
     <button type="Add page" id="submitButton">Block toevoegen</button>
 </form>
@@ -357,6 +362,9 @@ async function placeBlock() {
         addBlockTitle(container);
         await getBlocks();
         addForm();
+    }
+
+    if(currentPage != "homepage" && currentPage != "settings"){
         const settings = document.createElement('h2');
         settings.textContent = 'Settings';
         container.appendChild(settings);
