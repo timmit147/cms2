@@ -1,4 +1,4 @@
-let firestore = null;
+await newDatabase();
 
 const createDropdownWithBlocks = (async () => {
     const module = await import('./blocks.js');
@@ -30,14 +30,12 @@ async function getCurrentPage() {
         currentPage = document.getElementsByTagName("body")[0].id;
         localStorage.setItem('page', currentPage);
     }
+
+    return currentPage;
 }
 
-const currentPage = await getCurrentPage();
 
-await newDatabase();
-
-
-async function newDatabase() {
+async function getFirestoreConnection(){
     // Your Firebase configuration
     const firebaseConfig = {
         apiKey: "AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8",
@@ -53,8 +51,12 @@ async function newDatabase() {
     firebase.initializeApp(firebaseConfig);
 
     // Get a reference to the Firestore database
-    firestore = firebase.firestore();
+    window.firestore = firebase.firestore();
+}
 
+async function newDatabase() {
+
+    getFirestoreConnection();
     // Firebase authentication state change listener
 // Firebase authentication state change listener
 firebase.auth().onAuthStateChanged((user) => {
@@ -71,6 +73,7 @@ firebase.auth().onAuthStateChanged((user) => {
         hideLogoutButton(); // Hide the logout button
     }
         placeBlock();
+        getCurrentPage();
 });
 
 
@@ -135,9 +138,8 @@ function clearContainer(target) {
       target.innerHTML = '';
 }
 
-
-
-function addTitle(target){
+async function addTitle(target){
+    const currentPage = await getCurrentPage();
     const pageTitle = document.createElement('h1');
     pageTitle.textContent = currentPage;
     target.appendChild(pageTitle);
@@ -164,14 +166,11 @@ function changeBreadcrump(page, block) {
     }
 }
 
-
-
 function addBlockTitle(target){
     const blocksTitle = document.createElement('h2');
     blocksTitle.textContent = 'Blocks';
     target.appendChild(blocksTitle);
 }
-
 
 function ShowBlockContents(target, name){
     const blocksTitle = document.createElement('h2');
@@ -179,7 +178,9 @@ function ShowBlockContents(target, name){
     target.appendChild(blocksTitle);
 }
 
-function loopSortedBlocks(blockArray){
+async function loopSortedBlocks(blockArray){
+    const currentPage = await getCurrentPage();
+
     const sortedBlocks = blockArray.sort((a, b) => a.order - b.order);
     for (const { index, block } of sortedBlocks) {
 
@@ -298,6 +299,8 @@ function loopSortedBlocks(blockArray){
 }
 
 async function getBlocks() {
+    const currentPage = await getCurrentPage();
+
     const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
 
     const blockArray = Object.entries(pages).map(([index, block]) => ({
@@ -314,7 +317,7 @@ async function addForm(){
 }
 
 async function addSettings(){
-
+    const currentPage = await getCurrentPage();
     await loopPageFields(currentPage);
 
 
@@ -347,6 +350,8 @@ async function addSettings(){
 }
 
 async function placeBlock() {
+    const currentPage = await getCurrentPage();
+    console.log(currentPage);
     const container = document.getElementById('container');
     clearContainer(container);
     addTitle(container);
@@ -711,7 +716,8 @@ try {
     }
 }
 
-function handleInputKeydown(blockIndex, inputKey, inputField) {
+async function handleInputKeydown(blockIndex, inputKey, inputField) {
+    const currentPage = await getCurrentPage();
     return (event) => {
         if (event.keyCode === 13) { // Enter key
             const newValue = inputField.value;
@@ -719,8 +725,6 @@ function handleInputKeydown(blockIndex, inputKey, inputField) {
         }
     };
 }
-
-
 
 async function removePage(pageName) {
     const confirmation = confirm(`Are you sure you want to remove the page ${pageName}?`);
@@ -775,8 +779,6 @@ async function handleAddPageButtonClick() {
     }
 }
 
-
-
 async function addMenuButtons() {
     const pagesButton = document.getElementById('pagesButton');
 
@@ -790,8 +792,6 @@ async function addMenuButtons() {
         }
     };
 }
-
-
 
 async function reloadMenu(){
     const pages = await fetchDataFromFirestore("pages");
