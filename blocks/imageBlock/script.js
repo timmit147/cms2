@@ -28,15 +28,15 @@ async function getData() {
     const imageElement = document.querySelector(`#${key} .image`);
 
     
-    if (blockData["title"]) {
+    if (titleElement) {
         titleElement.textContent = blockData["title"];
     }
     
-    if (blockData["content"]) {
+    if (contentElement) {
         contentElement.textContent = blockData["content"];
     }
 
-    if (blockData["image"]) {
+    if (imageElement) {
         imageElement.src = blockData["image"];  // Replace 'new_image_url.jpg' with the actual URL of the new image
     }
 

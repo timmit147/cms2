@@ -126,13 +126,32 @@ placeBlock(document.body.id);
 
 
 
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(registration => {
-        console.log('Service Worker registered with scope:', registration.scope);
-      })
-      .catch(error => {
-        console.error('Service Worker registration failed:', error);
-      });
-  }
+// async function customFetch(request) {
+//     const cache = await caches.open('my-cache');
+//     const cachedResponse = await cache.match(request);
+    
+//     if (cachedResponse) {
+//       return cachedResponse;
+//     } else {
+//       const networkResponse = await fetch(request);
+//       // Cache the fetched response for future use
+//       cache.put(request, networkResponse.clone());
+//       return networkResponse;
+//     }
+//   }
+  
+//   // Fetch event: Use the custom fetch function
+//   self.addEventListener('fetch', event => {
+//     event.respondWith(customFetch(event.request));
+//   });
+
+// if ('serviceWorker' in navigator) {
+//     navigator.serviceWorker.register('/service-worker.js')
+//       .then(registration => {
+//         console.log('Service Worker registered with scope:', registration.scope);
+//       })
+//       .catch(error => {
+//         console.error('Service Worker registration failed:', error);
+//       });
+//   }
 

@@ -4,6 +4,7 @@ const cacheName = 'my-cache';
 // List of files to cache
 const filesToCache = [
   '/',
+  '/index.html',
   '/style.css', 
   '/main.js',
   '/blocks',  
