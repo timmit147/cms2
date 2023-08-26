@@ -1,5 +1,4 @@
 let currentPage = document.getElementsByTagName("body")[0].id;
-console.log(currentPage);
 let firestore = null;
 const objectWithBlocks = [
     {
@@ -48,7 +47,6 @@ window.addEventListener("load", myFunction);
 startScript();
 
 async function startScript(){
-    console.log(currentPage);
     await newDatabase();
 }
 
@@ -75,11 +73,9 @@ async function newDatabase() {
 // Firebase authentication state change listener
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-        // User is signed in, proceed with your application logic
         addMenuButtons();
-        console.log("you are logged in");
+        // console.log("you are logged in");
         hideLoginForm(); // Hide the login form
-        // showLogoutButton(); // Show the logout button
         const footerMenu = document.querySelector('.footerMenu');
         footerMenu.style.display = 'flex';
         const container = document.querySelector('#container');
@@ -241,7 +237,6 @@ function loopSortedBlocks(blockArray){
                           const newColorValue = event.target.value;
                           updateBlockProperty(currentPage, index, inputLabel.textContent, newColorValue);
                         });
-                        
                     }
 
                     if (key.includes("image") || key.includes("Image") || key.includes("logo")) {
