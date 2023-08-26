@@ -1,19 +1,32 @@
 let currentPage = document.getElementsByTagName("body")[0].id;
 let firestore = null;
 
-import objectWithBlocks from './blocks.js'; 
+const createDropdownWithBlocks = (async () => {
+    const module = await import('./blocks.js');
+    const objectWithBlocks = module.default; // Adjust this based on how your module exports
 
-const formHTML = `
-<form>
-    <select name="block" id="dropdown">
-        <option value="imageBlock">Image block</option>
-        <option value="footer">Footer</option>
-        <option value="menu">Menu</option>
-        <option value="color">Color block</option>
-    </select>
-    <button type="Add page" id="submitButton">Block toevoegen</button>
-</form>
-`;
+    let optionsHTML = '';
+    objectWithBlocks.forEach(item => {
+        if (item.type) {
+            const optionText = item.type.charAt(0).toUpperCase() + item.type.slice(1).replace(/([A-Z])/g, ' $1').toLowerCase();
+            optionsHTML += `<option value="${item.type}">${optionText}</option>`;
+        }
+    });
+
+    // Construct the complete form HTML
+    return `
+    <form>
+        <select name="block" id="dropdown">
+            ${optionsHTML}
+        </select>
+        <button type="Add page" id="submitButton">Block toevoegen</button>
+    </form>
+    `;
+})();
+
+
+
+
 
 
 function myFunction() {
@@ -303,8 +316,8 @@ async function getBlocks() {
     loopSortedBlocks(blockArray);
 }
 
-function addForm(){
-    container.insertAdjacentHTML('beforeend', formHTML);
+async function addForm(){
+    container.insertAdjacentHTML('beforeend', await createDropdownWithBlocks);
 }
 
 async function addSettings(){
