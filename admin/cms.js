@@ -1,4 +1,5 @@
 let currentPage = document.getElementsByTagName("body")[0].id;
+console.log(currentPage);
 let firestore = null;
 const objectWithBlocks = [
     {
@@ -20,7 +21,7 @@ const objectWithBlocks = [
 ];
 
 const formHTML = `
-<form method="POST">
+<form>
     <select name="block" id="dropdown">
         <option value="imageBlock">Image block</option>
         <option value="footer">Footer</option>
@@ -329,18 +330,19 @@ async function addSettings(){
             removePage(currentPage); 
         });
         container.appendChild(removePageButton);
-        function handleButtonClick() {
-            const selectedBlock = document.querySelector('#dropdown').value;
-            addNewBlock(selectedBlock);
-        }
-     
-    
-        document.getElementById('submitButton').onclick = async function(event) {
-            event.preventDefault();
-            handleButtonClick();
-        };
         
     }
+
+    function handleButtonClick() {
+        const selectedBlock = document.querySelector('#dropdown').value;
+        addNewBlock(selectedBlock);
+    }
+ 
+
+    document.getElementById('submitButton').onclick = async function(event) {
+        event.preventDefault();
+        handleButtonClick();
+    };
 
     
 }
