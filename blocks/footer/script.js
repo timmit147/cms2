@@ -1,6 +1,9 @@
 async function getData() {
-    const bodyId = document.body.id;
-    const data = await fetchDataFromFirestore(`pages/${bodyId}/blocks`);
+    
+    const pageName = document.body.id;
+    const blockId = document.querySelector('.temp').id;
+    document.querySelector('.temp').classList.remove('temp');
+    const data = await fetchDataFromFirestore(`pages/${pageName}/blocks`);
 
     if (!data) {
         console.log("Data not found");
@@ -9,19 +12,19 @@ async function getData() {
 
     // const imageBlockElements = Object.values(data).filter(item => item.type === "imageBlock");
 
-    const blockData = data[bodyId];
+    const blockData = data[blockId];
 
     
     if (!blockData) {
-        console.log(`${bodyId} data not found`);
+        console.log(`${blockId} data not found`);
         return; // Exit the function if blockData doesn't exist
     }
 
 
     
-    const titleElement = document.querySelector(`#${bodyId} h1`);
-    const contentElement = document.querySelector(`#${bodyId} p`);
-    const imageElement = document.querySelector(`#${bodyId} .image`);
+    const titleElement = document.querySelector(`#${blockId} h1`);
+    const contentElement = document.querySelector(`#${blockId} p`);
+    const imageElement = document.querySelector(`#${blockId} .image`);
 
     
     if (titleElement) {

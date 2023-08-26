@@ -1,9 +1,10 @@
 async function getData() {
-    const bodyId = document.body.id;
+    const pageName = document.body.id;
     const blockId = document.querySelector('.temp').id;
     document.querySelector('.temp').classList.remove('temp');
+
     
-    const data = await fetchDataFromFirestore(`pages/${bodyId}/blocks`);
+    const data = await fetchDataFromFirestore(`pages/${pageName}/blocks`);
 
     if (!data) {
         console.log("Data not found");

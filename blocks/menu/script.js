@@ -1,5 +1,5 @@
 async function getData() {
-    const bodyId = document.body.id;
+    const pageName = document.body.id;
     const data = await fetchDataFromFirestore(`pages/`);
 
     if (!data) {
@@ -10,11 +10,11 @@ async function getData() {
     const blockData = data['settings']['menu'];
     
     if (!blockData) {
-        console.log(`${bodyId} data not found`);
+        console.log(`${pageName} data not found`);
         return; // Exit the function if blockData doesn't exist
     }
 
-    const menu = document.querySelector(`#${bodyId} .menu-list`);
+    const menu = document.querySelector(`#${pageName} .menu-list`);
     
     if (!menu) {
         console.log("Menu element not found");
