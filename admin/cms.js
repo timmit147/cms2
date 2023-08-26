@@ -1,27 +1,7 @@
 let currentPage = document.getElementsByTagName("body")[0].id;
 let firestore = null;
-const objectWithBlocks = [
-    {
-        title: "Image block title",
-        content: "Content",
-        type: "imageBlock",
-        image: ""
-    },
-    {
-        title: "Footer title",
-        content: "footer text",
-        type: "footer",
-        image: ""
-    },
-    {
-        type: "menu",
-        logo: ""
-    },
-    {
-        type: "color",
-        color: "red"
-    }
-];
+
+import objectWithBlocks from './blocks.js'; 
 
 const formHTML = `
 <form>
