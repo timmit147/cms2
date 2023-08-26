@@ -1,4 +1,3 @@
-let currentPage = document.getElementsByTagName("body")[0].id;
 let firestore = null;
 
 const createDropdownWithBlocks = (async () => {
@@ -24,24 +23,18 @@ const createDropdownWithBlocks = (async () => {
     `;
 })();
 
+async function getCurrentPage() {
+    let currentPage = localStorage.getItem('page');
 
-
-
-
-
-function myFunction() {
-    if(localStorage.getItem('page')){
-        currentPage = localStorage.getItem('page');
+    if (!currentPage) {
+        currentPage = document.getElementsByTagName("body")[0].id;
+        localStorage.setItem('page', currentPage);
     }
-  }
-
-window.addEventListener("load", myFunction);
-
-startScript();
-
-async function startScript(){
-    await newDatabase();
 }
+
+const currentPage = await getCurrentPage();
+
+await newDatabase();
 
 
 async function newDatabase() {
