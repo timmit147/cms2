@@ -231,6 +231,19 @@ function loopSortedBlocks(blockArray){
                 }
                 if (block.hasOwnProperty(key)) {
 
+                    if (key.includes("color")){
+                        const colorInput = document.createElement('input');
+                        colorInput.type = 'color';
+                        colorInput.value = block['color']; // Set the initial color value
+                        container.appendChild(colorInput);
+                        
+                        colorInput.addEventListener('input', (event) => {
+                          const newColorValue = event.target.value;
+                          updateBlockProperty(currentPage, index, inputLabel.textContent, newColorValue);
+                        });
+                        
+                    }
+
                     if (key.includes("image") || key.includes("Image") || key.includes("logo")) {
                         const imageField = document.createElement('div');
                 imageField.className = 'image-field'; // You can add a class name for styling if needed
