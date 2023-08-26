@@ -794,6 +794,7 @@ async function addMenuButtons() {
 }
 
 async function reloadMenu(){
+    let currentPage = await getCurrentPage();
     const pages = await fetchDataFromFirestore("pages");
     const container = document.querySelector("#container");
         clearContainer(container);
