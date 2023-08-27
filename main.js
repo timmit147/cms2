@@ -111,6 +111,11 @@ async function placeBlock(pageName) {
     document.body.id = pageName;
     history.pushState(null, null, `/${pageName}`);
 
+    if(pageName === 'homepage'){
+        history.pushState(null, null, `/`);
+
+    }
+
     let blocksData = [];
     let firestorePath = `pages/${pageName}/blocks`;
     blocksData = await fetchDataFromFirestore(firestorePath);
