@@ -109,15 +109,15 @@ async function addJsScript(blockType) {
 
 async function placeBlock(pageName) {
     document.body.id = pageName;
-    await console.log(pageName);
-    
+    history.pushState(null, null, `/${pageName}`);
+
     let blocksData = [];
     let firestorePath = `pages/${pageName}/blocks`;
     blocksData = await fetchDataFromFirestore(firestorePath);
-    await console.log(blocksData);
     
     if (Object.keys(blocksData).length === 0) {
         document.body.id = 'homepage'; // Set body id to homepage
+        history.pushState(null, null, `/homepage`);
         firestorePath = 'pages/homepage/blocks'; // Update the firestorePath
         blocksData = await fetchDataFromFirestore(firestorePath);
     }

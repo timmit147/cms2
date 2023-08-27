@@ -16,6 +16,13 @@ const MIME_TYPES = {
 
 // Create a server instance
 const server = http.createServer((req, res) => {
+  // Redirect /admin to /admin/index.html
+  if (req.url === '/admin') {
+    res.writeHead(302, { 'Location': '/admin/index.html' });
+    res.end();
+    return;
+  }
+
   const filePath = path.join(__dirname, req.url);
 
   // Redirect root URL to index.html
