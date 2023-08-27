@@ -112,14 +112,16 @@ async function placeBlock(pageName) {
     
     let blocksData = [];
     let firestorePath = `pages/${pageName}/blocks`;
+    blocksData = await fetchDataFromFirestore(firestorePath);
+    console.log(blocksData);
     
     // Check if the blocksData is null or undefined
     if (!blocksData || blocksData.length === 0) {
         document.body.id = 'homepage'; // Set body id to homepage
         firestorePath = 'pages/homepage/blocks'; // Update the firestorePath
+        blocksData = await fetchDataFromFirestore(firestorePath);
     }
     
-    blocksData = await fetchDataFromFirestore(firestorePath);
     
     // Convert the blocksData object into an array of blocks
     const blockArray = Object.entries(blocksData).map(([blockKey, block]) => ({
