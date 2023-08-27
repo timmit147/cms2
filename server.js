@@ -18,7 +18,7 @@ const MIME_TYPES = {
 const server = http.createServer((req, res) => {
   // Redirect /admin to /admin/index.html
   if (req.url === '/admin') {
-    res.writeHead(302, { 'Location': '/admin/index.html' });
+    res.writeHead(302, { 'Location': '/admin' });
     res.end();
     return;
   }
