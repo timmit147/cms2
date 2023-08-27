@@ -114,7 +114,7 @@ async function placeBlock(pageName) {
 
     if(blocksData = null){
         document.body.id = 'homepage';
-        blocksData = await fetchDataFromFirestore(`pages/homepage/blocks`);
+        await fetchDataFromFirestore(`pages/homepage/blocks`);
     }
 
     // Convert the blocksData object into an array of blocks
