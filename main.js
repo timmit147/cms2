@@ -116,7 +116,7 @@ async function placeBlock(pageName) {
     blocksData = await fetchDataFromFirestore(firestorePath);
     await console.log(blocksData);
     
-    if (blocksData === null) {
+    if (Object.keys(blocksData).length === 0) {
         document.body.id = 'homepage'; // Set body id to homepage
         firestorePath = 'pages/homepage/blocks'; // Update the firestorePath
         blocksData = await fetchDataFromFirestore(firestorePath);
