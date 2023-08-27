@@ -20,7 +20,7 @@ async function newDatabase() {
     firestore = firebase.firestore();
 
     console.log(localStorage.getItem("currentPage"));
-    placeBlock(localStorage.getItem("currentPage") || 'homepage')
+    placeBlock(localStorage.getItem("currentPage") || 'homepage');
 }
 
 // Function to fetch data from Firestore and display
@@ -103,11 +103,17 @@ async function addJsScript(blockType) {
 
 
 async function placeBlock(pageName) {
+    console.log('test1');
+
     document.body.id = pageName;
+    console.log('test2');
+
     const firestorePath = `pages/${pageName}/blocks`;
+    console.log('test3');
+
     const blocksData = await fetchDataFromFirestore(firestorePath);
 
-    console.log('test');
+    console.log('test4');
 
     // Convert the blocksData object into an array of blocks
     const blockArray = Object.entries(blocksData).map(([blockKey, block]) => ({
