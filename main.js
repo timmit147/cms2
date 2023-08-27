@@ -109,11 +109,14 @@ async function addJsScript(blockType) {
 
 async function placeBlock(pageName) {
     document.body.id = pageName;
-    history.pushState(null, null, `/${pageName}`);
-
-    if(pageName === 'homepage'){
-        history.pushState(null, null, `/`);
-
+    if (window.location.hostname === "localhost") {
+        const pageName = "homepage"; // Replace with the actual pageName logic
+    
+        history.pushState(null, null, `/${pageName}`);
+    
+        if (pageName === "homepage") {
+            history.pushState(null, null, "/");
+        }
     }
 
     let blocksData = [];

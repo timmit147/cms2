@@ -70,7 +70,6 @@ firebase.auth().onAuthStateChanged((user) => {
         container.style.display = 'flex';
     } else {
         showLoginForm(); // Show the login form
-        hideLogoutButton(); // Hide the logout button
     }
         placeBlock();
         getCurrentPage();
