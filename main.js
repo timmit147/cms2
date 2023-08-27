@@ -109,15 +109,18 @@ async function addJsScript(blockType) {
 
 async function placeBlock(pageName) {
     document.body.id = pageName;
-    if (window.location.hostname === "localhost") {
-        const pageName = "homepage"; // Replace with the actual pageName logic
-    
+    if (window.location.hostname === "localhost") {    
         history.pushState(null, null, `/${pageName}`);
     
         if (pageName === "homepage") {
             history.pushState(null, null, "/");
         }
     }
+    history.pushState(null, null, `/${pageName}`);
+    
+        if (pageName === "homepage") {
+            history.pushState(null, null, "/cms2/");
+        }
 
     let blocksData = [];
     let firestorePath = `pages/${pageName}/blocks`;
@@ -128,7 +131,7 @@ async function placeBlock(pageName) {
         if (window.location.hostname === "localhost") {
                 history.pushState(null, null, "/homepage");
         }
-        history.pushState(null, null, `/homepage`);
+        history.pushState(null, null, "/cms2/homepage");
         firestorePath = 'pages/homepage/blocks'; // Update the firestorePath
         blocksData = await fetchDataFromFirestore(firestorePath);
     }
