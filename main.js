@@ -113,9 +113,9 @@ async function placeBlock(pageName) {
     let firestorePath = `pages/${pageName}/blocks`;
     blocksData = await fetchDataFromFirestore(firestorePath);
 
-    if(blocksData = null){
+    if (blocksData === null) { // Use === for comparison
         document.body.id = 'homepage';
-        blocksData = await fetchDataFromFirestore(`pages/homepage/blocks`);
+        blocksData = await fetchDataFromFirestore('pages/homepage/blocks'); // Remove the backticks
     }
 
     // Convert the blocksData object into an array of blocks
