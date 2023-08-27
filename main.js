@@ -19,7 +19,6 @@ async function newDatabase() {
     // Get a reference to the Firestore database
     firestore = firebase.firestore();
 
-    console.log(localStorage.getItem("currentPage"));
     if(localStorage.getItem("currentPage") == null){
         placeBlock(localStorage.getItem("currentPage"));
     }
@@ -109,18 +108,20 @@ async function addJsScript(blockType) {
 
 async function placeBlock(pageName) {
     document.body.id = pageName;
+    await console.log(pageName);
     
     let blocksData = [];
     let firestorePath = `pages/${pageName}/blocks`;
     blocksData = await fetchDataFromFirestore(firestorePath);
-    console.log(blocksData);
+    await console.log(blocksData);
     
-    // Check if the blocksData is null or undefined
-    if (!blocksData || blocksData.length === 0) {
+    if (blocksData === null) {
         document.body.id = 'homepage'; // Set body id to homepage
         firestorePath = 'pages/homepage/blocks'; // Update the firestorePath
         blocksData = await fetchDataFromFirestore(firestorePath);
     }
+    await console.log(blocksData);
+
     
     
     // Convert the blocksData object into an array of blocks
