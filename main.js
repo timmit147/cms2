@@ -1,4 +1,41 @@
-newDatabase()
+
+const route = (event) => {
+    event = event || window.event;
+    event.preventDefault();
+    window.history.pushState({}, '', event.target.href);
+    handleLocation();
+}
+
+const routes = {
+    '/': 'index.html',
+    '/about': 'about.html',
+    '404': '404.html'
+}
+
+const handleLocation = async () => {
+    const path = window.location.pathname;
+    const routePath = routes[path] || routes['404'];
+    const html = await fetch(routePath).then((response) => response.text());
+    document.getElementById("homepage").innerHTML = html;
+}
+
+window.onpopstate = () => {
+    handleLocation();
+};
+
+window.route = route;
+
+// Function to handle both initial load and popstate event
+const initializePage = () => {
+    handleLocation();
+};
+
+// Call the function on initial load
+initializePage();
+
+
+newDatabase();
+
 
 async function newDatabase() {
     // Your Firebase configuration
