@@ -8,8 +8,15 @@
         var currentURL = window.location.href;
         var urlParts = currentURL.split("/");
         var currentPage = urlParts[urlParts.length - 1];
-        localStorage.setItem("currentPage", currentPage);
-        window.location.href = "/cms2/"; // Redirect immediately
-    </script>
+        
+        // Check if the host name is "localhost" (local development)
+        if (window.location.hostname === "localhost") {
+            localStorage.setItem("currentPage", currentPage);
+            window.location.href = "/"; // Redirect immediately to root
+        } else {
+            localStorage.setItem("currentPage", currentPage);
+            window.location.href = "/cms2/"; // Redirect immediately to "/cms2/"
+        }
+    </script>    
 </body>
 </html>
