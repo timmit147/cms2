@@ -19,11 +19,12 @@ async function newDatabase() {
     // Get a reference to the Firestore database
     firestore = firebase.firestore();
 
-    if(localStorage.getItem("currentPage") == null){
-        placeBlock(localStorage.getItem("currentPage"));
+    if(localStorage.getItem("currentPage") === null){
+        localStorage.setItem("currentPage", 'homepage');
+        placeBlock("homepage");
     }
     else{
-        placeBlock("homepage");
+        placeBlock(localStorage.getItem("currentPage"));
     }
 }
 
