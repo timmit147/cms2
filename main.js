@@ -109,15 +109,18 @@ async function addJsScript(blockType) {
 
 async function placeBlock(pageName) {
     document.body.id = pageName;
+    
     let blocksData = [];
     let firestorePath = `pages/${pageName}/blocks`;
-    blocksData = await fetchDataFromFirestore(firestorePath);
-
-    if (blocksData === null) { // Use === for comparison
-        document.body.id = 'homepage';
-        blocksData = await fetchDataFromFirestore('pages/homepage/blocks'); // Remove the backticks
+    
+    // Check if the blocksData is null or undefined
+    if (!blocksData || blocksData.length === 0) {
+        document.body.id = 'homepage'; // Set body id to homepage
+        firestorePath = 'pages/homepage/blocks'; // Update the firestorePath
     }
-
+    
+    blocksData = await fetchDataFromFirestore(firestorePath);
+    
     // Convert the blocksData object into an array of blocks
     const blockArray = Object.entries(blocksData).map(([blockKey, block]) => ({
         blockKey,
