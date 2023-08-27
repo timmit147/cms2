@@ -20,7 +20,12 @@ async function newDatabase() {
     firestore = firebase.firestore();
 
     console.log(localStorage.getItem("currentPage"));
-    placeBlock(localStorage.getItem("currentPage") || 'homepage');
+    if(localStorage.getItem("currentPage") == null){
+        placeBlock(localStorage.getItem("currentPage"));
+    }
+    else{
+        placeBlock("homepage");
+    }
 }
 
 // Function to fetch data from Firestore and display
@@ -109,8 +114,7 @@ async function placeBlock(pageName) {
 
     if(blocksData = null){
         document.body.id = 'homepage';
-        firestorePath = `pages/${pageName}/blocks`;
-        blocksData = await fetchDataFromFirestore(firestorePath);
+        blocksData = await fetchDataFromFirestore(`pages/homepage/blocks`);
     }
 
     // Convert the blocksData object into an array of blocks
