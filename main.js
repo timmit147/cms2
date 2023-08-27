@@ -103,17 +103,15 @@ async function addJsScript(blockType) {
 
 
 async function placeBlock(pageName) {
-    console.log('test1');
-
     document.body.id = pageName;
-    console.log('test2');
-
     const firestorePath = `pages/${pageName}/blocks`;
-    console.log('test3');
-
     const blocksData = await fetchDataFromFirestore(firestorePath);
 
-    console.log('test4');
+    if(blocksData = null){
+        document.body.id = 'homepage';
+        firestorePath = `pages/${pageName}/blocks`;
+        blocksData = await fetchDataFromFirestore(firestorePath);
+    }
 
     // Convert the blocksData object into an array of blocks
     const blockArray = Object.entries(blocksData).map(([blockKey, block]) => ({
