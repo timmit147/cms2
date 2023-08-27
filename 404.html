@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    // Get the current path
+    var currentPath = window.location.pathname;
+    
+    // Remove the leading slash if present
+    if (currentPath.startsWith('/')) {
+      currentPath = currentPath.substring(1);
+    }
+
+    // Redirect to index.html while maintaining the original URL
+    window.location.replace('/' + currentPath + '/index.html' + window.location.hash);
+  </script>
+</head>
+<body>
+</body>
+</html>
