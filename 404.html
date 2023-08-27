@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script>
-    var urlWithout404 = window.location.href.replace('/404.html', '');
-    window.location.replace(urlWithout404);
-  </script>
+    <title>Finding page</title>
 </head>
 <body>
+    <script>
+        setTimeout(function() {
+            window.location.href = "/index.html";
+        }, 5000); // Redirect after 5 seconds
+    </script>
 </body>
 </html>
