@@ -122,7 +122,3 @@ async function placeBlock(pageName) {
         await addHtmlToBody(block.blockKey, block.type);
     }
 }
-
-
-placeBlock(document.body.id);
-
