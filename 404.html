@@ -5,6 +5,10 @@
 </head>
 <body>
     <script>
+        var currentURL = window.location.href;
+        var urlParts = currentURL.split("/");
+        var currentPage = urlParts[urlParts.length - 1];
+        localStorage.setItem("currentPage", currentPage);
         window.location.href = "/cms2/index.html"; // Redirect immediately
     </script>
 </body>
