@@ -140,5 +140,3 @@ async function placeBlock(pageName) {
 }
 
 
-placeBlock(document.body.id);
-
