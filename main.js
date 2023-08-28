@@ -4,12 +4,24 @@ newDatabase()
 async function getCurrentPage() {
     let currentPage = localStorage.getItem("currentPage");
 
-    if (currentPage === null) {
-        currentPage = "homepage";
+    if (window.location.pathname === '/' && currentPage !== 'homepage') {
+        localStorage.setItem("currentPage", "homepage");
     }
+
     document.body.id = currentPage;
     return currentPage; // Add this line to return the currentPage value
+    
 }
+
+function changeSlug(page) {
+    if (window.history && window.history.pushState) {
+        const baseUrl = window.location.protocol + '//' + window.location.host;
+        const newUrl = page === 'homepage' ? baseUrl : `${baseUrl}/${page}`;
+        window.history.pushState(null, null, newUrl);
+    }
+}
+
+  
 
 async function newDatabase() {
     // Your Firebase configuration
@@ -30,9 +42,8 @@ async function newDatabase() {
     firestore = firebase.firestore();
     
     let page = await getCurrentPage();
-
-    console.log(page);
-    await placeBlock(page)
+    await placeBlock(page);
+    await changeSlug(page);
 }
 
 // Function to fetch data from Firestore and display
