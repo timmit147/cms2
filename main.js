@@ -1,26 +1,24 @@
 newDatabase()
 
 
-async function getCurrentPage() {
-    let currentPage = localStorage.getItem("currentPage");
+// async function getCurrentPage() {
+//     let currentPage = localStorage.getItem("currentPage");
 
-    if (window.location.pathname === '/' && currentPage !== 'homepage') {
-        localStorage.setItem("currentPage", "homepage");
-    }
+//     if (window.location.pathname === '/' && currentPage !== 'homepage') {
+//         localStorage.setItem("currentPage", "homepage");
+//     }
+//     document.body.id = currentPage;
+//     return currentPage; // Add this line to return the currentPage value
+// }
 
-    document.body.id = currentPage;
-    return currentPage; // Add this line to return the currentPage value
-    
-}
-
-function changeSlug(page) {
-    console.log(page);
-    if (window.history && window.history.pushState) {
-        const baseUrl = window.location.protocol + '//' + window.location.host;
-        const newUrl = page === 'homepage' ? baseUrl : `${baseUrl}/${page}`;
-        window.history.pushState(null, null, newUrl);
-    }
-}
+// function changeSlug(page) {
+//     console.log(page);
+//     if (window.history && window.history.pushState) {
+//         const baseUrl = window.location.protocol + '//' + window.location.host;
+//         const newUrl = page === 'homepage' ? baseUrl : `${baseUrl}/${page}`;
+//         window.history.pushState(null, null, newUrl);
+//     }
+// }
 
   
 
