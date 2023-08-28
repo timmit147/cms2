@@ -10,6 +10,13 @@ const mainServer = http.createServer((req, res) => {
         filePath = './index.html';
     }
 
+    if (filePath === './admin' || filePath.startsWith('./admin/')) {
+        // Redirect to admin server on port 3001
+        res.writeHead(302, { 'Location': 'http://localhost:3001/admin' });
+        res.end();
+        return;
+    }
+
     fs.readFile(filePath, (err, content) => {
         if (err) {
             if (err.code === 'ENOENT') {
@@ -41,12 +48,24 @@ mainServer.listen(mainPort, () => {
 });
 
 // Admin Section Server
+// Admin Section Server
 const adminServer = http.createServer((req, res) => {
+    if (req.url === '/') {
+        // Redirect to main server on port 3000
+        res.writeHead(302, { 'Location': 'http://localhost:3000/' });
+        res.end();
+        return;
+    }
+
+
     let filePath = '.' + req.url;
 
-    if (filePath === './') {
+    if (filePath === './admin') {
+        console.log("a");
+
         filePath = './admin/index.html';
     } else {
+        console.log("test");
         filePath = './admin' + req.url;
     }
 
@@ -65,6 +84,7 @@ const adminServer = http.createServer((req, res) => {
         }
     });
 });
+
 
 const adminPort = 3001;
 adminServer.listen(adminPort, () => {
