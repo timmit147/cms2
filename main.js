@@ -11,14 +11,14 @@ async function getCurrentPage() {
     return currentPage; // Add this line to return the currentPage value
 }
 
-function changeSlug(page) {
-    console.log(page);
-    if (window.history && window.history.pushState) {
-        const baseUrl = window.location.protocol + '//' + window.location.host;
-        const newUrl = page === 'homepage' ? baseUrl : `${baseUrl}/${page}`;
-        window.history.pushState(null, null, newUrl);
-    }
-}
+// function changeSlug(page) {
+//     console.log(page);
+//     if (window.history && window.history.pushState) {
+//         const baseUrl = window.location.protocol + '//' + window.location.host;
+//         const newUrl = page === 'homepage' ? baseUrl : `${baseUrl}/${page}`;
+//         window.history.pushState(null, null, newUrl);
+//     }
+// }
 
   
 
