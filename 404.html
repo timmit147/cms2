@@ -8,17 +8,9 @@
         var currentURL = window.location.href;
         var urlParts = currentURL.split("/");
         var currentPage = urlParts[urlParts.length - 1];
-        
-        // Check if the host name is "localhost" (local development)
-        if (window.location.hostname !== "localhost") {
-            console.log("server");
-            localStorage.setItem("currentPage", currentPage);
-            window.location.href = "https://timmit147.github.io/cms2/index.html"; // Redirect immediately to "/cms2/"
-        } else {
-            console.log("localhost");
-            localStorage.setItem("currentPage", currentPage);
-            window.location.href = "/index.html"; // Redirect immediately to root
-        }
+        console.log("localhost");
+        localStorage.setItem("currentPage", currentPage);
+        window.location.href = "/index.html"; // Redirect immediately to root
     </script>    
 </body>
 </html>

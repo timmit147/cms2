@@ -11,14 +11,14 @@ async function getCurrentPage() {
     return currentPage; // Add this line to return the currentPage value
 }
 
-// function changeSlug(page) {
-//     console.log(page);
-//     if (window.history && window.history.pushState) {
-//         const baseUrl = window.location.protocol + '//' + window.location.host;
-//         const newUrl = page === 'homepage' ? baseUrl : `${baseUrl}/${page}`;
-//         window.history.pushState(null, null, newUrl);
-//     }
-// }
+function changeSlug(page) {
+    console.log(page);
+    if (window.history && window.history.pushState) {
+        const baseUrl = window.location.protocol + '//' + window.location.host;
+        const newUrl = page === 'homepage' ? baseUrl : `${baseUrl}/${page}`;
+        window.history.pushState(null, null, newUrl);
+    }
+}
 
   
 
@@ -41,7 +41,7 @@ async function newDatabase() {
     firestore = firebase.firestore();
     
     let page = await getCurrentPage();
-    // await changeSlug(page);
+    await changeSlug(page);
     await placeBlock(page);
 }
 
@@ -133,7 +133,7 @@ async function placeBlock(pageName) {
     let blocksData = await fetchDataFromFirestore(firestorePath);
 
     if (Object.keys(blocksData).length === 0) {
-        // await changeSlug("homepage");
+        await changeSlug("homepage");
         firestorePath = `pages/homepage/blocks`;
         blocksData = await fetchDataFromFirestore(firestorePath);
     }    
