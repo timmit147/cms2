@@ -8,7 +8,10 @@ const server = http.createServer((req, res) => {
     let filePath = '.' + req.url;
 
     if (filePath === './') {
-        filePath = './index.html';
+        filePath = './admin/index.html';
+    } else {
+        // Serve files from the "admin" subfolder
+        filePath = './admin' + req.url;
     }
 
     fs.readFile(filePath, (err, content) => {
