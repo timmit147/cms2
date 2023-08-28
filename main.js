@@ -1,5 +1,16 @@
 newDatabase()
 
+
+async function getCurrentPage() {
+    let currentPage = localStorage.getItem("currentPage");
+
+    if (currentPage === null) {
+        currentPage = "homepage";
+    }
+    document.body.id = currentPage;
+    return currentPage; // Add this line to return the currentPage value
+}
+
 async function newDatabase() {
     // Your Firebase configuration
     const firebaseConfig = {
@@ -17,8 +28,11 @@ async function newDatabase() {
 
     // Get a reference to the Firestore database
     firestore = firebase.firestore();
+    
+    let page = await getCurrentPage();
 
-    placeBlock()
+    console.log(page);
+    await placeBlock(page)
 }
 
 // Function to fetch data from Firestore and display

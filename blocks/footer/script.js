@@ -13,7 +13,6 @@ async function getData() {
 
     
     if (!blockData) {
-        console.log(`${bodyId} data not found`);
         return; // Exit the function if blockData doesn't exist
     }
 
