@@ -13,8 +13,17 @@ const mainServer = http.createServer((req, res) => {
     fs.readFile(filePath, (err, content) => {
         if (err) {
             if (err.code === 'ENOENT') {
-                res.writeHead(404);
-                res.end('File not found');
+                // Serve the custom 404 page
+                const notFoundPath = './404.html';
+                fs.readFile(notFoundPath, (err, notFoundContent) => {
+                    if (err) {
+                        res.writeHead(500);
+                        res.end('Internal server error');
+                    } else {
+                        res.writeHead(404, { 'Content-Type': 'text/html' });
+                        res.end(notFoundContent, 'utf-8');
+                    }
+                });
             } else {
                 res.writeHead(500);
                 res.end('Internal server error');
