@@ -12,13 +12,12 @@
         // Check if the host name is "localhost" (local development)
         if (window.location.hostname === "localhost") {
             console.log("localhost");
-            // localStorage.setItem("currentPage", currentPage);
-            // window.location.href = "/"; // Redirect immediately to root
+            localStorage.setItem("currentPage", currentPage);
+            window.location.href = "/"; // Redirect immediately to root
         } else {
             console.log("server");
-
-            // localStorage.setItem("currentPage", currentPage);
-            // window.location.href = "/cms2/"; // Redirect immediately to "/cms2/"
+            localStorage.setItem("currentPage", currentPage);
+            window.location.href = "/cms2"; // Redirect immediately to "/cms2/"
         }
     </script>    
 </body>
