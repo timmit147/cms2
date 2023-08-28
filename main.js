@@ -6,13 +6,13 @@ async function getCurrentPage() {
 
     if (window.location.pathname === '/' && currentPage !== 'homepage') {
         localStorage.setItem("currentPage", "homepage");
+        currentPage = "homepage";
     }
     document.body.id = currentPage;
     return currentPage; // Add this line to return the currentPage value
 }
 
 function changeSlug(page) {
-    console.log(page);
     if (window.history && window.history.pushState) {
         const baseUrl = window.location.protocol + '//' + window.location.host;
         const newUrl = page === 'homepage' ? baseUrl : `${baseUrl}/${page}`;
