@@ -14,6 +14,7 @@ async function getCurrentPage() {
 }
 
 function changeSlug(page) {
+    console.log(page);
     if (window.history && window.history.pushState) {
         const baseUrl = window.location.protocol + '//' + window.location.host;
         const newUrl = page === 'homepage' ? baseUrl : `${baseUrl}/${page}`;
@@ -42,8 +43,8 @@ async function newDatabase() {
     firestore = firebase.firestore();
     
     let page = await getCurrentPage();
-    await placeBlock(page);
     await changeSlug(page);
+    await placeBlock(page);
 }
 
 // Function to fetch data from Firestore and display
@@ -130,8 +131,14 @@ async function addJsScript(blockType) {
 
 
 async function placeBlock(pageName) {
-    const firestorePath = `pages/${pageName}/blocks`;
-    const blocksData = await fetchDataFromFirestore(firestorePath);
+    let firestorePath = `pages/${pageName}/blocks`;
+    let blocksData = await fetchDataFromFirestore(firestorePath);
+
+    if (Object.keys(blocksData).length === 0) {
+        await changeSlug("homepage");
+        firestorePath = `pages/homepage/blocks`;
+        blocksData = await fetchDataFromFirestore(firestorePath);
+    }    
 
     // Convert the blocksData object into an array of blocks
     const blockArray = Object.entries(blocksData).map(([blockKey, block]) => ({
