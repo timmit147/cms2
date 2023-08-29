@@ -70,8 +70,8 @@ firebase.auth().onAuthStateChanged((user) => {
         console.log("you are logged in");
         hideLoginForm(); // Hide the login form
         // showLogoutButton(); // Show the logout button
-        const footerMenu = document.querySelector('.footerMenu');
-        footerMenu.style.display = 'flex';
+        const menu = document.querySelector('.menu');
+        menu.style.display = 'flex';
         const container = document.querySelector('#container');
         container.style.display = 'flex';
     } else {
@@ -84,13 +84,13 @@ firebase.auth().onAuthStateChanged((user) => {
 
 // Function to hide the login form
 function hideLoginForm() {
-    const loginForm = document.getElementById('form');
+    const loginForm = document.getElementById('loginForm');
     loginForm.style.display = 'none';
 }
 
 // Function to show the login form
 function showLoginForm() {
-    const loginForm = document.getElementById('form');
+    const loginForm = document.getElementById('loginForm');
     loginForm.style.display = 'flex';
 }
 

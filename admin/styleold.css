@@ -1,0 +1,286 @@
+body {
+    margin: 0px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow: hidden;
+}
+
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+.page-wrapper {
+    display: flex;
+    gap: 8px;
+}
+
+/* Style for the select dropdown */
+select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+select:hover,
+select:focus {
+    border-color: #66afe9;
+    box-shadow: 0 2px 8px rgba(102, 175, 233, 0.6);
+}
+
+/* Style for the submit button */
+#submitButton {
+    display: block;
+    padding: 10px;
+    background-color: black;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    text-decoration: none;
+}
+
+#login-form .form {
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+}
+
+#login-form input{
+    padding: 8px;
+}
+
+#submitButton:hover {
+    background-color: #0056b3;
+}
+
+input[type="text"]{
+    padding: 8px;
+    border: 1px solid black;
+    border-radius: 4px;
+    font-size: 16px;
+    width: fit-content;
+}
+
+input[type="file"] {
+    min-height: 30px;
+}
+
+.image-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+input::placeholder{
+    color: black;
+}
+
+label{
+    font-weight: bold;
+}
+
+img{
+    width: 150px;
+}
+
+#login-form h1{
+    padding: 0px;
+    margin: 0px;
+    font-size: 32px;
+}
+
+#login-form p{
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 16px;
+}
+
+#login-form button{
+    margin-top: 16px;
+}
+
+button{
+    width: fit-content;
+    background-color: unset;
+    border: 0;
+    padding: 0;
+    text-decoration: underline;
+}
+
+button:hover{
+    cursor: pointer;
+    color: #21759B;
+    font-weight: bold;
+}
+
+.button1 {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: fit-content;
+    text-decoration: none;
+  }
+
+  .block{
+    display: flex;
+    justify-content: space-between;
+  }
+
+
+#container {
+    padding: 20px;
+    height: 90vh;
+    overflow-y: scroll;
+    width: 100%;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+    position: fixed;
+    bottom: 0;
+    padding-bottom: 10vh;
+}
+
+.block-wrapper {
+    border: 1px solid;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.block-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+.blockContent {
+    flex: 1; /* Take up available vertical space within block-wrapper */
+    align-self: stretch;
+    padding: 10px;
+    flex-direction: column;
+    display: flex;
+    gap: 8px;
+}
+
+#menuContainer {
+    padding: 10px;
+    margin: 10px;
+    gap: 10px;
+    display: flex;
+}
+
+.footerMenu {
+    border-bottom: 1px solid;
+    border-top: 0px solid;
+    padding: 20px;
+    box-sizing: border-box;
+    justify-content: space-between;
+    height: 10vh;
+    width: 100%;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    background-color: white;
+}
+
+#popup {
+    display: none;
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    gap: 10px;
+    width: 100vw;
+    height: 100vh;
+}
+
+.arrow-button {
+    font-size: 24px; /* Adjust the size as needed */
+    margin: 0 5px; /* Add spacing between buttons */
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.arrow-buttons {
+    display: flex;
+    width: fit-content;
+    align-self: stretch;
+    padding: 5px 0px;
+}
+
+.propertyDiv {
+    gap: 8px;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+}
+
+.hiddenDiv{
+    flex-direction: column;
+    gap: 8px;
+}
+
+div#login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+#login-form form{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    gap: 40px;
+}
+
+@media (max-width: 767px) {
+    #form {
+      flex-direction: column;
+    }
+
+    body{
+        flex-direction: column;
+    }
+
+    
+.footerMenu {
+    border-bottom: 0px solid;
+    border-top: 1px solid;
+    top: unset;
+    bottom: 0;
+}
+
+#container{
+    top: 0;
+    bottom: unset;
+}
+}
