@@ -14,11 +14,52 @@ body {
     padding: 0px;
 }
 
+label{
+    font-weight: bold;
+}
+
+input[type="text"]{
+    border-radius: 4px;
+    padding: 4px;
+    width: fit-content;
+    border: 1px solid black;
+}
+
+.removeBlockButton{
+    color: #B92D2D;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.removeBlockButton:hover{
+    color: #B92D2D;
+}
+
+.removeDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.propertyDiv {
+    gap: 8px;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+}
+
+.image-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 button{
     width: fit-content;
     background-color: unset;
     border: 0;
     padding: 0;
+    font-size: 16px;
 }
 
 button:hover{
@@ -78,6 +119,12 @@ button.currentPage {
 .block{
     display: flex;
     justify-content: space-between;
+}
+
+.block label:hover{
+    cursor: pointer;
+    color: #21759B;
+    text-decoration: underline;
 }
 
 #loginForm{
@@ -142,5 +189,17 @@ button.currentPage {
 @media (max-width: 767px) {
     #loginForm {
       flex-direction: column;
+    }
+
+    .menu {
+        border-bottom: 0px solid;
+        border-top: 1px solid;
+        top: unset;
+        bottom: 0;
+    }
+    
+    #container{
+        top: 0;
+        bottom: unset;
     }
 }

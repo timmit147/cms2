@@ -288,17 +288,24 @@ function loopSortedBlocks(blockArray){
                 }
             }
     
+            const removeDiv = document.createElement('div');
+            removeDiv.classList.add('removeDiv');
+
             const inputLabel = document.createElement('label');
                     inputLabel.textContent = "Remove block";
                     inputLabel.style.fontWeight = 'bold';
-                    container.appendChild(inputLabel);
+                    removeDiv.appendChild(inputLabel);
 
             const removeButton = document.createElement('button');
-            removeButton.textContent = 'Remove';
+            removeButton.textContent = 'Remove block';
+            removeButton.classList.add('removeBlockButton');
+
             removeButton.addEventListener('click', () => {
                 removeBlockAndPage(currentPage, index);
             });
-            container.appendChild(removeButton);
+            removeDiv.appendChild(removeButton);
+
+            container.appendChild(removeDiv);
     
 
 
