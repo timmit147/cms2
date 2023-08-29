@@ -97,10 +97,27 @@ function showLoginForm() {
     
 }
 
-function login() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
 
+var loginButton = document.getElementById("loginButton");
+var passwordField = document.getElementById('password');
+
+loginButton.addEventListener("click", function() {
+    const email = document.getElementById('email').value;
+    const password = passwordField.value;
+
+    loginUser(email, password);
+});
+
+passwordField.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        const email = document.getElementById('email').value;
+        const password = passwordField.value;
+
+        loginUser(email, password);
+    }
+});
+
+function loginUser(email, password) {
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
         .then(() => {
             return firebase.auth().signInWithEmailAndPassword(email, password);
@@ -108,8 +125,8 @@ function login() {
         .catch((error) => {
             console.error('Error logging in: ', error);
         });
-        
 }
+
 
 async function fetchDataFromFirestore(path) {
     const allData = {};

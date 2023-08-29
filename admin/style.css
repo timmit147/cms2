@@ -50,9 +50,14 @@ select:focus {
     text-decoration: none;
 }
 
-form {
+#login-form .form {
     display: flex;
     gap: 8px;
+    flex-direction: column;
+}
+
+#login-form input{
+    padding: 8px;
 }
 
 #submitButton:hover {
