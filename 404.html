@@ -1,15 +1,1 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Finding page</title>
-</head>
-<body>
-    <script>
-        var currentURL = window.location.href;
-        var urlParts = currentURL.split("/");
-        var currentPage = urlParts[urlParts.length - 1];
-        localStorage.setItem("currentPage", currentPage);
-        window.location.href = "/index.html"; // Redirect immediately to root
-    </script>    
-</body>
-</html>
+<script>var currentURL = window.location.href;var urlParts = currentURL.split("/");var currentPage = urlParts[urlParts.length - 1];localStorage.setItem("currentPage", currentPage);window.location.href = "/index.html";</script>
