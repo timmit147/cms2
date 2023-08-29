@@ -846,6 +846,9 @@ async function reloadMenu(){
 
             const button = document.createElement('button');
             button.textContent = page.charAt(0).toUpperCase() + page.slice(1);
+            if(page === currentPage){
+                button.classList.add('currentPage');
+            }
 
             button.addEventListener('click', () => {
                 currentPage = page;
@@ -872,6 +875,9 @@ async function reloadMenu(){
             if (page === 'settings' || page === 'tutorial') {
                 const button = document.createElement('button');
                 button.textContent = page.charAt(0).toUpperCase() + page.slice(1);
+                if(page === currentPage){
+                    button.classList.add('currentPage');
+                }
             
                 button.addEventListener('click', () => {
                     currentPage = page;

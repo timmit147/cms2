@@ -66,6 +66,11 @@ a:hover{
     text-decoration: underline;
 }
 
+button.currentPage {
+    color: #21759b;
+    font-weight: bold;
+}
+
 .tutorialSubtitle{
     margin-bottom: 32px;
 }
