@@ -357,6 +357,29 @@ async function placeBlock() {
     addTitle(container);
 
     changeBreadcrump(currentPage);
+    if(currentPage === "tutorial"){
+        if (currentPage === "tutorial") {
+            const tutorialContent = `
+                <p class='tutorialSubtitle'>This page explains how to use this CMS.</p>
+                <h2>How to create pages?</h2>
+                <p>Step 1: Go to menu</p>
+                <p>Step 2: Search settings</p>
+                <p>Step 3: Click on add page</p>
+                <p>Step 4: Give the page a name</p>
+                <p>Step 5: Click on ok to create the page</p>
+                </br>
+                <h2>How to search a page?</h2>
+                <p>Step 1: Go to menu</p>
+                <p>Step 2: Click on search page</p>
+                <p>Step 3: Type the name of the page</p>
+                <p>Step 4: Click on the page</p>
+            `; 
+            const tutorial = document.createElement('div'); // Use a <div> to hold multiple <p> elements
+            tutorial.innerHTML = tutorialContent; // Set the HTML content using innerHTML
+            container.appendChild(tutorial);
+            return;
+        }
+    }
     if(currentPage != "settings"){
         addBlockTitle(container);
         await getBlocks();
@@ -804,6 +827,10 @@ async function reloadMenu(){
         h1.textContent = "Menu";
         container.appendChild(h1);
 
+        const pagesTitle = document.createElement('h2');
+        pagesTitle.textContent = "Pages";
+        container.appendChild(pagesTitle);
+
         const pagesArray = Object.keys(pages); 
 
         const homepageIndex = pagesArray.indexOf('homepage');
@@ -813,13 +840,12 @@ async function reloadMenu(){
         }
 
         for (const page of pagesArray) {
-            if (page === 'settings') {
+            if (page === 'settings' || page === 'tutorial') {
                 continue; 
             }
 
             const button = document.createElement('button');
             button.textContent = page.charAt(0).toUpperCase() + page.slice(1);
-            button.className = "button2";
 
             button.addEventListener('click', () => {
                 currentPage = page;
@@ -831,19 +857,21 @@ async function reloadMenu(){
             container.appendChild(button);
         }
 
-        container.appendChild(document.createElement('br')); // Add line break
+
+        const settingsTitle = document.createElement('h2');
+        settingsTitle.textContent = "Settings";
+        container.appendChild(settingsTitle);
 
         const createPageButton = document.createElement('button');
-        createPageButton.textContent = "Create Page";
+        createPageButton.textContent = "Add Page";
         createPageButton.className = "createPage button2";
         createPageButton.onclick = handleAddPageButtonClick; // Set the onclick handler
         container.appendChild(createPageButton);
 
         for (const page in pages) {
-            if (page === 'settings') {
+            if (page === 'settings' || page === 'tutorial') {
                 const button = document.createElement('button');
                 button.textContent = page.charAt(0).toUpperCase() + page.slice(1);
-                button.className = "button2";
             
                 button.addEventListener('click', () => {
                     currentPage = page;
@@ -856,7 +884,7 @@ async function reloadMenu(){
 
         const logoutButton = document.createElement('button');
 logoutButton.textContent = "Logout";
-logoutButton.id = "logout-button";
+logoutButton.id = "logoutButton";
 container.appendChild(logoutButton);
 
     // Add event listener to the logout button

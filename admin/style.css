@@ -19,13 +19,13 @@ button{
     background-color: unset;
     border: 0;
     padding: 0;
-    text-decoration: underline;
 }
 
 button:hover{
     cursor: pointer;
     color: #21759B;
     font-weight: bold;
+    text-decoration: underline;
 }
 
 .button{
@@ -52,10 +52,28 @@ button:hover{
     padding: 5px 0px;
 }
 
+#logoutButton{
+    color: #B92D2D;
+    font-weight: bold;
+}
+
+a{
+    color: #21759b;
+    cursor: pointer;
+}
+
+a:hover{
+    text-decoration: underline;
+}
+
+.tutorialSubtitle{
+    margin-bottom: 32px;
+}
+
 .block{
     display: flex;
     justify-content: space-between;
-  }
+}
 
 #loginForm{
     display: flex;
@@ -90,13 +108,17 @@ button:hover{
     border-top: 0px solid;
     padding: 20px;
     box-sizing: border-box;
-    justify-content: space-between;
+    gap: 8px;
     height: 10vh;
     width: 100%;
     align-items: center;
     position: fixed;
     top: 0;
     background-color: white;
+}
+
+.menu a{
+    text-decoration: underline;
 }
 
 #container {
