@@ -39,7 +39,6 @@ async function newDatabase() {
 
     // Get a reference to the Firestore database
     firestore = firebase.firestore();
-    
     let page = await getCurrentPage();
     await changeSlug(page);
     await placeBlock(page);
