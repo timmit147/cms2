@@ -15,11 +15,12 @@ const createDropdownWithBlocks = (async () => {
 
     // Construct the complete form HTML
     return `
-    <div id="dropdown">
+    <label>Add block</label>
+    <div id="addBlock">
         <select class="block" name="block" >
             ${optionsHTML}
         </select>
-        <button>Block toevoegen</button>
+        <button>Add</button>
     </div>
     `;
 })();
@@ -330,8 +331,8 @@ async function getBlocks() {
 
 async function addForm(){
     container.insertAdjacentHTML('beforeend', await createDropdownWithBlocks);
-    document.querySelector("#dropdown button").addEventListener("click", function() {
-        const selectedBlock = document.querySelector('#dropdown .block').value;
+    document.querySelector("#addBlock button").addEventListener("click", function() {
+        const selectedBlock = document.querySelector('#addBlock .block').value;
         addNewBlock(selectedBlock);      
     });
 }
