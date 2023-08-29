@@ -20,7 +20,7 @@ const objectWithBlocks = [
 ];
 
 const formHTML = `
-<form method="POST">
+<form onsubmit="handleButtonClick(); return false;">
     <select name="block" id="dropdown">
         <option value="imageBlock">Image block</option>
         <option value="footer">Footer</option>
@@ -328,20 +328,13 @@ async function addSettings(){
             removePage(currentPage); 
         });
         container.appendChild(removePageButton);
-        function handleButtonClick() {
-            const selectedBlock = document.querySelector('#dropdown').value;
-            addNewBlock(selectedBlock);
-        }
-     
-    
-        document.getElementById('submitButton').onclick = async function(event) {
-            event.preventDefault();
-            handleButtonClick();
-        };
-        
     }
+  
+}
 
-    
+function handleButtonClick() {
+    const selectedBlock = document.querySelector('#dropdown').value;
+    addNewBlock(selectedBlock);
 }
 
 async function placeBlock() {
