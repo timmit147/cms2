@@ -1,34 +1,30 @@
 let currentPage = document.getElementsByTagName("body")[0].id;
 let firestore = null;
-const objectWithBlocks = [
-    {
-        title: "Image block title",
-        content: "Content",
-        type: "imageBlock",
-        image: ""
-    },
-    {
-        title: "Footer title",
-        content: "footer text",
-        type: "footer",
-        image: ""
-    },
-    {
-        type: "menu",
-        logo: ""
-    }
-];
 
-const formHTML = `
-<form onsubmit="handleButtonClick(); return false;">
-    <select name="block" id="dropdown">
-        <option value="imageBlock">Image block</option>
-        <option value="footer">Footer</option>
-        <option value="menu">Menu</option>
-    </select>
-    <button type="Add page" id="submitButton">Block toevoegen</button>
-</form>
-`;
+const createDropdownWithBlocks = (async () => {
+    const module = await import('./blocks.js');
+    const objectWithBlocks = module.default; 
+
+    let optionsHTML = '';
+    objectWithBlocks.forEach(item => {
+        if (item.type) {
+            const optionText = item.type.charAt(0).toUpperCase() + item.type.slice(1).replace(/([A-Z])/g, ' $1').toLowerCase();
+            optionsHTML += `<option value="${item.type}">${optionText}</option>`;
+        }
+    });
+
+    // Construct the complete form HTML
+    return `
+    <div id="dropdown">
+        <select class="block" name="block" >
+            ${optionsHTML}
+        </select>
+        <button>Block toevoegen</button>
+    </div>
+    `;
+})();
+
+
 
 
 function myFunction() {
@@ -308,8 +304,12 @@ async function getBlocks() {
     loopSortedBlocks(blockArray);
 }
 
-function addForm(){
-    container.insertAdjacentHTML('beforeend', formHTML);
+async function addForm(){
+    container.insertAdjacentHTML('beforeend', await createDropdownWithBlocks);
+    document.querySelector("#dropdown button").addEventListener("click", function() {
+        const selectedBlock = document.querySelector('#dropdown .block').value;
+        addNewBlock(selectedBlock);      
+    });
 }
 
 async function addSettings(){
@@ -332,10 +332,7 @@ async function addSettings(){
   
 }
 
-function handleButtonClick() {
-    const selectedBlock = document.querySelector('#dropdown').value;
-    addNewBlock(selectedBlock);
-}
+
 
 async function placeBlock() {
     const container = document.getElementById('container');
@@ -871,23 +868,27 @@ async function addNewBlock(selectedBlock) {
         // Generate a unique ID for the new block document
         const newBlockDocRef = blocksCollectionRef.doc();
 
-        function getBlockData(blockName) {
+        async function getBlockData(blockName) {
+            const module = await import('./blocks.js');
+            const objectWithBlocks = module.default; 
             const block = objectWithBlocks.find(obj => obj.type === blockName);
             return block || null; // Return null if blockName is not found
         }
 
         // Set the data for the new block document with the generated ID
-        const selectedBlockData = getBlockData(selectedBlock);
+        const selectedBlockData = await getBlockData(selectedBlock);
         if (selectedBlockData) {
             const newBlockData = {
                 ...selectedBlockData,
                 order: newBlockOrder
             };
+            
 
             if (selectedBlockData.image) {
                 // If the block supports an image, add the 'image' property here
                 newBlockData.image = ''; // Initialize with an empty string or other appropriate value
             }
+
 
             await newBlockDocRef.set(newBlockData);
             console.log(`New block '${selectedBlock}' added successfully.`);
