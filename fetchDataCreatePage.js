@@ -60,37 +60,50 @@ async function createHtmlFiles() {
 createHtmlFiles();
 
 
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
-const readFile = util.promisify(fs.readFile);
 
 async function createBaseHtmlContent(pageName) {
-  console.log("test");
+  const fs = require('fs');
+  const path = require('path');
+  const util = require('util');
+  const readFile = util.promisify(fs.readFile);
 
+  // Fetch blocks and other necessary data
   const blocks = await fetchData(`pages/${pageName}/blocks`);
+  
+  // Prepare an array to store promises for reading block body content
   const bodyPromises = [];
 
+  // Iterate through blocks to gather body content promises
   for (const block of blocks) {
     const filePath = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'body.html');
     const promise = readFile(filePath, 'utf-8');
     bodyPromises.push(promise);
   }
 
+  // Read all body content promises concurrently
   const bodyContents = await Promise.all(bodyPromises);
   const combinedBodyContent = bodyContents.join('');
 
-  if (combinedBodyContent !== undefined && combinedBodyContent.trim() !== '') { // Check if combinedBodyContent is defined and not empty
+  // Prepare JavaScript file paths to be included in the <head>
+  const javascriptFiles = blocks
+    .map(block => {
+      const filePathJavasript = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'script.js');
+      return `<script src="${filePathJavasript}"></script>`;
+    })
+    .join('');
+
+  if (combinedBodyContent.trim() !== '') { // Check if combinedBodyContent is not empty
     const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>${pageName}</title>
-    </head>
-    <body>
-        ${combinedBodyContent}
-    </body>
-    </html>
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <title>${pageName}</title>
+          ${javascriptFiles} <!-- Include JavaScript files here -->
+      </head>
+      <body>
+          ${combinedBodyContent}
+      </body>
+      </html>
     `;
 
     const outputFilePath = path.join(__dirname, `${pageName}.html`);
@@ -101,6 +114,7 @@ async function createBaseHtmlContent(pageName) {
     console.log(`No body content found for ${pageName}.`);
   }
 }
+
 
 
 
