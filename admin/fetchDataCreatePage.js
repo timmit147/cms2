@@ -46,6 +46,9 @@ async function createHtmlFiles() {
   }
 
   for (const pageName of pages) {
+    if (pageName['name'] == "settings" || pageName['name'] == "tutorial") {
+      return;
+    }
     const htmlContent = await createBaseHtmlContent(pageName["name"]);
     const newPageFilePath = path.join(outputPath, `${pageName["name"]}.html`);
     fs.writeFileSync(newPageFilePath, htmlContent);
@@ -57,25 +60,46 @@ async function createHtmlFiles() {
 createHtmlFiles();
 
 
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
+const readFile = util.promisify(fs.readFile);
+
 async function createBaseHtmlContent(pageName) {
+  console.log("test");
+
   const blocks = await fetchData(`pages/${pageName}/blocks`);
-  let bodyContent = '';
+  const bodyPromises = [];
+
   for (const block of blocks) {
-    const blockType = block['fields']['type']['stringValue'];
-    console.log(blockType);
-    bodyContent += `<div class="${blockType}"></div>`;
+    const filePath = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'body.html');
+    const promise = readFile(filePath, 'utf-8');
+    bodyPromises.push(promise);
   }
-  return `
-  <!DOCTYPE html>
-  <html>
-  <head>
-      <title>${pageName}</title>
-  </head>
-  <body>
-      ${bodyContent}
-  </body>
-  </html>
-  `;
+
+  const bodyContents = await Promise.all(bodyPromises);
+  const combinedBodyContent = bodyContents.join('');
+
+  if (combinedBodyContent !== undefined && combinedBodyContent.trim() !== '') { // Check if combinedBodyContent is defined and not empty
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>${pageName}</title>
+    </head>
+    <body>
+        ${combinedBodyContent}
+    </body>
+    </html>
+    `;
+
+    const outputFilePath = path.join(__dirname, `${pageName}.html`);
+    fs.writeFileSync(outputFilePath, htmlContent);
+
+    console.log(`New HTML page generated at: ${outputFilePath}`);
+  } else {
+    console.log(`No body content found for ${pageName}.`);
+  }
 }
 
 
