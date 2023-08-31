@@ -49,10 +49,7 @@ async function createHtmlFiles() {
     if (pageName['name'] == "settings" || pageName['name'] == "tutorial") {
       return;
     }
-    const htmlContent = await createBaseHtmlContent(pageName["name"]);
-    const newPageFilePath = path.join(outputPath, `${pageName["name"]}.html`);
-    fs.writeFileSync(newPageFilePath, htmlContent);
-    console.log(`New HTML page generated at: ${newPageFilePath}`);
+    await createBaseHtmlContent(pageName['name']);    
   }
 }
 
