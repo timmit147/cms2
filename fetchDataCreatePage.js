@@ -60,45 +60,38 @@ async function createHtmlFiles() {
 createHtmlFiles();
 
 
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
+const readFile = util.promisify(fs.readFile);
 
-async function createBaseHtmlContent(pageName) {
-  const fs = require('fs');
-  const path = require('path');
-  const util = require('util');
-  const readFile = util.promisify(fs.readFile);
 
-  // Fetch blocks and other necessary data
-  const blocks = await fetchData(`pages/${pageName}/blocks`);
-  
-  // Prepare an array to store promises for reading block body content
-  const bodyPromises = [];
-
-  // Iterate through blocks to gather body content promises
-  for (const block of blocks) {
-    const filePath = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'body.html');
-    const promise = readFile(filePath, 'utf-8');
-    bodyPromises.push(promise);
-  }
-
-  // Read all body content promises concurrently
-  const bodyContents = await Promise.all(bodyPromises);
-  const combinedBodyContent = bodyContents.join('');
-
-  // Prepare JavaScript file paths to be included in the <head>
-  const javascriptFiles = blocks
+function generateJavascriptTags(blocks) {
+  return blocks
     .map(block => {
-      const filePathJavasript = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'script.js');
-      return `<script src="${filePathJavasript}"></script>`;
+      const filePath = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'script.js');
+      return `<script src="${filePath}"></script>`;
     })
     .join('');
+}
 
-  if (combinedBodyContent.trim() !== '') { // Check if combinedBodyContent is not empty
+function generateCssLinks(cssFiles) {
+  return cssFiles
+    .map(cssFilePath => {
+      return `<link rel="stylesheet" type="text/css" href="${cssFilePath}">`;
+    })
+    .join('');
+}
+
+async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent) {
+  if (combinedBodyContent.trim() !== '') {
     const htmlContent = `
       <!DOCTYPE html>
       <html>
       <head>
           <title>${pageName}</title>
-          ${javascriptFiles} <!-- Include JavaScript files here -->
+          ${javascriptFiles}
+          ${cssLinks}
       </head>
       <body>
           ${combinedBodyContent}
@@ -115,69 +108,26 @@ async function createBaseHtmlContent(pageName) {
   }
 }
 
+async function createBaseHtmlContent(pageName) {
+  const blocks = await fetchData(`pages/${pageName}/blocks`);
 
+  const bodyPromises = [];
+  const cssFiles = [];
 
+  for (const block of blocks) {
+    const filePath = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'body.html');
+    const promise = readFile(filePath, 'utf-8');
+    bodyPromises.push(promise);
 
+    const cssFilePath = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'style.css');
+    cssFiles.push(cssFilePath);
+  }
 
+  const bodyContents = await Promise.all(bodyPromises);
+  const combinedBodyContent = bodyContents.join('');
 
-// fetchData("pages/homepage/blocks");
+  const javascriptFiles = generateJavascriptTags(blocks);
+  const cssLinks = generateCssLinks(cssFiles);
 
-// fetchData("pages");
-
-// fetchData("pages/settings/field");
-
-// fetchData("pages/settings/blocks");
-
-
-// const fs = require('fs');
-// const path = require('path');
-
-// // Function to fetch data from Firestore and display
-// async function fetchDataFromFirestore(path) {
-//   const allData = {};
-
-//   try {
-//       const querySnapshot = await firestore.collection(path).get();
-//       querySnapshot.forEach((doc) => {
-//           allData[doc.id] = doc.data();
-//       });
-//       console.log(allData);
-//       return allData;
-//   } catch (error) {
-//       console.error("Error fetching data: ", error);
-//       throw error; // Re-throw the error to be handled by the caller
-//   }
-// }
-
-
-
-
-// fetchDataFromFirestore('pages/homepage/blocks');
-
-// async function placeBlocks(pageName) {
-//   let firestorePath = `pages/${pageName}/blocks`;
-//   let blocksData = await fetchDataFromFirestore(firestorePath);
-
-//   if (Object.keys(blocksData).length === 0) {
-//       await changeSlug("homepage");
-//       firestorePath = `pages/homepage/blocks`;
-//       blocksData = await fetchDataFromFirestore(firestorePath);
-//   }    
-
-//   // Convert the blocksData object into an array of blocks
-//   const blockArray = Object.entries(blocksData).map(([blockKey, block]) => ({
-//       blockKey,
-//       ...block
-//   }));
-
-//   // Sort the blocks based on the "order" property
-//   const sortedBlocks = blockArray.sort((a, b) => a.order - b.order);
-
-//   // Clear previous content before adding new blocks
-//   document.body.innerHTML = ''; // Clear the body content
-
-//   for (const block of sortedBlocks) {
-//       await addHtmlToBody(block.blockKey, block.type);
-//   }
-// }
-
+  generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent);
+}
