@@ -81,13 +81,13 @@ function generateJavascriptTags(blocks) {
 }
 
 
-function generateAsyncCssLinks(cssFiles) {
+function generateCssLinks(cssFiles) {
   const cssFilePathSet = new Set(); 
   return cssFiles
     .map(cssFilePath => {
       if (!cssFilePathSet.has(cssFilePath)) {
         cssFilePathSet.add(cssFilePath);
-        return `<link rel="stylesheet" type="text/css" href="${cssFilePath}" async>`;
+        return `<link rel="stylesheet" type="text/css" href="${cssFilePath}">`;
       }
 
       return '';
@@ -122,7 +122,6 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
       <!DOCTYPE html>
       <html lang="en">
       <head>
-          <meta http-equiv="Cache-Control" content="public, max-age=31536000">
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <meta name="description" content='${metaDescription}'>
@@ -193,7 +192,7 @@ async function createBaseHtmlContent(pageName) {
   const combinedBodyContent = bodyContents.join('');
 
   const javascriptFiles = generateJavascriptTags(blocks);
-  const cssLinks = generateAsyncCssLinks(cssFiles);
+  const cssLinks = generateCssLinks(cssFiles);
 
   generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent);
 }
