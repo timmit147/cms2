@@ -1,3 +1,6 @@
+const repositoryRoot = process.env.GITHUB_WORKSPACE;
+
+
 async function fetchData(path) {
   const https = require('https');
   const apiKey = "AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8";
@@ -39,7 +42,7 @@ async function createHtmlFiles() {
   const path = require('path');
   const pages = await fetchData("pages");
   
-  const outputPath = path.join(__dirname, '..');
+  const outputPath = path.join(repositoryRoot, '..');
   
   if (!fs.existsSync(outputPath)) {
       fs.mkdirSync(outputPath, { recursive: true });
@@ -66,7 +69,7 @@ const readFile = util.promisify(fs.readFile);
 function generateJavascriptTags(blocks) {
   return blocks
     .map(block => {
-      const filePath = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'script.js');
+      const filePath = path.join(repositoryRoot, 'blocks', block['fields']['type']['stringValue'], 'script.js');
       return `<script src="${filePath}"></script>`;
     })
     .join('');
@@ -96,7 +99,6 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
       </html>
     `;
 
-    const repositoryRoot = process.env.GITHUB_WORKSPACE;
     const outputFilePath = path.join(repositoryRoot, `${pageName}.html`);
     fs.writeFileSync(outputFilePath, htmlContent);
     
@@ -113,7 +115,7 @@ async function createBaseHtmlContent(pageName) {
   const cssFiles = [];
 
   for (const block of blocks) {
-    const filePath = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'body.html');
+    const filePath = path.join(repositoryRoot, 'blocks', block['fields']['type']['stringValue'], 'body.html');
     const promise = await readFile(filePath, 'utf-8');
 
 
@@ -135,7 +137,7 @@ async function createBaseHtmlContent(pageName) {
 
     bodyPromises.push(update);
 
-    const cssFilePath = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'style.css');
+    const cssFilePath = path.join(repositoryRoot, 'blocks', block['fields']['type']['stringValue'], 'style.css');
     cssFiles.push(cssFilePath);
   }
 
