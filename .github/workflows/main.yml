@@ -31,7 +31,7 @@ jobs:
           git add .
           git commit -m "Update HTML pages"
 
-      - name: Pull and push
+      - name: Pull and merge changes
         run: |
-          git pull origin main
+          git pull origin main --no-rebase
           git push
