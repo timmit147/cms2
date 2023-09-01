@@ -103,11 +103,11 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
       <html>
       <head>
           <title>${pageName}</title>
-          ${javascriptFiles}
           ${cssLinks}
       </head>
       <body>
           ${combinedBodyContent}
+          ${javascriptFiles}
       </body>
       </html>
     `;
