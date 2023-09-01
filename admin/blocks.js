@@ -18,6 +18,10 @@ const objectWithBlocks = [
     {
         type: "color",
         color: "red"
+    },
+    {
+        type: "text",
+        title: "hello"
     }
 ];
 

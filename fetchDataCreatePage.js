@@ -113,8 +113,9 @@ async function createBaseHtmlContent(pageName) {
 
   for (const block of blocks) {
     const filePath = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'body.html');
-    const promise = readFile(filePath, 'utf-8');
-    bodyPromises.push(promise);
+    const promise = await readFile(filePath, 'utf-8');
+    const updatedId = await replaceIdInString(promise,block['name']);
+    bodyPromises.push(updatedId);
 
     const cssFilePath = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'style.css');
     cssFiles.push(cssFilePath);
@@ -127,4 +128,10 @@ async function createBaseHtmlContent(pageName) {
   const cssLinks = generateCssLinks(cssFiles);
 
   generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent);
+}
+
+function replaceIdInString(htmlContent,updateName) {
+  var regex = /id="temp"/;
+  var updatedHtmlContent = htmlContent.replace(regex, `id="${updateName}"`);
+  return updatedHtmlContent;
 }
