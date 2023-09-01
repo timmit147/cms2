@@ -134,6 +134,12 @@ async function createBaseHtmlContent(pageName) {
   const cssFilePath = path.join('./style.css');
   cssFiles.push(cssFilePath);
 
+  blocks.sort((a, b) => {
+  const orderA = parseInt(a['fields']['order']['integerValue']) || 0;
+  const orderB = parseInt(b['fields']['order']['integerValue']) || 0;
+  return orderA - orderB;
+});
+
   for (const block of blocks) {
     const filePath = path.join("./", 'blocks', block['fields']['type']['stringValue'], 'body.html');
     const promise = await readFile(filePath, 'utf-8');
