@@ -22,4 +22,6 @@ jobs:
         run: npm install
 
       - name: Run your code
-        run: node fetchDataCreatePage.js # Replace with your actual script name
+        run: |
+          # Replace this with the actual command to start your script
+          node fetchDataCreatePage.js
