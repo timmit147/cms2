@@ -124,6 +124,7 @@ async function createBaseHtmlContent(pageName) {
         const value = fields[key];
         if (value.arrayValue) {
           update = renderArray(update, 'fruits', fields[key].arrayValue.values);
+          console.log(update);
         }
         else{
           update = await replaceValues(update,key,fields[key].stringValue);
@@ -164,15 +165,4 @@ function renderArray(htmlContent, arrayName, dataArray) {
     }).join('');
   });
 }
-
-
-
-// // Example data with an array of fruits
-// var data = {
-//   fruits: ['Apple', 'Banana', 'Cherry','Cherry']
-// };
-
-// var html = '<ul>{{fruits}}<li>{{this}}</li>{{/fruits}}</ul>';
-// var updatedHtml = renderArray(html, 'fruits', data.fruits);
-// console.log(updatedHtml);
 
