@@ -193,7 +193,7 @@ async function createBaseHtmlContent(pageName) {
   const combinedBodyContent = bodyContents.join('');
 
   const javascriptFiles = generateJavascriptTags(blocks);
-  const cssLinks = generateCssLinks(cssFiles);
+  const cssLinks = generateAsyncCssLinks(cssFiles);
 
   generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent);
 }
