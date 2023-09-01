@@ -112,11 +112,11 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
       </html>
     `;
 
-    const outputFilePath = path.join("./", `${pageName}.html`);
-
     if (pageName === "homepage") {
       pageName = "index";
     }
+
+    const outputFilePath = path.join("./", `${pageName}.html`);
     
     fs.writeFileSync(outputFilePath, htmlContent);
     
