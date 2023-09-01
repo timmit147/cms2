@@ -81,19 +81,20 @@ function generateJavascriptTags(blocks) {
 }
 
 
-function generateCssLinks(cssFiles) {
+function generateAsyncCssLinks(cssFiles) {
   const cssFilePathSet = new Set(); 
   return cssFiles
     .map(cssFilePath => {
       if (!cssFilePathSet.has(cssFilePath)) {
         cssFilePathSet.add(cssFilePath);
-        return `<link rel="stylesheet" type="text/css" href="${cssFilePath}">`;
+        return `<link rel="stylesheet" type="text/css" href="${cssFilePath}" async>`;
       }
 
       return '';
     })
     .join('');
 }
+
 
 async function getPageMetaDescription(pageName){
   const pages = await fetchData('pages');
