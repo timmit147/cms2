@@ -95,13 +95,35 @@ function generateCssLinks(cssFiles) {
     .join('');
 }
 
+async function getPageMetaDescription(pageName){
+  const pages = await fetchData('pages');
+  let metaDescription;
+  
+  const page = pages.find(page => page.name === pageName);
+  
+  if (page) {
+    metaDescription = page.fields && page.fields.metaDescription;
+    if (metaDescription && typeof metaDescription === 'object' && metaDescription.stringValue) {
+      metaDescription = metaDescription.stringValue;
+    }
+  } else {
+    console.log(`Page '${pageName}' not found.`);
+  }
+  return metaDescription;
+}
 
 async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent) {
+
+  metaDescription = await getPageMetaDescription(pageName);
+  
   if (combinedBodyContent.trim() !== '') {
     const htmlContent = `
       <!DOCTYPE html>
-      <html>
+      <html lang="en">
       <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <meta name="description" content='${metaDescription}'>
           <title>${pageName}</title>
           ${cssLinks}
       </head>
@@ -147,7 +169,6 @@ async function createBaseHtmlContent(pageName) {
 
     let update = await replaceValues(promise,'id',block['name']);
     const fields = await block['fields'];
-
     for (const key in fields) {
       if (fields.hasOwnProperty(key)) {
         const value = fields[key];
