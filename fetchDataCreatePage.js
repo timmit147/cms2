@@ -140,7 +140,6 @@ async function createBaseHtmlContent(pageName) {
         const value = fields[key];
         if (value.arrayValue) {
           update = renderArray(update, 'fruits', fields[key].arrayValue.values);
-          console.log(update);
         }
         else{
           update = await replaceValues(update,key,fields[key].stringValue);
