@@ -121,8 +121,13 @@ async function createBaseHtmlContent(pageName) {
 
     for (const key in fields) {
       if (fields.hasOwnProperty(key)) {
-        update = await replaceValues(update,key,fields[key].stringValue);
-        console.log(`${key}: ${fields[key].stringValue}`);
+        const value = fields[key];
+        if (value.arrayValue) {
+          update = renderArray(update, 'fruits', fields[key].arrayValue.values);
+        }
+        else{
+          update = await replaceValues(update,key,fields[key].stringValue);
+        }
       }
     }
 
@@ -147,3 +152,27 @@ function replaceValues(htmlContent, currentName, updateName) {
   var updatedHtmlContent = htmlContent.replace(regexPattern, updateName);
   return updatedHtmlContent;
 }
+
+function renderArray(htmlContent, arrayName, dataArray) {
+  const loopStart = `{{${arrayName}}}`;
+  const loopEnd = `{{/${arrayName}}}`;
+  const loopRegex = new RegExp(`${loopStart}(.*?)${loopEnd}`, 'gs');
+
+  return htmlContent.replace(loopRegex, (match, innerContent) => {
+    return dataArray.map(item => {
+      return innerContent.replace(/\{\{this\}\}/g, item.stringValue || '');
+    }).join('');
+  });
+}
+
+
+
+// // Example data with an array of fruits
+// var data = {
+//   fruits: ['Apple', 'Banana', 'Cherry','Cherry']
+// };
+
+// var html = '<ul>{{fruits}}<li>{{this}}</li>{{/fruits}}</ul>';
+// var updatedHtml = renderArray(html, 'fruits', data.fruits);
+// console.log(updatedHtml);
+
