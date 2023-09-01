@@ -1,6 +1,3 @@
-const repositoryRoot = "./";
-
-
 async function fetchData(path) {
   const https = require('https');
   const apiKey = "AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8";
@@ -42,7 +39,7 @@ async function createHtmlFiles() {
   const path = require('path');
   const pages = await fetchData("pages");
   
-  const outputPath = path.join(repositoryRoot, '..');
+  const outputPath = path.join("./", '..');
   
   if (!fs.existsSync(outputPath)) {
       fs.mkdirSync(outputPath, { recursive: true });
@@ -67,21 +64,37 @@ const readFile = util.promisify(fs.readFile);
 
 
 function generateJavascriptTags(blocks) {
+  const filePathSet = new Set(); // Create a Set to store unique filePath values
+
   return blocks
     .map(block => {
-      const filePath = path.join(repositoryRoot, 'blocks', block['fields']['type']['stringValue'], 'script.js');
-      return `<script src="${filePath}"></script>`;
+      const filePath = path.join("./", 'blocks', block['fields']['type']['stringValue'], 'script.js');
+
+      if (!filePathSet.has(filePath)) {
+        filePathSet.add(filePath);
+        return `<script src="${filePath}"></script>`;
+      }
+
+      return '';
     })
     .join('');
 }
 
+
 function generateCssLinks(cssFiles) {
+  const cssFilePathSet = new Set(); 
   return cssFiles
     .map(cssFilePath => {
-      return `<link rel="stylesheet" type="text/css" href="${cssFilePath}">`;
+      if (!cssFilePathSet.has(cssFilePath)) {
+        cssFilePathSet.add(cssFilePath);
+        return `<link rel="stylesheet" type="text/css" href="${cssFilePath}">`;
+      }
+
+      return '';
     })
     .join('');
 }
+
 
 async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent) {
   if (combinedBodyContent.trim() !== '') {
@@ -99,7 +112,7 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
       </html>
     `;
 
-    const outputFilePath = path.join(repositoryRoot, `${pageName}.html`);
+    const outputFilePath = path.join("./", `${pageName}.html`);
     fs.writeFileSync(outputFilePath, htmlContent);
     
     console.log(`New HTML page generated at: ${outputFilePath}`);
@@ -115,7 +128,7 @@ async function createBaseHtmlContent(pageName) {
   const cssFiles = [];
 
   for (const block of blocks) {
-    const filePath = path.join(repositoryRoot, 'blocks', block['fields']['type']['stringValue'], 'body.html');
+    const filePath = path.join("./", 'blocks', block['fields']['type']['stringValue'], 'body.html');
     const promise = await readFile(filePath, 'utf-8');
 
 
@@ -137,7 +150,7 @@ async function createBaseHtmlContent(pageName) {
 
     bodyPromises.push(update);
 
-    const cssFilePath = path.join(repositoryRoot, 'blocks', block['fields']['type']['stringValue'], 'style.css');
+    const cssFilePath = path.join("./", 'blocks', block['fields']['type']['stringValue'], 'style.css');
     cssFiles.push(cssFilePath);
   }
 
