@@ -3,6 +3,9 @@ name: Build and Update Pages
 on:
   schedule:
     - cron: '*/30 * * * *'  # Run every 30 minutes
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -30,7 +33,6 @@ jobs:
           git add .
           git commit -m "Update HTML pages"
 
-      - name: Pull and merge changes
+      - name: Push changes
         run: |
-          git pull -X theirs origin main
           git push
