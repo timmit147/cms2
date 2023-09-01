@@ -72,7 +72,7 @@ function generateJavascriptTags(blocks) {
 
       if (!filePathSet.has(filePath)) {
         filePathSet.add(filePath);
-        return `<script src="${filePath}"></script>`;
+        return `<script src="${filePath}" defer></script>`;
       }
 
       return '';
