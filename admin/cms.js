@@ -627,10 +627,39 @@ async function updatePageField(pageName, field, newValue) {
             [field]: newValue
         });
         console.log(`Field '${field}' updated successfully.`);
+        triggerGitHubAction();
+
     } catch (error) {
         console.error(`Error updating field '${field}':`, error);
     }
+
+
 }
+
+async function triggerGitHubAction() {
+    const data = await fetchDataFromFirestore("private");
+    const token = await data["private"]["token"];   
+    
+    const repository = 'timmit147/cms2';
+
+    const response = await fetch(`https://api.github.com/repos/${repository}/dispatches`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            event_type: 'update-html', // This should match the event in your workflow file.
+        }),
+    });
+
+    if (response.ok) {
+        console.log('GitHub Action workflow triggered successfully.');
+    } else {
+        console.error('Error triggering GitHub Action workflow:', response.statusText);
+    }
+}
+
 
 function addUpDownButtons(blockDiv, blockIndex, totalBlocks, pageName) {
     const buttonsDiv = document.createElement('div'); // Create a div to contain the buttons
@@ -786,8 +815,6 @@ async function removeBlockAndPage(pageName, blockIndex) {
 }
 
 async function handleAddPageButtonClick() {
-    console.log("test");
-
     // Prompt the user for the new page name
     const newPageName = prompt("Enter the name of the new page:");
 
@@ -996,6 +1023,7 @@ async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) 
             [propertyKey]: newValue
         });
         console.log(`Block property '${propertyKey}' updated successfully.`);
+        triggerGitHubAction();
     } catch (error) {
         console.error(`Error updating block property '${propertyKey}':`, error);
     }

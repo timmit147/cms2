@@ -61,11 +61,9 @@ const adminServer = http.createServer((req, res) => {
     let filePath = '.' + req.url;
 
     if (filePath === './admin') {
-        console.log("a");
 
         filePath = './admin/index.html';
     } else {
-        console.log("test");
         filePath = './admin' + req.url;
     }
 
