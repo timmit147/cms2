@@ -114,8 +114,19 @@ async function createBaseHtmlContent(pageName) {
   for (const block of blocks) {
     const filePath = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'body.html');
     const promise = await readFile(filePath, 'utf-8');
-    const updatedId = await replaceIdInString(promise,block['name']);
-    bodyPromises.push(updatedId);
+
+
+    let update = await replaceValues(promise,'id',block['name']);
+    const fields = await block['fields'];
+
+    for (const key in fields) {
+      if (fields.hasOwnProperty(key)) {
+        update = await replaceValues(update,key,fields[key].stringValue);
+        console.log(`${key}: ${fields[key].stringValue}`);
+      }
+    }
+
+    bodyPromises.push(update);
 
     const cssFilePath = path.join(__dirname, 'blocks', block['fields']['type']['stringValue'], 'style.css');
     cssFiles.push(cssFilePath);
@@ -130,8 +141,9 @@ async function createBaseHtmlContent(pageName) {
   generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent);
 }
 
-function replaceIdInString(htmlContent,updateName) {
-  var regex = /id="temp"/;
-  var updatedHtmlContent = htmlContent.replace(regex, `id="${updateName}"`);
+
+function replaceValues(htmlContent, currentName, updateName) {
+  var regexPattern = new RegExp(`{{${currentName}}}`, 'g');
+  var updatedHtmlContent = htmlContent.replace(regexPattern, updateName);
   return updatedHtmlContent;
 }
