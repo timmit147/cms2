@@ -1,9 +1,9 @@
-name: My GitHub Actions Workflow
+name: Build and Update Pages
 
 on:
   push:
     branches:
-      - main # Adjust as needed
+      - main
 
 jobs:
   build:
@@ -16,15 +16,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14 # Adjust to your preferred Node.js version
+          node-version: 14
 
       - name: Install dependencies
         run: npm install
 
-      - name: Debug GitHub Workspace
-        run: echo "GitHub Workspace is $GITHUB_WORKSPACE"
+      - name: Generate HTML pages
+        run: node fetchDataCreatePage.js
 
-      - name: Run your code
+      - name: Commit and push
         run: |
-          # Replace this with the actual command to start your script
-          node fetchDataCreatePage.js
+          git config user.name "timmit147"
+          git config user.email "timmeeuwsen@hotmail.nl"
+          git add .
+          git commit -m "Update HTML pages"
+          git push
