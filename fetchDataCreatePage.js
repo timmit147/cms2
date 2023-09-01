@@ -96,9 +96,10 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
       </html>
     `;
 
-    const outputFilePath = path.join(__dirname, `${pageName}.html`);
+    const repositoryRoot = process.env.GITHUB_WORKSPACE;
+    const outputFilePath = path.join(repositoryRoot, `${pageName}.html`);
     fs.writeFileSync(outputFilePath, htmlContent);
-
+    
     console.log(`New HTML page generated at: ${outputFilePath}`);
   } else {
     console.log(`No body content found for ${pageName}.`);
