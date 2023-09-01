@@ -1,4 +1,4 @@
-const repositoryRoot = process.env.GITHUB_WORKSPACE;
+const repositoryRoot = "./";
 
 
 async function fetchData(path) {
