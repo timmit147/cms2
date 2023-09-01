@@ -128,14 +128,11 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
 
 async function createBaseHtmlContent(pageName) {
   const blocks = await fetchData(`pages/${pageName}/blocks`);
-  const cssFilePath = path.join('./style.css');
-  cssFiles.push(cssFilePath);
-
-
-
-
   const bodyPromises = [];
   const cssFiles = [];
+
+  const cssFilePath = path.join('./style.css');
+  cssFiles.push(cssFilePath);
 
   for (const block of blocks) {
     const filePath = path.join("./", 'blocks', block['fields']['type']['stringValue'], 'body.html');
