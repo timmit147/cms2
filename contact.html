@@ -7,17 +7,6 @@
           <meta name="description" content='undefined'>
           <meta name="theme-color" content="#007bff">
           <link rel="manifest" href="/manifest.json">
-          <script>
-              if ('serviceWorker' in navigator) {
-                  navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-                      .then(registration => {
-                          console.log('Service Worker registered with scope:', registration.scope);
-                      })
-                      .catch(error => {
-                          console.error('Service Worker registration failed:', error);
-                      });
-              }
-          </script>
           <title>contact</title>
           <link rel="stylesheet" type="text/css" href="style.css"><link rel="stylesheet" type="text/css" href="blocks/header/style.css">
       </head>
@@ -31,6 +20,18 @@
     </div>
 </div> 
           <script src="blocks/header/script.js" defer></script>
+          
+          <script>
+              if ('serviceWorker' in navigator) {
+                  navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+                      .then(registration => {
+                          console.log('Service Worker registered with scope:', registration.scope);
+                      })
+                      .catch(error => {
+                          console.error('Service Worker registration failed:', error);
+                      });
+              }
+          </script>
       </body>
-      </html>
+      </html>    
     
