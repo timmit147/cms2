@@ -127,6 +127,13 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
           <meta name="description" content='${metaDescription}'>
           <meta name="theme-color" content="#007bff">
           <link rel="manifest" href="/manifest.json">
+          <title>${pageName}</title>
+          ${cssLinks}
+      </head>
+      <body>
+          ${combinedBodyContent}
+          ${javascriptFiles}
+          
           <script>
               if ('serviceWorker' in navigator) {
                   navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
@@ -138,14 +145,8 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
                       });
               }
           </script>
-          <title>${pageName}</title>
-          ${cssLinks}
-      </head>
-      <body>
-          ${combinedBodyContent}
-          ${javascriptFiles}
       </body>
-      </html>
+      </html>    
     `;
 
     if (pageName === "homepage") {
