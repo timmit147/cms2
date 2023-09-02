@@ -14,6 +14,16 @@ const objectWithBlocks = [
         buttonUrl: "#",
         image: "",
         altImage: ""
+    },
+    {
+        type: "imageText",
+        title: "Image text block",
+        content: "this is a test text",
+        buttonText: "klik",
+        buttonUrl: "#",
+        image: "",
+        altImage: "",
+        textPosition: ""
     }
 ];
 
