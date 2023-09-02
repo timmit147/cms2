@@ -5,8 +5,7 @@ const cacheName = 'my-cache-v1';
 const assetsToCache = [
     '/',
     '/index.html',
-    '/styles.css',
-    '/script.js',
+    '/style.css',
     // Add more URLs to cache here
 ];
 
