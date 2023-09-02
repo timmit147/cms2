@@ -1,10 +1,9 @@
 name: Build and Update Pages
 
-on: # Remove the schedule and push triggers
-  # You can add a custom event that you will use to trigger the workflow
+on:
   repository_dispatch:
     types:
-      - update-html # Define your custom event type
+      - update-html
 
 jobs:
   build:
@@ -25,13 +24,17 @@ jobs:
       - name: Generate HTML pages
         run: node fetchDataCreatePage.js
 
-      - name: Commit changes
+      - name: Check for changes
+        id: git-check
         run: |
           git config user.name "timmit147"
           git config user.email "timmeeuwsen@hotmail.nl"
+          git diff --exit-code || echo "Changes detected"
           git add .
           git commit -m "Update HTML pages"
+        continue-on-error: true
 
       - name: Push changes
+        if: steps.git-check.outcome == 'success'
         run: |
           git push
