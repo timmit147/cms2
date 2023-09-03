@@ -24,6 +24,12 @@ const objectWithBlocks = [
         image: "",
         altImage: "",
         textPosition: ""
+    },
+    {
+        type: "install",
+        title: "Image text block",
+        content: "this is a test text",
+        buttonText: "Image text block",
     }
 ];
 

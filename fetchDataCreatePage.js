@@ -253,7 +253,7 @@ function saveImages(imageUrl) {
     // Handle the end of the download
     fileStream.on('finish', () => {
       fileStream.close();
-      console.log(`Image saved: ${filename}`);
+      // console.log(`Image saved: ${filename}`);
     });
   }).on('error', (err) => {
     console.error(`Error downloading image: ${err.message}`);
