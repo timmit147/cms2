@@ -1,36 +1,41 @@
 let deferredPrompt = null;
 
-window.addEventListener('beforeinstallprompt', (event) => {
-    console.log("test");
-    event.preventDefault();
-    deferredPrompt = event;
+const installButton = document.querySelector('.installButton');
 
-    const installButtons = document.querySelectorAll('.installButton');
+// Check if the browser supports the beforeinstallprompt event
+if ('beforeinstallprompt' in window) {
+    // Listen for the beforeinstallprompt event
+    window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        deferredPrompt = event;
 
-    installButtons.forEach((button) => {
-        button.style.display = 'block';
-        button.addEventListener('click', handleInstallButtonClick);
+        // Show the install button
+        installButton.style.display = 'block';
     });
-});
 
-function handleInstallButtonClick(event) {
-    event.preventDefault();
-    const installButton = event.target;
-    const parentDiv = installButton.parentElement;
+    // Add a click event listener to the install button
+    installButton.addEventListener('click', () => {
+        if (deferredPrompt) {
+            // Trigger the installation prompt
+            deferredPrompt.prompt();
+            
+            // Wait for the user's choice
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the PWA installation');
+                } else {
+                    console.log('User dismissed the PWA installation');
+                }
+                
+                // Reset the deferredPrompt
+                deferredPrompt = null;
 
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-
-        deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-                console.log('User accepted the PWA installation');
-            } else {
-                console.log('User dismissed the PWA installation');
-            }
-            deferredPrompt = null;
-            parentDiv.style.display = 'none';
-        });
-    }
+                // Hide the install button
+                installButton.style.display = 'none';
+            });
+        }
+    });
+} else {
+    // If the beforeinstallprompt event is not supported, hide the install button
+    installButton.style.display = 'none';
 }
-
-console.log("test");
