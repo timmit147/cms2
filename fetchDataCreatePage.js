@@ -186,15 +186,25 @@ async function createBaseHtmlContent(pageName) {
     const fields = await block['fields'];
     for (const key in fields) {
       if (fields.hasOwnProperty(key)) {
-        const value = fields[key];
+        let value = fields[key];
+    
+        for (const innerKey in value) {
+          if (value[innerKey].startsWith('https://firebasestorage.googleapis.com/')) {
+            // Save the image and get the saved filename
+            const savedImageFilename = await saveImages(value[innerKey]);
+            // Replace the URL with the saved filename
+            value[innerKey] = savedImageFilename;
+          }
+        }
+    
         if (value.arrayValue) {
           update = renderArray(update, 'fruits', fields[key].arrayValue.values);
-        }
-        else{
-          update = await replaceValues(update,key,fields[key].stringValue);
+        } else {
+          update = await replaceValues(update, key, fields[key].stringValue);
         }
       }
     }
+    
 
     bodyPromises.push(update);
 
@@ -209,6 +219,47 @@ async function createBaseHtmlContent(pageName) {
   const cssLinks = generateCssLinks(cssFiles);
 
   generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent);
+}
+
+
+const https = require('https');
+
+function sanitizeFilename(filename) {
+  // Remove invalid characters from the filename
+  return filename.replace(/[/\\?%*:|"<>]/g, '_');
+}
+
+function saveImages(imageUrl) {
+  // Specify the root directory where "images" folder will be created
+  const rootDirectory = './';
+  
+  // Create the "images" directory if it doesn't exist
+  const imagesDirectory = path.join(rootDirectory, 'images');
+  if (!fs.existsSync(imagesDirectory)) {
+    fs.mkdirSync(imagesDirectory, { recursive: true });
+  }
+
+  // Extract the image filename from the URL and sanitize it
+  const originalFilename = path.basename(imageUrl);
+  const filename = sanitizeFilename(originalFilename.split('?')[0]); // Remove everything after '?'
+
+  // Create a writable stream to save the image
+  const fileStream = fs.createWriteStream(path.join(imagesDirectory, filename));
+
+  // Send an HTTP GET request to download the image
+  https.get(imageUrl, (response) => {
+    response.pipe(fileStream);
+
+    // Handle the end of the download
+    fileStream.on('finish', () => {
+      fileStream.close();
+      console.log(`Image saved: ${filename}`);
+    });
+  }).on('error', (err) => {
+    console.error(`Error downloading image: ${err.message}`);
+  });
+  return `images/${filename}`;
+
 }
 
 
