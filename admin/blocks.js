@@ -30,6 +30,17 @@ const objectWithBlocks = [
         title: "Image text block",
         content: "this is a test text",
         buttonText: "Image text block",
+    },
+    {
+        type: "carHeader",
+        title: "Car header title",
+        subTitle: "Subtitle",
+        content: "this is a test text",
+        image: "",
+        altImage: "",
+        button1Text: "Image text block",
+        button2Text: "Image text block",
+        button3Text: "Image text block",
     }
 ];
 
