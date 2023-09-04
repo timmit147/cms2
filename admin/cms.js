@@ -774,13 +774,26 @@ try {
 }
 
 function handleInputKeydown(blockIndex, inputKey, inputField) {
-    return (event) => {
-        if (event.keyCode === 13) { // Enter key
+    return async (event) => {
+        if (event.keyCode === 13) { 
             const newValue = inputField.value;
-            updateBlockProperty(currentPage, blockIndex, inputKey, newValue);
+            const paragraph = document.createElement("p");
+            const result = await updateBlockProperty(currentPage, blockIndex, inputKey, newValue);
+            paragraph.textContent = result;
+
+            if (result.includes("error")) {
+                paragraph.style.color = "red";
+            } else {
+                paragraph.style.color = "green";
+            }
+
+            paragraph.style.fontSize = "14px";
+
+            inputField.insertAdjacentElement('afterend', paragraph);
         }
     };
 }
+
 
 
 
@@ -1024,7 +1037,9 @@ async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) 
         });
         console.log(`Block property '${propertyKey}' updated successfully.`);
         triggerGitHubAction();
+        return `Block property '${propertyKey}' updated successfully. and it should take approximately 1 minute for the changes to reflect on the website.`;
     } catch (error) {
         console.error(`Error updating block property '${propertyKey}':`, error);
+        return `Error updating block property '${propertyKey}':`, error;
     }
 }   
