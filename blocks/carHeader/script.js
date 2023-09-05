@@ -52,11 +52,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-
 let carHeader = document.querySelector('.carHeader');
 let linksInsideCarHeader = carHeader.querySelectorAll('.content'); // select all links
 let circle = document.createElement('div');
 circle.style.cssText = 'position: absolute; width: 40px; height: 40px; border-radius: 50%; background-color: #F8CD09; filter: blur(3px);';
+let isHoveringContent = false; // Flag to track if mouse is hovering over .content elements
 
 carHeader.addEventListener('mouseenter', function() {
     carHeader.appendChild(circle);
@@ -65,8 +65,24 @@ carHeader.addEventListener('mouseenter', function() {
 
 carHeader.addEventListener('mousemove', function(e) {
     let rect = carHeader.getBoundingClientRect();
-    circle.style.left = e.clientX - rect.left - circle.offsetWidth / 2 + 'px';
-    circle.style.top = e.clientY - rect.top - circle.offsetHeight / 2 + 'px';
+    let x = e.clientX - rect.left - circle.offsetWidth / 2;
+    let y = e.clientY - rect.top - circle.offsetHeight / 2;
+
+    // Ensure the circle stays within 50px of the border
+    x = Math.max(40, Math.min(rect.width - 40, x));
+    y = Math.max(40, Math.min(rect.height - 40, y));
+
+    circle.style.left = x + 'px';
+    circle.style.top = y + 'px';
+
+    // Show cursor and hide circle when it's within 50px of the border
+    if (x <= 40 || x >= rect.width - 40 || y <= 40 || y >= rect.height - 40 || isHoveringContent) {
+        carHeader.style.cursor = 'auto';
+        circle.style.display = 'none';
+    } else {
+        carHeader.style.cursor = 'none';
+        circle.style.display = 'block';
+    }
 });
 
 carHeader.addEventListener('mouseleave', function() {
@@ -77,12 +93,14 @@ carHeader.addEventListener('mouseleave', function() {
 // add event listeners to all links
 linksInsideCarHeader.forEach(function(link) {
     link.addEventListener('mouseenter', function() {
-        carHeader.removeChild(circle);
+        isHoveringContent = true;
         carHeader.style.cursor = 'auto';
+        circle.style.display = 'none';
     });
 
     link.addEventListener('mouseleave', function() {
-        carHeader.appendChild(circle);
+        isHoveringContent = false;
         carHeader.style.cursor = 'none';
+        circle.style.display = 'block';
     });
 });
