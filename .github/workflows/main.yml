@@ -25,7 +25,7 @@ jobs:
         run: node fetchDataCreatePage.js
 
       - name: Update Date File
-        run: echo $(date) > date
+        run: echo $(date) > date.txt
 
       - name: Commit and Push changes
         run: |
