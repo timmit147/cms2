@@ -33,6 +33,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: auto;
 }
 
 .contactForm > * {
@@ -47,6 +48,8 @@
     padding: 4px;
     color: #077271;
     font-weight: bold;
+    max-width: 100%;
+    width: 300px;
 }
 
 .contactForm input::placeholder,
@@ -63,11 +66,17 @@
     font-size: 18px;
     padding: 8px 16px;
     width: fit-content;
-    border-radius: 16px;
+    border-radius: 4px;
 }
 
 .contactForm input[type="submit"]:hover {
     color: #077271;
     background-color: white;
     cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .contactForm {
+        padding: 16px;
+    }
 }

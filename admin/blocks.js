@@ -39,8 +39,12 @@ const objectWithBlocks = [
         image: "",
         altImage: "",
         button1Text: "Image text block",
+        button1Url: "",
         button2Text: "Image text block",
+        button2Url: "",
         button3Text: "Image text block",
+        button3Url: "",
+
     },
     {
         type: "contactForm",
