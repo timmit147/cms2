@@ -51,6 +51,7 @@ const objectWithBlocks = [
         buttonValue: "Send email",
         image: "",
         imageAlt: "",
+        yourEmail:"",
     }
 ];
 

@@ -1,0 +1,72 @@
+.contactForm {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 32px;
+    box-sizing: border-box;
+}
+
+.contactForm *{
+    font-family: 'Open Sans', sans-serif;
+}
+
+.contactForm h2 {
+    margin: 0px;
+    margin-bottom: 16px;
+}
+
+.contactForm img{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.contactForm label{
+    font-weight: 900;
+}
+
+.contactForm form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.contactForm > * {
+    width: fit-content;
+}
+
+.contactForm input, 
+.contactForm textarea{
+    background-color: unset;
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 4px;
+    color: #077271;
+    font-weight: bold;
+}
+
+.contactForm input::placeholder,
+.contactForm textarea::placeholder {
+    color: black;
+    font-weight: 100;
+}
+
+
+.contactForm input[type="submit"] {
+    background-color: #077271;
+    border: 0px;
+    color: white;
+    font-size: 18px;
+    padding: 8px 16px;
+    width: fit-content;
+    border-radius: 16px;
+}
+
+.contactForm input[type="submit"]:hover {
+    color: #077271;
+    background-color: white;
+    cursor: pointer;
+}
