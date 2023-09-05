@@ -1,0 +1,16 @@
+<div class="contactForm" id="{{id}}">
+    <h2>{{title}}</h2>
+    <form action="your_server_script.php" method="post">
+        <label for="name">{{nameValue}}</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="email">{{emailValue}}</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="message">{{messageValue}}</label><br>
+        <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+
+        <input type="submit" value="{{buttonValue}}">
+    </form>
+    <img src="{{image}}" alt="{{altImage}}">
+</div> 

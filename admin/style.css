@@ -9,6 +9,10 @@ body {
     overflow: hidden;
 }
 
+.image-field img {
+    width: 150px;
+}
+
 *{
     margin: 0px;
     padding: 0px;

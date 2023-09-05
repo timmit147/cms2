@@ -43,8 +43,14 @@ const objectWithBlocks = [
         button3Text: "Image text block",
     },
     {
-        type: "contact",
-        title: "contact",
+        type: "contactForm",
+        title: "Contact",
+        nameValue: "Name",
+        emailValue: "Email",
+        messageValue: "Message",
+        buttonValue: "Send email",
+        image: "",
+        imageAlt: "",
     }
 ];
 
