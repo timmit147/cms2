@@ -24,17 +24,10 @@ jobs:
       - name: Generate HTML pages
         run: node fetchDataCreatePage.js
 
-      - name: Check for changes
-        id: git-check
+      - name: Commit and Push changes
         run: |
           git config user.name "timmit147"
           git config user.email "timmeeuwsen@hotmail.nl"
-          git diff --exit-code || echo "Changes detected"
           git add .
           git commit -m "Update HTML pages"
-        continue-on-error: true
-
-      - name: Push changes
-        if: steps.git-check.outcome == 'success'
-        run: |
           git push

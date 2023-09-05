@@ -41,6 +41,10 @@ const objectWithBlocks = [
         button1Text: "Image text block",
         button2Text: "Image text block",
         button3Text: "Image text block",
+    },
+    {
+        type: "contact",
+        title: "contact",
     }
 ];
 
