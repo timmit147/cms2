@@ -4,6 +4,7 @@
     overflow: hidden;
     padding: 32px;
     box-sizing: border-box;
+    min-height: 350px;
 }
 
 .contactForm *{
