@@ -56,6 +56,7 @@ input[type="text"]{
     padding: 4px;
     width: fit-content;
     border: 1px solid black;
+    font-size: 16px;
 }
 
 .removeBlockButton{
@@ -79,12 +80,29 @@ input[type="text"]{
     justify-content: space-between;
     display: flex;
     flex-direction: column;
+    margin-bottom: 30px;
+}
+
+.propertyDiv button {
+    background-color: black;
+    color: white;
+    padding: 4px 8px;
+    border: 1px solid;
+}
+
+.propertyDiv button:hover {
+    color: unset;
+    text-decoration: none;
+    background-color: white;
+    color: black;
+    font-weight: 100;
 }
 
 .image-field {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    margin-bottom: 30px;
 }
 
 button{

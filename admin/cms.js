@@ -169,6 +169,7 @@ function addTitle(target){
 }
 
 function changeBreadcrump(page, block) {
+    document.querySelector(".breadcrumpArrow").textContent = '>';
     const breadcrump = document.querySelector('.breadcrump');
 
     if (breadcrump) {
@@ -221,10 +222,6 @@ function loopSortedBlocks(blockArray){
        addUpDownButtons(divContainer, index, sortedBlocks.length, currentPage); // Adding buttons to the div
        
        container.appendChild(divContainer); // Placing the whole div container inside the 'container'
-       
-
-
-        
 
         typeLabel.addEventListener('click', () => {
             const container = document.querySelector("#container");
@@ -232,7 +229,17 @@ function loopSortedBlocks(blockArray){
             ShowBlockContents(container, typeLabel.textContent);
             changeBreadcrump(currentPage,typeLabel.textContent);          
     
+            const keysArray = [];
+
             for (const key in block) {
+                if (block.hasOwnProperty(key)) {
+                    keysArray.push(key);
+                }
+            }
+
+            keysArray.sort();
+
+            for (const key of keysArray) {
                 if (key === "type") {
                     continue;
                 }
@@ -275,15 +282,25 @@ function loopSortedBlocks(blockArray){
                     propertyDiv.classList.add('propertyDiv');
     
                     const inputLabel = document.createElement('label');
-                    inputLabel.textContent = key;
+                    inputLabel.textContent = key.charAt(0).toUpperCase() + key.slice(1); // Convert the first letter to uppercase
                     inputLabel.style.fontWeight = 'bold';
                     propertyDiv.appendChild(inputLabel);
+
     
                     const inputField = document.createElement('input');
                     inputField.type = 'text';
                     inputField.value = block[key];
-                    inputField.addEventListener('keydown', handleInputKeydown(index, key, inputField));
+                    // inputField.addEventListener('keydown', handleInputKeydown(index, key, inputField));
                     propertyDiv.appendChild(inputField);
+
+                    const submitButton = document.createElement('button');
+                    submitButton.textContent = 'Submit';
+                    propertyDiv.appendChild(submitButton);
+
+                    submitButton.addEventListener('click', function () {
+                        handleSubmitButtonClick(index, key, inputField,submitButton);
+                      });
+
     
                     container.appendChild(propertyDiv);
                 }
@@ -773,25 +790,22 @@ try {
     }
 }
 
-function handleInputKeydown(blockIndex, inputKey, inputField) {
-    return async (event) => {
-        if (event.keyCode === 13) { 
-            const newValue = inputField.value;
-            const paragraph = document.createElement("p");
-            const result = await updateBlockProperty(currentPage, blockIndex, inputKey, newValue);
-            paragraph.textContent = result;
+async function handleSubmitButtonClick(blockIndex, inputKey, inputField,submitButton) {
+    const newValue = inputField.value;
+    const paragraph = document.createElement("p");
+    const result = await updateBlockProperty(currentPage, blockIndex, inputKey, newValue);
+    paragraph.textContent = result;
+    console.log(result);
 
-            if (result.includes("error")) {
-                paragraph.style.color = "red";
-            } else {
-                paragraph.style.color = "green";
-            }
+    if (result.includes("error")) {
+        paragraph.style.color = "red";
+    } else {
+        paragraph.style.color = "green";
+    }
 
-            paragraph.style.fontSize = "14px";
+    paragraph.style.fontSize = "14px";
 
-            inputField.insertAdjacentElement('afterend', paragraph);
-        }
-    };
+    submitButton.insertAdjacentElement('afterend', paragraph);
 }
 
 
@@ -854,13 +868,9 @@ async function addMenuButtons() {
     const pagesButton = document.getElementById('pagesButton');
 
     pagesButton.onclick = () => {
-        if (pagesButton.classList.contains('menu-open')) {
-            placeBlock();
-            pagesButton.classList.remove('menu-open');
-        } else {
             reloadMenu();
-            pagesButton.classList.add('menu-open');
-        }
+            document.querySelector(".breadcrump").textContent = '';
+            document.querySelector(".breadcrumpArrow").textContent = '';
     };
 }
 
