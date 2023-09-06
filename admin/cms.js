@@ -39,7 +39,6 @@ window.addEventListener("load", myFunction);
 startScript();
 
 async function startScript(){
-    console.log(currentPage);
     await newDatabase();
 }
 
@@ -66,11 +65,8 @@ async function newDatabase() {
 // Firebase authentication state change listener
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-        // User is signed in, proceed with your application logic
         addMenuButtons();
-        console.log("you are logged in");
         hideLoginForm(); // Hide the login form
-        // showLogoutButton(); // Show the logout button
         const menu = document.querySelector('.menu');
         menu.style.display = 'flex';
         const container = document.querySelector('#container');
@@ -99,20 +95,38 @@ function showLoginForm() {
 }
 
 
-var loginButton = document.getElementById("loginButton");
+var loginForm = document.getElementById("loginFormElement");
 var passwordField = document.getElementById('password');
+var emailField = document.getElementById('email');
+var errorMessage = document.getElementById('error-message');
 
-loginButton.addEventListener("click", function() {
-    const email = document.getElementById('email').value;
+loginForm.addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const email = emailField.value;
     const password = passwordField.value;
+
+    // Perform basic email format validation
+    if (!validateEmail(email)) {
+        errorMessage.textContent = "!Invalid email or password";
+        return;
+    }
 
     loginUser(email, password);
 });
 
 passwordField.addEventListener("keydown", function(event) {
     if (event.key === "Enter") {
-        const email = document.getElementById('email').value;
+        event.preventDefault(); // Prevent the default form submission
+
+        const email = emailField.value;
         const password = passwordField.value;
+
+        // Perform basic email format validation
+        if (!validateEmail(email)) {
+            errorMessage.textContent = "Invalid email address";
+            return;
+        }
 
         loginUser(email, password);
     }
@@ -124,9 +138,17 @@ function loginUser(email, password) {
             return firebase.auth().signInWithEmailAndPassword(email, password);
         })
         .catch((error) => {
-            console.error('Error logging in: ', error);
+            // Display user-friendly error message
+            errorMessage.textContent = error.message;
         });
 }
+
+function validateEmail(email) {
+    // Basic email format validation using a regular expression
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
 
 
 async function fetchDataFromFirestore(path) {
@@ -211,6 +233,8 @@ function loopSortedBlocks(blockArray){
 
        const container =  document.querySelector('#container');
 
+       
+       
        const typeLabel = document.createElement('label');
        typeLabel.textContent = block["title"] || block["type"];
        typeLabel.style.fontWeight = 'bold';
@@ -218,8 +242,9 @@ function loopSortedBlocks(blockArray){
        const divContainer = document.createElement('div'); // Creating the div container
        divContainer.className = 'block'; // Replace 'your-class-name' with the actual class name you want
        
+       addUpButton(divContainer, index, sortedBlocks.length, currentPage); // Adding buttons to the div
+
        divContainer.appendChild(typeLabel); // Placing the typeLabel inside the div
-       addUpDownButtons(divContainer, index, sortedBlocks.length, currentPage); // Adding buttons to the div
        
        container.appendChild(divContainer); // Placing the whole div container inside the 'container'
 
@@ -398,8 +423,12 @@ async function getBlocks() {
         block,
     }));
 
+    // Sort the blockArray in descending order based on the 'order' property
+    blockArray.sort((a, b) => b.order - a.order);
+
     loopSortedBlocks(blockArray);
 }
+
 
 async function addForm(){
     container.insertAdjacentHTML('beforeend', await createDropdownWithBlocks);
@@ -733,7 +762,7 @@ async function triggerGitHubAction() {
 }
 
 
-function addUpDownButtons(blockDiv, blockIndex, totalBlocks, pageName) {
+function addUpButton(blockDiv, blockIndex, totalBlocks, pageName) {
     const buttonsDiv = document.createElement('div'); // Create a div to contain the buttons
     buttonsDiv.classList.add('arrow-buttons'); // Add a class name for styling
 
@@ -741,24 +770,15 @@ function addUpDownButtons(blockDiv, blockIndex, totalBlocks, pageName) {
     upButton.innerHTML = '<i class="fas fa-angle-up"></i>'; // Font Awesome up arrow icon
     upButton.classList.add('arrow-button');
     upButton.addEventListener('click', async () => {
-        await swapBlocks(pageName, blockIndex, "up");
-    });
-
-    const downButton = document.createElement('button');
-    downButton.innerHTML = '<i class="fas fa-angle-down"></i>'; // Font Awesome down arrow icon
-    downButton.classList.add('arrow-button');
-    downButton.addEventListener('click', async () => {
-        await swapBlocks(pageName, blockIndex, "down");
+        await swapBlocksUp(pageName, blockIndex);
     });
 
     buttonsDiv.appendChild(upButton);
-    buttonsDiv.appendChild(downButton);
 
-    blockDiv.appendChild(buttonsDiv); // Add the div containing the buttons to the block div
+    blockDiv.appendChild(buttonsDiv); // Add the div containing the up button to the block div
 }
 
-async function swapBlocks(pageName, blockId, upDown) {
-
+async function swapBlocksUp(pageName, blockId) {
     try {
         const db = firebase.firestore();
         const blockRef = db.collection('pages').doc(pageName).collection('blocks').doc(blockId);
@@ -781,69 +801,48 @@ async function swapBlocks(pageName, blockId, upDown) {
 
         // Fetch all blocks and their orders
         const blocksQuerySnapshot = await db.collection('pages').doc(pageName).collection('blocks').get();
-        const existingOrders = blocksQuerySnapshot.docs.map(doc => doc.data().order);
-        // Determine the target order based on the 'upDown' direction
-        const currentIndex = existingOrders.indexOf(blockOrder);
-let targetIndex;
+        const existingOrders = blocksQuerySnapshot.docs.map(doc => ({
+            id: doc.id,
+            order: doc.data().order
+        }));
 
-if (upDown === 'up') {
-    // Find the highest available order lower than the current block's order
-    const lowerOrders = existingOrders.filter(order => order < blockOrder);
+        // Find the highest available order lower than the current block's order
+        const lowerOrders = existingOrders.filter(item => item.order < blockOrder);
 
-    if (lowerOrders.length > 0) {
-        targetIndex = existingOrders.indexOf(Math.max(...lowerOrders));
-    } else {
-        console.log(`Cannot swap block ${blockId} ${upDown} as it's already at the top.`);
-        return;
-    }
-} else {
-    // Find the next available order higher than the current block's order
-    const higherOrders = existingOrders.filter(order => order > blockOrder);
+        if (lowerOrders.length > 0) {
+            const targetOrder = Math.max(...lowerOrders.map(item => item.order));
+            const targetBlock = lowerOrders.find(item => item.order === targetOrder);
 
-    if (higherOrders.length > 0) {
-        targetIndex = existingOrders.indexOf(Math.min(...higherOrders));
-    } else {
-        console.log(`Cannot swap block ${blockId} ${upDown} as it's already at the bottom.`);
-        return;
-    }
-}
+            const targetBlockRef = db.collection('pages').doc(pageName).collection('blocks').doc(targetBlock.id);
 
-if (targetIndex < 0 || targetIndex >= existingOrders.length) {
-    console.log(`Cannot swap block ${blockId} ${upDown} as there is no block with target order.`);
-    return;
-}
+            // Swap the order values
+            try {
+                await db.runTransaction(async (transaction) => {
+                    const blockData = (await transaction.get(blockRef)).data();
+                    const targetBlockData = (await transaction.get(targetBlockRef)).data();
 
-const targetOrder = existingOrders[targetIndex];
+                    // Swap the order values
+                    const tempOrder = blockData.order;
+                    blockData.order = targetBlockData.order;
+                    targetBlockData.order = tempOrder;
 
-// Find the block to swap with based on target order
-const targetBlockSnapshot = blocksQuerySnapshot.docs.find(doc => doc.data().order === targetOrder);
-const targetBlockRef = targetBlockSnapshot.ref;
+                    // Update the blocks in the transaction
+                    transaction.update(blockRef, blockData);
+                    transaction.update(targetBlockRef, targetBlockData);
+                });
 
-// Swap the order values
-try {
-    await db.runTransaction(async (transaction) => {
-        const blockData = (await transaction.get(blockRef)).data();
-        const targetBlockData = (await transaction.get(targetBlockRef)).data();
-
-        // Swap the order values
-        const tempOrder = blockData.order;
-        blockData.order = targetBlockData.order;
-        targetBlockData.order = tempOrder;
-
-        // Update the blocks in the transaction
-        transaction.update(blockRef, blockData);
-        transaction.update(targetBlockRef, targetBlockData);
-    });
-
-    placeBlock(); // Re-render the blocks after swapping
-} catch (error) {
-    console.error("Error updating blocks in Firestore:", error);
-}
-
+                placeBlock(); // Re-render the blocks after swapping
+            } catch (error) {
+                console.error("Error updating blocks in Firestore:", error);
+            }
+        } else {
+            console.log(`Cannot swap block ${blockId} up as it's already at the top.`);
+        }
     } catch (error) {
         console.error("Error getting block data:", error);
     }
 }
+
 
 async function handleSubmitButtonClick(blockIndex, inputKey, inputField,submitButton) {
     const newValue = inputField.value;

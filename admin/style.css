@@ -10,7 +10,7 @@ body {
 }
 
 h1{
-    color: #21759b;
+    color: #114259;
 }
 
 h2{
@@ -147,18 +147,30 @@ button{
 }
 
 button:hover{
-    cursor: pointer;
     color: #21759B;
     font-weight: bold;
-    text-decoration: underline;
+    cursor: pointer;
 }
 
-.button{
+.form-container button:hover{
+    cursor: pointer;
+    color: #21759B;
+    background-color: white;
+}
+
+
+.form-container .button{
+    font-weight: bold;
     background-color: #21759b;
     border: 0px;
     color: white;
     width: fit-content;
     padding: 10px 36px;
+    border: 1px solid;
+}
+
+.form-container #error-message {
+    color: #B92D2D;
 }
 
 .arrow-button {
@@ -193,10 +205,10 @@ a:hover{
     cursor: pointer;
 }
 
-button.currentPage {
+/* button.currentPage {
     color: #21759b;
     font-weight: bold;
-}
+} */
 
 .tutorialSubtitle{
     margin-bottom: 32px;
@@ -204,7 +216,6 @@ button.currentPage {
 
 .block{
     display: flex;
-    justify-content: space-between;
 }
 
 .block label:hover{
