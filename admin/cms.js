@@ -243,25 +243,41 @@ function loopSortedBlocks(blockArray){
             loopKeysArray(keysArray, block, index );
 
             
-    
             const removeDiv = document.createElement('div');
             removeDiv.classList.add('removeDiv');
-
+            
             const inputLabel = document.createElement('label');
-                    inputLabel.textContent = "Remove block";
-                    inputLabel.style.fontWeight = 'bold';
-                    removeDiv.appendChild(inputLabel);
-
+            inputLabel.textContent = "Remove block";
+            inputLabel.style.fontWeight = 'bold';
+            removeDiv.appendChild(inputLabel);
+            
             const removeButton = document.createElement('button');
             removeButton.textContent = 'Remove block';
             removeButton.classList.add('removeBlockButton');
-
+            
+            // Hide the button initially by setting its style
+            removeButton.style.display = 'none';
+            
             removeButton.addEventListener('click', () => {
-                removeBlockAndPage(currentPage, index);
+                removeBlockAndPage(currentPage, index); // This will remove the block
             });
+            
+            let isButtonVisible = false; // Initially, the button is hidden
+            
+            inputLabel.addEventListener('click', () => {
+                if (isButtonVisible) {
+                    removeButton.style.display = 'none'; // Hide the button
+                } else {
+                    removeButton.style.display = 'inline-block'; // Show the button
+                }
+                isButtonVisible = !isButtonVisible; // Toggle button visibility state
+            });
+            
             removeDiv.appendChild(removeButton);
-
+            
             container.appendChild(removeDiv);
+            
+
     
 
 

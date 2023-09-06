@@ -9,8 +9,25 @@ body {
     overflow: hidden;
 }
 
+h1{
+    color: #21759b;
+}
+
+h2{
+    color: #21759b;
+}
+
 .image-field img {
     width: 150px;
+}
+
+.image-field label{
+    cursor: pointer;
+}
+
+.image-field label:hover{
+    text-decoration: underline;
+    color: #21759b;
 }
 
 *{
@@ -82,6 +99,24 @@ input[type="text"]{
     flex-direction: column;
 }
 
+.propertyDiv label{
+    cursor: pointer;
+}
+
+.propertyDiv label:hover{
+    text-decoration: underline;
+    color: #21759b;
+}
+
+.removeDiv label{
+    cursor: pointer;
+}
+
+.removeDiv label:hover{
+    text-decoration: underline;
+    color: #21759b;
+}
+
 .propertyDiv button {
     background-color: black;
     color: white;
@@ -147,13 +182,15 @@ button:hover{
     font-weight: bold;
 }
 
-a{
-    color: #21759b;
-    cursor: pointer;
+a {
+    color: inherit;
+    text-decoration: blink;
 }
 
 a:hover{
     text-decoration: underline;
+    color: #21759b;
+    cursor: pointer;
 }
 
 button.currentPage {
@@ -219,6 +256,10 @@ button.currentPage {
 }
 
 .menu a{
+    font-weight: 900;
+}
+
+.menu a:hover{
     text-decoration: underline;
 }
 
