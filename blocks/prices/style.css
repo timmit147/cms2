@@ -14,6 +14,15 @@
     max-width: 400px;
 }
 
+.prices a {
+    color: white;
+    text-decoration: none;
+}
+
+.prices a:hover{
+    color: #F8CD09;
+}
+
 .prices h2{
     margin: 0px;
 }

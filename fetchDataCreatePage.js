@@ -133,6 +133,8 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
       <body>
           ${combinedBodyContent}
           ${javascriptFiles}
+          <script defer src="script.js"></script>
+
           
           <script>
               if ('serviceWorker' in navigator) {
@@ -143,7 +145,9 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
                           console.error('Service Worker registration failed:', error);
                       });
               }
+              
           </script>
+          
       </body>
       </html>    
     `;
