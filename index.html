@@ -8,7 +8,7 @@
           <meta name="theme-color" content="#007bff">
           <link rel="manifest" href="/manifest.json">
           <title>homepage</title>
-          <link rel="stylesheet" type="text/css" href="style.css"><link rel="stylesheet" type="text/css" href="blocks/carHeader/style.css"><link rel="stylesheet" type="text/css" href="blocks/contactForm/style.css">
+          <link rel="stylesheet" type="text/css" href="style.css"><link rel="stylesheet" type="text/css" href="blocks/carHeader/style.css"><link rel="stylesheet" type="text/css" href="blocks/prices/style.css"><link rel="stylesheet" type="text/css" href="blocks/contactForm/style.css">
       </head>
       <body>
           <div class="carHeader" id="gPkwqREJyikYNxvqfwIJ">
@@ -24,10 +24,33 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+</div> <div class="prices" id="WpnWvddaRnawBfUkGJ2Z">
+    <h2>Prices</h2>
+    <p>We offer different prices based on the website you need. We plan a meeting to determent how match it gone cost.</p>
+    <div class="blocks">
+        <div class="block1 block">
+            <h3>Start</h3>
+            <p class="price">€200 - € 500</p>
+            <p class="blockContent">This type of website uses basic blocks in your style what you find in most websites. This website can be made in 3 days.</p>
+        </div>
+        <div class="block2 block">
+            <h3>Medium</h3>
+            <p class="price">€500 - € 2500</p>
+            <p class="blockContent">This type of website uses basic blocks in your style what you find in most websites. This website can be made in 3 days.</p>
+        </div>
+        <div class="block3 block">
+            <h3>Plus</h3>
+            <p class="price">€ 2500 +</p>
+            <p class="blockContent">This type of website uses basic blocks in your style what you find in most websites. This website can be made in 3 days.</p>
+        </div>
+    </div>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
 </div> <div class="contactForm" id="9bBzT6oadSRUYIBXmoVL">
     <h2>Contact</h2>
     
-    <div id="submittedMessage" style="display: none; color: green;">Form submitted!</div>
+    <div id="submittedMessage" style="display: none;">Form submitted!</div>
 
     <form method="post">
         <label for="name">Name</label>
@@ -41,18 +64,17 @@
 
         <input type="submit" value="Send email">
     </form>
-    <img src="images/images_2FMacBook_20Air_20-_2050.png" alt="{{altImage}}">
+    <img src="images/images_2Foutput-onlinepngtools__2_-removebg-preview_201.png" alt="{{altImage}}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 </div> 
-          <script src="blocks/carHeader/script.js" type="module" defer></script><script src="blocks/contactForm/script.js" type="module" defer></script>
+          <script src="blocks/carHeader/script.js" type="module" defer></script><script src="blocks/prices/script.js" type="module" defer></script><script src="blocks/contactForm/script.js" type="module" defer></script>
           
           <script>
               if ('serviceWorker' in navigator) {
                   navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
                       .then(registration => {
-                          console.log('Service Worker registered with scope:', registration.scope);
                       })
                       .catch(error => {
                           console.error('Service Worker registration failed:', error);
