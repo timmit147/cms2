@@ -98,13 +98,18 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         const targetElement = document.getElementById(targetId);
 
         if (targetElement) {
+            const viewportHeight = window.innerHeight;
+            const targetHeight = targetElement.offsetHeight;
+            const targetPosition = targetElement.offsetTop - (viewportHeight / 2) + (targetHeight / 2);
+
             window.scrollTo({
-                top: targetElement.offsetTop,
+                top: targetPosition,
                 behavior: 'smooth'
             });
         }
     });
 });
+
 
 var elements = document.querySelectorAll('body > *');
 
