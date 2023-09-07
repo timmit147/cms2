@@ -30,7 +30,6 @@ contactForm.addEventListener('submit', async function (e) {
 
     // Call a function to add the data to Firebase Firestore
     await addDataToFirestore(name, email, message);
-
     // Hide the form
     contactForm.style.display = 'none';
 
