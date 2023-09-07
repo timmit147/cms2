@@ -1,106 +1,105 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const textElement = document.querySelector(".carHeader sub");
-    const originalText = textElement.textContent;
-    const randomChars = "*&^%$#@?{!/.><=";
-    const delay = 100;
-    let animationInterval;
+// Create the circle and cursor divs
+const circle = document.createElement('div');
+circle.className = 'circle';
+document.body.appendChild(circle);
 
-    function animateText(replaceWith, callback) {
-        let currentIndex = 0;
+const cursor = document.createElement('div');
+cursor.className = 'cursor';
+document.body.appendChild(cursor);
 
-        animationInterval = setInterval(() => {
-            if (currentIndex >= originalText.length) {
-                clearInterval(animationInterval);
-                if (typeof callback === "function") {
-                    callback();
-                }
-            } else {
-                const currentText = originalText.substring(0, currentIndex);
-                let newText = "";
+// Track whether the mouse is over the carHeader
+let isMouseOverCarHeader = false;
 
-                for (let i = 0; i < currentText.length; i++) {
-                    const currentChar = currentText[i];
-                    if (currentChar === " " || currentChar === "," || currentChar === "." || currentChar === "=") {
-                        newText += currentChar;
-                    } else {
-                        newText += replaceWith[i % replaceWith.length];
-                    }
-                }
+// Function to update the position of circle and cursor
+function updatePosition(event) {
+    const { clientX, clientY } = event;
 
-                textElement.textContent = newText + originalText.substring(currentIndex);
-                currentIndex++;
-            }
-        }, delay);
+    cursor.style.left = `${clientX}px`;
+    cursor.style.top = `${clientY}px`;
+
+    if (isMouseOverCarHeader) {
+        // Only update the position of the circle if the mouse is over the .carHeader
+        circle.style.left = `${clientX}px`;
+        circle.style.top = `${clientY}px`;
     }
+}
 
-    // Trigger the animation once on page load
-    animateText(randomChars, () => {
-        setTimeout(() => {
-            // After 2 seconds, revert each letter individually
-            const originalChars = originalText.split('');
-            let currentIndex = 0;
-            
-            const restoreInterval = setInterval(() => {
-                if (currentIndex >= originalChars.length) {
-                    clearInterval(restoreInterval);
-                } else {
-                    textElement.textContent = textElement.textContent.substring(0, currentIndex) + originalChars[currentIndex] + textElement.textContent.substring(currentIndex + 1);
-                    currentIndex++;
-                }
-            }, delay);
-        }, 500);
+// Function to hide the circle
+function hideCircle() {
+    circle.style.display = 'none';
+}
+
+// Function to show the circle
+function showCircle() {
+    circle.style.display = 'block';
+}
+
+// Add event listener to track mouse movement
+document.addEventListener('mousemove', updatePosition);
+
+// Select all clickable elements (buttons, links, and inputs)
+const clickableElements = document.querySelectorAll('button, a, input');
+const cursorElement = document.querySelector('.cursor');
+
+// Add an event listener for mouseenter to each clickable element
+clickableElements.forEach(function(clickableElement) {
+    clickableElement.addEventListener('mouseenter', function(event) {
+        cursorElement.classList.add('vinger');
+    });
+
+    // Add an event listener for mouseleave to each clickable element
+    clickableElement.addEventListener('mouseleave', function(event) {
+        cursorElement.classList.remove('vinger');
     });
 });
 
-let carHeader = document.querySelector('.carHeader');
-let linksInsideCarHeader = carHeader.querySelectorAll('.content'); // select all links
-let circle = document.createElement('div');
-circle.style.cssText = 'position: absolute; width: 40px; height: 40px; border-radius: 50%; background-color: #F8CD09; filter: blur(3px);';
-let isHoveringContent = false; // Flag to track if mouse is hovering over .content elements
+// Get the .carHeader element
+const carHeader = document.querySelector('.carHeader');
 
-carHeader.addEventListener('mouseenter', function() {
-    carHeader.appendChild(circle);
-    carHeader.style.cursor = 'none';
+// Add an event listener for mouseenter to .carHeader
+carHeader.addEventListener('mouseenter', function(event) {
+    showCircle(); // Show the circle when the mouse enters .carHeader
+    isMouseOverCarHeader = true; // Mouse is over .carHeader
 });
 
-carHeader.addEventListener('mousemove', function(e) {
-    let rect = carHeader.getBoundingClientRect();
-    let x = e.clientX - rect.left - circle.offsetWidth / 2;
-    let y = e.clientY - rect.top - circle.offsetHeight / 2;
+carHeader.addEventListener('mouseleave', function(event) {
+    hideCircle(); // Hide the circle when the mouse leaves .carHeader
+    isMouseOverCarHeader = false; // Mouse is no longer over .carHeader
+});
 
-    // Ensure the circle stays within 50px of the border
-    x = Math.max(40, Math.min(rect.width - 40, x));
-    y = Math.max(40, Math.min(rect.height - 40, y));
-
-    circle.style.left = x + 'px';
-    circle.style.top = y + 'px';
-
-    // Show cursor and hide circle when it's within 50px of the border
-    if (x <= 40 || x >= rect.width - 40 || y <= 40 || y >= rect.height - 40 || isHoveringContent) {
-        carHeader.style.cursor = 'auto';
-        circle.style.display = 'none';
-    } else {
-        carHeader.style.cursor = 'none';
-        circle.style.display = 'block';
+// Add an event listener to show the circle when moving the mouse inside .carHeader
+carHeader.addEventListener('mousemove', function(event) {
+    if (!isMouseOverCarHeader) {
+        showCircle(); // Show the circle when moving the mouse inside .carHeader
+        isMouseOverCarHeader = true; // Mouse is over .carHeader
     }
 });
 
-carHeader.addEventListener('mouseleave', function() {
-    carHeader.removeChild(circle);
-    carHeader.style.cursor = '';
+// Hide the mouse cursor
+document.body.style.cursor = 'none';
+
+const style = document.createElement('style');
+style.innerHTML = '* { cursor: none !important; }'; // Set cursor to none for all elements
+document.head.appendChild(style);
+
+// Add scroll event listener to hide the circle when scrolling
+window.addEventListener('scroll', function(event) {
+    hideCircle(); // Hide the circle when scrolling
+    isMouseOverCarHeader = false; // Mouse is no longer over .carHeader
 });
 
-// add event listeners to all links
-linksInsideCarHeader.forEach(function(link) {
-    link.addEventListener('mouseenter', function() {
-        isHoveringContent = true;
-        carHeader.style.cursor = 'auto';
-        circle.style.display = 'none';
-    });
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
 
-    link.addEventListener('mouseleave', function() {
-        isHoveringContent = false;
-        carHeader.style.cursor = 'none';
-        circle.style.display = 'block';
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+
+        if (targetElement) {
+            window.scrollTo({
+                top: targetElement.offsetTop,
+                behavior: 'smooth'
+            });
+        }
     });
 });
