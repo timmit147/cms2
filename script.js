@@ -106,7 +106,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-
 var elements = document.querySelectorAll('body > *');
 
 var observer = new IntersectionObserver(function(entries, observer) {
@@ -114,8 +113,8 @@ var observer = new IntersectionObserver(function(entries, observer) {
         if (entry.isIntersecting) {
             entry.target.classList.add('common-transition');
             entry.target.style.opacity = '1';
-            // Stop observing once the element is in the viewport (optional)
-            observer.unobserve(entry.target);
+        } else {
+            entry.target.style.opacity = '0';
         }
     });
 });
@@ -123,4 +122,3 @@ var observer = new IntersectionObserver(function(entries, observer) {
 elements.forEach(function(element) {
     observer.observe(element);
 });
-
