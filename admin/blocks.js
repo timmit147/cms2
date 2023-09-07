@@ -56,6 +56,22 @@ const objectWithBlocks = [
         image: "",
         imageAlt: "",
         yourEmail:"",
+    },
+    {
+        type: "prices",
+        title: "Prices",
+        content: "We offer different prices based on the website you need. We plan a meeting to determent how match it gone cost.",
+        block1Title: "Start",
+        block1Price: "€200 - € 500",
+        block1Content: "This type of website uses basic blocks in your style what you find in most websites. This website can be made in 3 days.",
+        block2Title: "Medium",
+        block2Price: "€500 - € 2500",
+        block2Content: "This type of website uses basic blocks in your style what you find in most websites. This website can be made in 3 days.",
+        block3Title: "Plus",
+        block3Price: "€ 2500 +",
+        block3Content: "This type of website uses basic blocks in your style what you find in most websites. This website can be made in 3 days.",
+        contactButtonValue: "Get in contact",
+        contactButtonLink: "#",
     }
 ];
 
