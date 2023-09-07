@@ -146,7 +146,7 @@
         padding:0px;
     }
 
-    .carHeader img {
+    .carHeader .car {
         width: 55vh;
         bottom: -7vh;
         right: 30vw;
@@ -160,7 +160,6 @@
     .carHeader{
         display: flex;
         align-items: center;
-        padding-bottom: 200px;
         margin-bottom: 100px;
         height: 450px;
     }
