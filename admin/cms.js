@@ -315,12 +315,19 @@ function loopSortedBlocks(blockArray){
 
 
 
+function formatKeyLabel(key) {
+    // Split the key by uppercase letters and join with spaces
+    return key.split(/(?=[A-Z])/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
+
 function loopKeysArray(keysArray, block, index) {
     for (const key of keysArray) {
         if (key === "type") {
             continue;
         }
         if (block.hasOwnProperty(key)) {
+            const formattedKey = formatKeyLabel(key);
+
             const fieldContainer = document.createElement('div'); // Container for the field and toggle button
 
             if (key.includes("image") || key.includes("Image") || key.includes("logo")) {
@@ -328,7 +335,7 @@ function loopKeysArray(keysArray, block, index) {
                 imageField.className = 'image-field'; // You can add a class name for styling if needed
 
                 const blocksTitle = document.createElement('label');
-                blocksTitle.textContent = key;
+                blocksTitle.textContent = key; // Use the original key for image labels
 
                 // Function to toggle the visibility of image and input
                 function toggleImageAndInput() {
@@ -344,7 +351,7 @@ function loopKeysArray(keysArray, block, index) {
                 imageField.appendChild(blocksTitle);
 
                 const imageElement = document.createElement('img');
-                imageElement.src = block.image;
+                imageElement.src = block[key];
                 imageElement.style.display = 'none'; // Initially hide the image
                 imageField.appendChild(imageElement);
 
@@ -373,7 +380,7 @@ function loopKeysArray(keysArray, block, index) {
                 propertyDiv.classList.add('propertyDiv');
 
                 const inputLabel = document.createElement('label');
-                inputLabel.textContent = key.charAt(0).toUpperCase() + key.slice(1); // Convert the first letter to uppercase
+                inputLabel.textContent = formattedKey; // Use the formatted key label for text fields
                 inputLabel.style.fontWeight = 'bold';
                 propertyDiv.appendChild(inputLabel);
 
@@ -384,7 +391,7 @@ function loopKeysArray(keysArray, block, index) {
                 propertyDiv.appendChild(inputField);
 
                 const submitButton = document.createElement('button');
-                submitButton.textContent = 'Submit';
+                submitButton.textContent = 'Update';
                 submitButton.style.display = 'none'; // Initially hide the submit button
                 propertyDiv.appendChild(submitButton);
 
@@ -405,6 +412,8 @@ function loopKeysArray(keysArray, block, index) {
         }
     }
 }
+
+
 
 
 

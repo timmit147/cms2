@@ -118,7 +118,7 @@ input[type="text"]{
 }
 
 .propertyDiv button {
-    background-color: black;
+    background-color: #21759b;
     color: white;
     padding: 4px 8px;
     border: 1px solid;
@@ -128,7 +128,7 @@ input[type="text"]{
     color: unset;
     text-decoration: none;
     background-color: white;
-    color: black;
+    color: #21759b;
     font-weight: 100;
 }
 
