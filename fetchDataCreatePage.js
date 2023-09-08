@@ -237,41 +237,43 @@ function sanitizeFilename(filename) {
   return filename.replace(/[/\\?%*:|"<>]/g, '_');
 }
 
-const sharp = require('sharp'); // This library is used for image conversion
+const sharp = require('sharp'); // Import the sharp library
 
 function saveImages(imageUrl) {
-  // Specify the root directory where "images" folder will be created
   const rootDirectory = './';
-  
-  // Create the "images" directory if it doesn't exist
   const imagesDirectory = path.join(rootDirectory, 'images');
   if (!fs.existsSync(imagesDirectory)) {
     fs.mkdirSync(imagesDirectory, { recursive: true });
   }
 
-  // Extract the image filename from the URL and sanitize it
   const originalFilename = path.basename(imageUrl);
-  const filename = sanitizeFilename(originalFilename.split('?')[0]); // Remove everything after '?'
+  const filename = sanitizeFilename(originalFilename.split('?')[0]);
 
-  // Create a writable stream to save the image
   const fileStream = fs.createWriteStream(path.join(imagesDirectory, filename));
 
-  // Send an HTTP GET request to download the image
   https.get(imageUrl, (response) => {
-    // Use Sharp to convert the image to WebP format and then pipe it to the file stream
-    response.pipe(sharp().webp().pipe(fileStream));
+    response.pipe(fileStream);
 
-    // Handle the end of the download
     fileStream.on('finish', () => {
       fileStream.close();
-      // console.log(`WebP image saved: ${filename}`);
+      // Now, convert the saved image to WebP format
+      const outputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '.webp')); // Change the file extension to .webp
+      sharp(path.join(imagesDirectory, filename))
+        .toFile(outputPath, (err) => {
+          if (err) {
+            console.error(`Error converting image to WebP: ${err.message}`);
+            return;
+          }
+          fs.unlinkSync(path.join(imagesDirectory, filename));
+        });
     });
   }).on('error', (err) => {
     console.error(`Error downloading image: ${err.message}`);
   });
 
-  return `images/${filename}`;
+  return `images/${filename.replace(/\.[^.]+$/, '.webp')}`; // Return the WebP file path
 }
+
 
 function replaceValues(htmlContent, currentName, updateName) {
   var regexPattern = new RegExp(`{{${currentName}}}`, 'g');
