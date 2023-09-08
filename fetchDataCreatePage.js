@@ -237,6 +237,8 @@ function sanitizeFilename(filename) {
   return filename.replace(/[/\\?%*:|"<>]/g, '_');
 }
 
+const sharp = require('sharp'); // This library is used for image conversion
+
 function saveImages(imageUrl) {
   // Specify the root directory where "images" folder will be created
   const rootDirectory = './';
@@ -256,20 +258,20 @@ function saveImages(imageUrl) {
 
   // Send an HTTP GET request to download the image
   https.get(imageUrl, (response) => {
-    response.pipe(fileStream);
+    // Use Sharp to convert the image to WebP format and then pipe it to the file stream
+    response.pipe(sharp().webp().pipe(fileStream));
 
     // Handle the end of the download
     fileStream.on('finish', () => {
       fileStream.close();
-      // console.log(`Image saved: ${filename}`);
+      // console.log(`WebP image saved: ${filename}`);
     });
   }).on('error', (err) => {
     console.error(`Error downloading image: ${err.message}`);
   });
+
   return `images/${filename}`;
-
 }
-
 
 function replaceValues(htmlContent, currentName, updateName) {
   var regexPattern = new RegExp(`{{${currentName}}}`, 'g');
