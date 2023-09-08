@@ -5,49 +5,55 @@
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <meta name="description" content='This is the homepage'>
-          <meta name="theme-color" content="#007bff">
-          <link rel="manifest" href="/manifest.json">
+          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+          <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+          <link rel="manifest" href="/site.webmanifest">
+          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+          <meta name="msapplication-TileColor" content="#1c1c1c">
+          <meta name="theme-color" content="#1c1c1c">
           <title>homepage</title>
-          <link rel="stylesheet" type="text/css" href="style.css"><link rel="stylesheet" type="text/css" href="blocks/carHeader/style.css"><link rel="stylesheet" type="text/css" href="blocks/prices/style.css"><link rel="stylesheet" type="text/css" href="blocks/contactForm/style.css">
+          <link rel="stylesheet" type="text/css" href="style.css"><link rel="stylesheet" type="text/css" href="blocks\carHeader\style.css"><link rel="stylesheet" type="text/css" href="blocks\prices\style.css"><link rel="stylesheet" type="text/css" href="blocks\contactForm\style.css">
       </head>
       <body>
-          <div class="carHeader" id="gPkwqREJyikYNxvqfwIJ">
+          <section class="carHeader" id="gPkwqREJyikYNxvqfwIJ">
     <div class="content">
-        <sub>Multii</sub> 
+        <img class="logo" src="logo.png" alt="Multii logo">
         <h1>Crafting Fast, Beautiful, and Custom <strong>Websites & Apps</strong> – Your Digital Dreams, Our Expertise</h1>
         <a href="">Expertise</a>
         <a href="#WpnWvddaRnawBfUkGJ2Z">Prices</a>
         <a href="#9bBzT6oadSRUYIBXmoVL" class="active">Contact</a>
     </div>
-    <img src="images/images_2F51506279568up6kuhwnvttuwkyjaa5n8lyf4nxngnqdglumgtnfyukgzx1soemski0qqujv739xdzgog29s6vezg4gxg7wjqdrsupcnsal4wrd3.png" alt="">
+    <img class="car" src="images/images_2F51506279568up6kuhwnvttuwkyjaa5n8lyf4nxngnqdglumgtnfyukgzx1soemski0qqujv739xdzgog29s6vezg4gxg7wjqdrsupcnsal4wrd3.png" alt="">
     <div class="light"></div>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-</div> <div class="prices" id="WpnWvddaRnawBfUkGJ2Z">
+</section> <section class="prices" id="WpnWvddaRnawBfUkGJ2Z">
     <h2>Prices</h2>
-    <p>We offer different prices based on the website you need. We plan a meeting to determent how match it gone cost.</p>
+    <p>Our pricing is tailored to your unique needs. We begin with a personalized consultation to determine project costs.</p>
     <div class="blocks">
         <div class="block1 block">
             <h3>Start</h3>
             <p class="price">€200 - € 500</p>
-            <p class="blockContent">This type of website uses basic blocks in your style what you find in most websites. This website can be made in 3 days.</p>
+            <p class="blockContent">Ideal for individuals or small businesses seeking a simple online presence with websites or mobile apps.</p>
         </div>
         <div class="block2 block">
             <h3>Medium</h3>
             <p class="price">€500 - € 2500</p>
-            <p class="blockContent">This type of website uses basic blocks in your style what you find in most websites. This website can be made in 3 days.</p>
+            <p class="blockContent">Medium pricing: Flexible and scalable, ideal for expanding businesses and diverse projects.</p>
         </div>
         <div class="block3 block">
             <h3>Plus</h3>
             <p class="price">€ 2500 +</p>
-            <p class="blockContent">This type of website uses basic blocks in your style what you find in most websites. This website can be made in 3 days.</p>
+            <p class="blockContent">Our plus pricing tier is for those who demand the best. It's designed for complex projects, extensive functionality, and premium quality.</p>
         </div>
     </div>
+    <a href="#9bBzT6oadSRUYIBXmoVL">Get in contact</a>
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-</div> <div class="contactForm" id="9bBzT6oadSRUYIBXmoVL">
+</section> <section class="contactForm" id="9bBzT6oadSRUYIBXmoVL">
     <h2>Contact</h2>
     
     <div id="submittedMessage" style="display: none;">Form submitted!</div>
@@ -68,8 +74,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-</div> 
-          <script src="blocks/carHeader/script.js" type="module" defer></script><script src="blocks/prices/script.js" type="module" defer></script><script src="blocks/contactForm/script.js" type="module" defer></script>
+</section> 
+          <script src="blocks\carHeader\script.js" type="module" defer></script><script src="blocks\prices\script.js" type="module" defer></script><script src="blocks\contactForm\script.js" type="module" defer></script>
+          <script defer src="script.js"></script>
+
           
           <script>
               if ('serviceWorker' in navigator) {
@@ -80,7 +88,9 @@
                           console.error('Service Worker registration failed:', error);
                       });
               }
+              
           </script>
+          
       </body>
       </html>    
     
