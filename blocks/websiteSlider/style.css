@@ -1,16 +1,86 @@
 .websiteSlider {
     color: white;
-    padding: 60px;
     width: 100%;
     box-sizing: border-box;
     overflow: hidden;
+    font-family: 'Open Sans', sans-serif;
+    margin: 150px 0px;
+    position: relative;
+    height: 500px;
 }
 
 .websiteSlider .blocks {
     display: flex;
     width: 300%;
+    position: fixed;
+    left: 0%; /* Center horizontally */
+    top: 50%; /* Center vertically */
+    transform: translate(0%, -50%); /* Center both horizontally and vertically */
+    transition: left 5s linear; /* Add transition for smooth movement */
+}
+
+
+.websiteSlider .websiteNavigation {
+    position: absolute;
+bottom: 0;
+left: 50vw;
+    display: flex;
+    justify-content: center;
+}
+
+.websiteSlider .circle-button {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: white;
+    border: none;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.websiteSlider .circle-button.active {
+    background-color: #F8CD09; /* You can change the active button's color */
 }
 
 .websiteSlider .block {
     width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    padding: 0px 60px;
+    box-sizing: border-box;
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.websiteSlider .block > * {
+    width: 100%;
+}
+
+.websiteSlider h2{
+    margin: 0;
+}
+
+.websiteSlider p{
+    margin: 0px;
+}
+
+.websiteSlider .content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.websiteSlider .block img{
+    border-radius: 8px;
+    position: relative;
+    width: 100%;
+}
+
+.websiteSlider .block .image{
+    background-color: #232323;
+    border-radius: 8px;
+    padding: 16px;
+    box-sizing: border-box;
 }
