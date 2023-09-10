@@ -113,9 +113,28 @@ async function getPageMetaDescription(pageName){
   return metaDescription;
 }
 
+async function getPagemetaTitle(pageName){
+  const pages = await fetchData('pages');
+  let metaDescription;
+  
+  const page = pages.find(page => page.name === pageName);
+  
+  if (page) {
+    metaTitle = page.fields && page.fields.metaTitle;
+    if (metaTitle && typeof metaTitle === 'object' && metaTitle.stringValue) {
+      metaTitle = metaTitle.stringValue;
+    }
+  } else {
+    console.log(`Page '${pageName}' not found.`);
+  }
+  return metaTitle;
+}
+
 async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent) {
 
   metaDescription = await getPageMetaDescription(pageName);
+  metaTitle = await getPagemetaTitle(pageName);
+
   
   if (combinedBodyContent.trim() !== '') {
     const htmlContent = `
@@ -132,7 +151,7 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
           <meta name="msapplication-TileColor" content="#1c1c1c">
           <meta name="theme-color" content="#1c1c1c">
-          <title>${pageName}</title>
+          <title>${metaTitle}</title>
           ${cssLinks}
       </head>
       <body>
