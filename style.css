@@ -28,3 +28,34 @@ body > *{
     transition: opacity 2s ease-in-out;
 }
 
+.circle, .cursor {
+    position: fixed;
+    transform: translate(-50%, -50%);
+}
+
+.circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #484848;    
+    filter: blur(30px);
+    pointer-events: none;
+}
+
+.cursor {
+    width: 60px;
+    height: 60px;
+    background-image: url("./cursor.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    z-index: 999;
+    pointer-events: none;
+    margin-top: 10px;
+}
+
+.vinger{
+    background-image: url("./vinger.png");
+    width: 80px;
+    height: 80px;
+}

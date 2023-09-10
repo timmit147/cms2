@@ -8,40 +8,7 @@
     font-family: 'Open Sans', sans-serif;
     background-image: url("./headerBackground.png");
     background-size: cover;
-    margin-bottom: 100px;
-}
-
-
-.circle, .cursor {
-    position: fixed;
-    transform: translate(-50%, -50%);
-}
-
-.circle {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background-color: #484848;    
-    filter: blur(30px);
-    pointer-events: none;
-}
-
-.cursor {
-    width: 30px;
-    height: 30px;
-    background-image: url("./cursor.png");
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    z-index: 999;
-    pointer-events: none;
-    margin-top: 10px;
-}
-
-.vinger{
-    background-image: url("./vinger.png");
-    width: 40px;
-    height: 40px;
+    margin-bottom: 200px;
 }
 
 .carHeader:after {
