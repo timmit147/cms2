@@ -152,6 +152,7 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
           <meta name="msapplication-TileColor" content="#1c1c1c">
           <meta name="theme-color" content="#1c1c1c">
           <title>${metaTitle}</title>
+          <link rel="canonical" href="https://multii.nl">
           ${cssLinks}
       </head>
       <body>
