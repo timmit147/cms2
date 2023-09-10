@@ -1,9 +1,9 @@
-<section class="contactForm" id="{{id}}">
-    <h2>{{title}}</h2>
-    
+<section class="contactForm" id="{{id}}" itemscope itemtype="http://schema.org/ContactPage">
+    <h2 itemprop="name">{{title}}</h2>
+
     <div id="submittedMessage" style="display: none;">Form submitted!</div>
 
-    <form method="post">
+    <form method="post" itemprop="potentialAction" itemscope itemtype="http://schema.org/CommunicateAction">
         <label for="name">{{nameValue}}</label>
         <input type="text" id="name" name="name" placeholder="{{nameValue}}" required>
 
@@ -19,4 +19,4 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-</section> 
+</section>

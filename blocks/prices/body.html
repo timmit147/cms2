@@ -1,25 +1,25 @@
-<section class="prices" id="{{id}}">
-    <h2>{{title}}</h2>
-    <p>{{content}}</p>
+<section class="prices" id="{{id}}" itemscope itemtype="http://schema.org/Product">
+    <h2 itemprop="name">{{title}}</h2>
+    <p itemprop="description">{{content}}</p>
     <div class="blocks">
-        <div class="block1 block">
-            <h3>{{block1Title}}</h3>
-            <p class="price">{{block1Price}}</p>
+        <div class="block1 block" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+            <h3 itemprop="name">{{block1Title}}</h3>
+            <p class="price" itemprop="price">{{block1Price}}</p>
             <p class="blockContent">{{block1Content}}</p>
         </div>
-        <div class="block2 block">
-            <h3>{{block2Title}}</h3>
-            <p class="price">{{block2Price}}</p>
+        <div class="block2 block" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+            <h3 itemprop="name">{{block2Title}}</h3>
+            <p class="price" itemprop="price">{{block2Price}}</p>
             <p class="blockContent">{{block2Content}}</p>
         </div>
-        <div class="block3 block">
-            <h3>{{block3Title}}</h3>
-            <p class="price">{{block3Price}}</p>
+        <div class="block3 block" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+            <h3 itemprop="name">{{block3Title}}</h3>
+            <p class="price" itemprop="price">{{block3Price}}</p>
             <p class="blockContent">{{block3Content}}</p>
         </div>
     </div>
     <a href="{{contactButtonLink}}">{{contactButtonValue}}</a>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-</section> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+</section>

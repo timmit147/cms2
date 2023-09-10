@@ -1,14 +1,14 @@
-<section class="carHeader" id="{{id}}">
+<section class="carHeader" id="{{id}}" itemscope itemtype="http://schema.org/Product">
     <div class="content">
         <img class="logo" src="logo.png" alt="Multii logo">
-        <h1>{{content}}</h1>
+        <h1 itemprop="name">{{content}}</h1>
         <a href="{{button1Url}}">{{button1Text}}</a>
         <a href="{{button2Url}}">{{button2Text}}</a>
         <a href="{{button3Url}}" class="active">{{button3Text}}</a>
     </div>
-    <img class="car" src="{{image}}" alt="{{altImage}}">
+    <img class="car" src="{{image}}" alt="{{altImage}}" itemprop="image">
     <div class="light"></div>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-</section> 
+</section>

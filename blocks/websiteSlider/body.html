@@ -1,13 +1,13 @@
-<section class="websiteSlider" id="{{id}}">
+<section class="websiteSlider" id="{{id}}" itemscope itemtype="http://schema.org/WebPage">
     <div class="blocks">
-        <div class="block1 block">
+        <div class="block1 block" itemprop="mainContentOfPage">
             <div class="content">
-                <h2>{{block1Title}}</h2>
-                <p class="blockContent">{{block1Content}}</p>
+                <h2 itemprop="headline">{{block1Title}}</h2>
+                <p class="blockContent" itemprop="description">{{block1Content}}</p>
             </div>
             <div class="image">
-                <img src="{{block1Image}}" alt="{{block1ImageAlt}}">
-            </div>        
+                <img src="{{block1Image}}" alt="{{block1ImageAlt}}" itemprop="image">
+            </div>
         </div>
         <div class="block2 block">
             <div class="content">
@@ -16,7 +16,7 @@
             </div>
             <div class="image">
                 <img src="{{block2Image}}" alt="{{block2ImageAlt}}">
-            </div>        
+            </div>
         </div>
         <div class="block3 block">
             <div class="content">
@@ -36,4 +36,4 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-</section> 
+</section>
