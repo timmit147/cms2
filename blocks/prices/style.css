@@ -17,6 +17,7 @@
 .prices a {
     color: white;
     text-decoration: none;
+    border-bottom:1px solid ;
 }
 
 .prices a:hover{
