@@ -327,7 +327,6 @@ function loopKeysArray(keysArray, block, index) {
         }
         if (block.hasOwnProperty(key)) {
             const formattedKey = formatKeyLabel(key);
-
             const fieldContainer = document.createElement('div'); // Container for the field and toggle button
 
             if (key.includes("image") || key.includes("Image") || key.includes("logo")) {
@@ -359,9 +358,10 @@ function loopKeysArray(keysArray, block, index) {
                 imageInput.type = 'file';
                 imageInput.style.display = 'none'; // Initially hide the file input
 
+
                 imageInput.addEventListener('change', (event) => {
                     const selectedImage = event.target.files[0];
-                    handleImageUpload(selectedImage, index);
+                    handleImageUpload(selectedImage, index, key);
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         const newImageElement = document.createElement('img');
@@ -1073,7 +1073,8 @@ async function addNewBlock(selectedBlock) {
     }
 }
 
-async function handleImageUpload(file, blockIndex) {
+async function handleImageUpload(file, blockIndex,key) {
+    console.log(key);
     const storageRef = firebase.storage().ref();
     const imagesRef = storageRef.child('images');
 
@@ -1089,7 +1090,7 @@ async function handleImageUpload(file, blockIndex) {
 
         try {
             await blockRef.update({
-                image: downloadURL // Update the 'image' property with the download URL
+                [key]: downloadURL // Update the 'key' field with the download URL
             });
             console.log(`Image URL stored in the block's data.`);
         } catch (error) {

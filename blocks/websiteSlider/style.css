@@ -1,0 +1,16 @@
+.websiteSlider {
+    color: white;
+    padding: 60px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.websiteSlider .blocks {
+    display: flex;
+    width: 300%;
+}
+
+.websiteSlider .block {
+    width: 100%;
+}

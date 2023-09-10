@@ -72,6 +72,21 @@ const objectWithBlocks = [
         block3Content: "This type of website uses basic blocks in your style what you find in most websites. This website can be made in 3 days.",
         contactButtonValue: "Get in contact",
         contactButtonLink: "#",
+    },
+    {
+        type: "websiteSlider",
+        block1Title: "Website name",
+        block1Image: "",
+        block1ImageAlt: "",
+        block1Content: "Website content",
+        block2Title: "Website name",
+        block2Image: "",
+        block2ImageAlt: "",
+        block2Content: "Website content",
+        block3Title: "Website name",
+        block3Image: "",
+        block3ImageAlt: "",
+        block3Content: "Website content",
     }
 ];
 
