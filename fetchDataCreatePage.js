@@ -310,7 +310,7 @@ function saveImages(imageUrl) {
   }).on('error', (err) => {
     console.error(`Error downloading image: ${err.message}`);
   });
-return `src="images/${filename.replace(/\.[^.]+$/, '.webp')}"  srcset="images/${filename.replace(/\.[^.]+$/, '_mobile.webp')} 600w, images/${filename.replace(/\.[^.]+$/, '.webp')} 1200w" sizes="(max-width: 600px) 600px, 1500px"`;
+return `src="images/${filename.replace(/\.[^.]+$/, '.webp')}"  srcset="images/${filename.replace(/\.[^.]+$/, '_mobile.webp')} 600w, images/${filename.replace(/\.[^.]+$/, '.webp')} 1200w" sizes="(max-width: 600px) 100vw, 1500px"`;
   }
 
 
