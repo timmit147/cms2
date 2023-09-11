@@ -277,10 +277,16 @@ function saveImages(imageUrl) {
     fileStream.on('finish', () => {
       fileStream.close();
 
-      // Convert the original image to WebP format
-      const originalOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '.webp'));
-      sharp(path.join(imagesDirectory, filename))
-        .toFile(originalOutputPath, (err) => {
+      // Resize the original image to have a max width of 1500px or smaller
+      const originalImage = sharp(path.join(imagesDirectory, filename));
+      originalImage.metadata().then((metadata) => {
+        if (metadata.width > 1500) {
+          originalImage.resize({ width: 1500 });
+        }
+
+        // Convert the original image to WebP format
+        const originalOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '.webp'));
+        originalImage.toFile(originalOutputPath, (err) => {
           if (err) {
             console.error(`Error converting original image to WebP: ${err.message}`);
             return;
@@ -289,23 +295,23 @@ function saveImages(imageUrl) {
           fs.unlinkSync(path.join(imagesDirectory, filename));
         });
 
-      // Resize the image for mobile devices and save as WebP
-      const mobileOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '_mobile.webp'));
-      sharp(path.join(imagesDirectory, filename))
-        .resize({ width: 320 }) // Adjust the width as needed for your mobile design
-        .toFile(mobileOutputPath, (err) => {
-          if (err) {
-            console.error(`Error converting mobile image to WebP: ${err.message}`);
-            return;
-          }
-        });
+        // Resize the image for mobile devices and save as WebP
+        const mobileOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '_mobile.webp'));
+        originalImage
+          .resize({ width: 600 }) // Adjust the width as needed for your mobile design
+          .toFile(mobileOutputPath, (err) => {
+            if (err) {
+              console.error(`Error converting mobile image to WebP: ${err.message}`);
+              return;
+            }
+          });
+      });
     });
   }).on('error', (err) => {
     console.error(`Error downloading image: ${err.message}`);
   });
 
   return `images/${filename.replace(/\.[^.]+$/, '.webp')}`; // Return the WebP file path
-
 }
 
 
