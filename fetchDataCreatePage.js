@@ -81,20 +81,19 @@ function generateJavascriptTags(blocks) {
 }
 
 
-function generateCssLinks(cssFiles) {
-  const cssFilePathSet = new Set(); 
-  return cssFiles
-    .map(cssFilePath => {
-      if (!cssFilePathSet.has(cssFilePath)) {
-        cssFilePathSet.add(cssFilePath);
-        return `<link rel="stylesheet" type="text/css" href="${cssFilePath}">`;
-      }
+function generateSingleCssFile(cssFiles,page) {
+  const outputFilePath = `${page}.css`; // Set the output file path in the root directory
+  
+  let combinedCss = '';
+  
+  cssFiles.forEach(cssFilePath => {
+    const cssContent = fs.readFileSync(cssFilePath, 'utf-8');
+    combinedCss += cssContent;
+  });
 
-      return '';
-    })
-    .join('');
+  fs.writeFileSync(outputFilePath, combinedCss, 'utf-8');
+  return `<link rel="stylesheet" type="text/css" href="${outputFilePath}">`;
 }
-
 
 async function getPageMetaDescription(pageName){
   const pages = await fetchData('pages');
@@ -244,7 +243,7 @@ async function createBaseHtmlContent(pageName) {
   const combinedBodyContent = bodyContents.join('');
 
   const javascriptFiles = generateJavascriptTags(blocks);
-  const cssLinks = generateCssLinks(cssFiles);
+  const cssLinks = generateSingleCssFile(cssFiles,pageName);
 
   generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent);
 }
