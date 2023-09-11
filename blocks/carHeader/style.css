@@ -6,7 +6,7 @@
     box-sizing: border-box;
     color: white;
     font-family: 'Open Sans', sans-serif;
-    background-image: url("./headerBackground.png");
+    background-image: url("./headerBackground.webp");
     background-size: cover;
     margin-bottom: 200px;
 }
