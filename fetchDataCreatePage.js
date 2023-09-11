@@ -252,12 +252,12 @@ async function createBaseHtmlContent(pageName) {
 
 const https = require('https');
 
+const sharp = require('sharp');
+
 function sanitizeFilename(filename) {
   // Remove invalid characters from the filename
   return filename.replace(/[/\\?%*:|"<>]/g, '_');
 }
-
-const sharp = require('sharp'); // Import the sharp library
 
 function saveImages(imageUrl) {
   const rootDirectory = './';
@@ -276,15 +276,28 @@ function saveImages(imageUrl) {
 
     fileStream.on('finish', () => {
       fileStream.close();
-      // Now, convert the saved image to WebP format
-      const outputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '.webp')); // Change the file extension to .webp
+
+      // Convert the original image to WebP format
+      const originalOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '.webp'));
       sharp(path.join(imagesDirectory, filename))
-        .toFile(outputPath, (err) => {
+        .toFile(originalOutputPath, (err) => {
           if (err) {
-            console.error(`Error converting image to WebP: ${err.message}`);
+            console.error(`Error converting original image to WebP: ${err.message}`);
             return;
           }
+          // Remove the original image
           fs.unlinkSync(path.join(imagesDirectory, filename));
+        });
+
+      // Resize the image for mobile devices and save as WebP
+      const mobileOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '_mobile.webp'));
+      sharp(path.join(imagesDirectory, filename))
+        .resize({ width: 320 }) // Adjust the width as needed for your mobile design
+        .toFile(mobileOutputPath, (err) => {
+          if (err) {
+            console.error(`Error converting mobile image to WebP: ${err.message}`);
+            return;
+          }
         });
     });
   }).on('error', (err) => {
@@ -292,6 +305,7 @@ function saveImages(imageUrl) {
   });
 
   return `images/${filename.replace(/\.[^.]+$/, '.webp')}`; // Return the WebP file path
+
 }
 
 
