@@ -192,7 +192,7 @@ function addTitle(target){
 function addLink(target) {
     const currentDomain = window.location.hostname;
     const currentPort = (currentDomain === 'localhost') ? ':3000/' : ''; // Only add port for localhost
-    const desiredURL = `http://${currentDomain}${currentPort}${currentPage}.html`;
+    const desiredURL = `http://${currentDomain}${currentPort}${currentPage}`;
     const pageTitle = document.createElement('a');
     pageTitle.textContent = desiredURL;
     pageTitle.href = desiredURL;

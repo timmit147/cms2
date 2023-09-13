@@ -17,6 +17,11 @@ const mainServer = http.createServer((req, res) => {
         return;
     }
 
+    if (!path.extname(filePath)) {
+        // If the filePath has no extension, assume it's an HTML file
+        filePath += '.html';
+    }
+
     fs.readFile(filePath, (err, content) => {
         if (err) {
             if (err.code === 'ENOENT') {
@@ -48,7 +53,6 @@ mainServer.listen(mainPort, () => {
 });
 
 // Admin Section Server
-// Admin Section Server
 const adminServer = http.createServer((req, res) => {
     if (req.url === '/') {
         // Redirect to main server on port 3000
@@ -57,14 +61,17 @@ const adminServer = http.createServer((req, res) => {
         return;
     }
 
-
     let filePath = '.' + req.url;
 
     if (filePath === './admin') {
-
         filePath = './admin/index.html';
     } else {
         filePath = './admin' + req.url;
+    }
+
+    if (!path.extname(filePath)) {
+        // If the filePath has no extension, assume it's an HTML file
+        filePath += '.html';
     }
 
     fs.readFile(filePath, (err, content) => {
@@ -82,7 +89,6 @@ const adminServer = http.createServer((req, res) => {
         }
     });
 });
-
 
 const adminPort = 3001;
 adminServer.listen(adminPort, () => {
