@@ -189,10 +189,16 @@ function addTitle(target){
     pageTitle.textContent = currentPage;
     target.appendChild(pageTitle);
 }
-function addLink(target) {
+function addLink(target,hash) {
+    if(hash !== undefined){
+        hash = `#${hash}`
+    }
+    else{
+        hash = '';
+    }
     const currentDomain = window.location.hostname;
     const currentPort = (currentDomain === 'localhost') ? ':3000/' : ''; // Only add port for localhost
-    const desiredURL = `http://${currentDomain}${currentPort}${currentPage}`;
+    const desiredURL = `http://${currentDomain}${currentPort}${currentPage}${hash}`;
     const pageTitle = document.createElement('a');
     pageTitle.textContent = desiredURL;
     pageTitle.href = desiredURL;
@@ -235,10 +241,12 @@ function addBlockTitle(target){
 
 
 function ShowBlockContents(target, name){
-    const blocksTitle = document.createElement('h2');
+    const blocksTitle = document.createElement('h1');
     blocksTitle.textContent = name;
     target.appendChild(blocksTitle);
 }
+
+
 
 function loopSortedBlocks(blockArray){
     const sortedBlocks = blockArray.sort((a, b) => a.order - b.order);
@@ -265,6 +273,7 @@ function loopSortedBlocks(blockArray){
             const container = document.querySelector("#container");
             clearContainer(container);
             ShowBlockContents(container, typeLabel.textContent);
+            addLink(container,index);
             changeBreadcrump(currentPage,typeLabel.textContent);          
     
             const keysArray = [];
