@@ -20,7 +20,7 @@ const createDropdownWithBlocks = (async () => {
         <select class="block" name="block" >
             ${optionsHTML}
         </select>
-        <button>Add</button>
+        <button>Add block</button>
     </div>
     `;
 })();
@@ -189,6 +189,19 @@ function addTitle(target){
     pageTitle.textContent = currentPage;
     target.appendChild(pageTitle);
 }
+function addLink(target) {
+    const currentDomain = window.location.hostname;
+    const currentPort = (currentDomain === 'localhost') ? ':3000/' : ''; // Only add port for localhost
+    const desiredURL = `http://${currentDomain}${currentPort}${currentPage}.html`;
+    const pageTitle = document.createElement('a');
+    pageTitle.textContent = desiredURL;
+    pageTitle.href = desiredURL;
+    pageTitle.target = "_blank";
+    
+    target.appendChild(pageTitle);
+}
+
+
 
 function changeBreadcrump(page, block) {
     document.querySelector(".breadcrumpArrow").textContent = '>';
@@ -454,14 +467,16 @@ async function addSettings(){
         const removePagelabel = document.createElement('label');
         removePagelabel.textContent = 'Remove Page';
         container.appendChild(removePagelabel);
-
+    
         const removePageButton = document.createElement('button');
         removePageButton.textContent = 'Remove Page';
+        removePageButton.classList.add('removePage'); // Add the 'removePage' class
         removePageButton.addEventListener('click', () => {
             removePage(currentPage); 
         });
         container.appendChild(removePageButton);
     }
+    
   
 }
 
@@ -471,6 +486,7 @@ async function placeBlock() {
     const container = document.getElementById('container');
     clearContainer(container);
     addTitle(container);
+    addLink(container);
 
     changeBreadcrump(currentPage);
     if(currentPage === "tutorial"){
@@ -527,41 +543,69 @@ async function loopPageFields(currentPage) {
             fieldLabel.textContent = field;
             container.appendChild(fieldLabel);
 
-            if (typeof fieldValue === 'string') {
-                // Add an input field for string fields
-                const inputField = createInputField('text', fieldValue, async (value) => {
-                    await updatePageField(currentPage, field, value);
+            if (typeof fieldValue === 'string' || typeof fieldValue === 'number') {
+                // Create a div with the class "field-container" to wrap the input field and submit button
+                const fieldDiv = document.createElement('div');
+                fieldDiv.classList.add('field-container');
+
+                // Add an input field for string and number fields
+                const inputField = createInputField(
+                    typeof fieldValue === 'string' ? 'text' : 'number',
+                    fieldValue,
+                    async (value) => {
+                        // Do nothing here, we will update when the button is pressed.
+                    }
+                );
+                fieldDiv.appendChild(inputField);
+
+                // Add a submit button for each input field
+                const submitButton = document.createElement('button');
+                submitButton.textContent = 'Submit';
+                submitButton.addEventListener('click', async () => {
+                    const field = fieldLabel.textContent;
+                    const inputValue = inputField.value;
+                    await updatePageField(currentPage, field, inputValue);
                 });
-                container.appendChild(inputField);
-            } else if (typeof fieldValue === 'number') {
-                // Add an input field for number fields
-                const inputField = createInputField('number', fieldValue, async (value) => {
-                    await updatePageField(currentPage, field, value);
-                });
-                container.appendChild(inputField);
+                fieldDiv.appendChild(submitButton);
+
+                container.appendChild(fieldDiv);
             } else if (typeof fieldValue === 'boolean') {
+                // Create a div with the class "field-container" to wrap the checkbox and submit button
+                const fieldDiv = document.createElement('div');
+                fieldDiv.classList.add('field-container');
+
                 // Add a checkbox for boolean fields
                 const checkbox = createCheckbox(fieldValue, async (value) => {
-                    await updatePageField(currentPage, field, value);
+                    // Do nothing here, we will update when the button is pressed.
                 });
-                container.appendChild(checkbox);
+                fieldDiv.appendChild(checkbox);
+
+                // Add a submit button for each checkbox
+                const submitButton = document.createElement('button');
+                submitButton.textContent = 'Submit';
+                submitButton.addEventListener('click', async () => {
+                    const field = fieldLabel.textContent;
+                    const checkboxValue = checkbox.checked;
+                    await updatePageField(currentPage, field, checkboxValue);
+                });
+                fieldDiv.appendChild(submitButton);
+
+                container.appendChild(fieldDiv);
             } else {
                 // Display the field value for other field types
                 const fieldValueElement = createFieldValueElement(fieldValue.toString());
                 container.appendChild(fieldValueElement);
             }
-
         }
-        
     }
-    
 
     if (currentPage === 'settings') {
         await displayMenuPages(pageData.menu);
         await displayUnselectedPages(pageData.menu);
     }
-    
 }
+
+
 
 async function getPageData(currentPage) {
     const pageRef = firestore.collection('pages').doc(currentPage);

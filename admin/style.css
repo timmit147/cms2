@@ -46,12 +46,14 @@ label{
 #addBlock{
     display: flex;
     gap: 8px;
+    flex-direction: column;
+    width: fit-content;
 }
 
 #addBlock button{
     background-color: #21759B;
     color: white;
-    padding: 8px;
+    padding: 4px 8px;
     border: 1px solid #21759B;
 }
 
@@ -76,13 +78,13 @@ input[type="text"]{
     font-size: 16px;
 }
 
-.removeBlockButton{
-    color: #B92D2D;
+.removeBlockButton, .removePage{
+    color: #21759B;
     font-weight: bold;
     text-decoration: underline;
 }
 
-.removeBlockButton:hover{
+.removeBlockButton:hover, .removePage:hover{
     color: #B92D2D;
 }
 
@@ -117,19 +119,26 @@ input[type="text"]{
     color: #21759b;
 }
 
-.propertyDiv button {
+.propertyDiv button, .field-container button{
     background-color: #21759b;
     color: white;
     padding: 4px 8px;
     border: 1px solid;
 }
 
-.propertyDiv button:hover {
+.propertyDiv button:hover, .field-container button:hover {
     color: unset;
     text-decoration: none;
     background-color: white;
     color: #21759b;
     font-weight: 100;
+}
+
+
+.field-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .image-field {
