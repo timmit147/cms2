@@ -13,7 +13,7 @@ const objectWithBlocks = [
         buttonText: "klik",
         buttonUrl: "#",
         image: "",
-        altImage: ""
+        imgAlt: ""
     },
     {
         type: "imageText",
@@ -22,7 +22,7 @@ const objectWithBlocks = [
         buttonText: "klik",
         buttonUrl: "#",
         image: "",
-        altImage: "",
+        imgAlt: "",
         textPosition: ""
     },
     {
@@ -37,7 +37,7 @@ const objectWithBlocks = [
         subTitle: "Subtitle",
         content: "this is a test text",
         image: "",
-        altImage: "",
+        imgAlt: "",
         button1Text: "Image text block",
         button1Url: "",
         button2Text: "Image text block",
@@ -77,15 +77,15 @@ const objectWithBlocks = [
         type: "websiteSlider",
         block1Title: "Website name",
         block1Image: "",
-        block1ImageAlt: "",
+        block1ImgAlt: "",
         block1Content: "Website content",
         block2Title: "Website name",
         block2Image: "",
-        block2ImageAlt: "",
+        block2ImgAlt: "",
         block2Content: "Website content",
         block3Title: "Website name",
         block3Image: "",
-        block3ImageAlt: "",
+        block3ImgAlt: "",
         block3Content: "Website content",
     }
 ];

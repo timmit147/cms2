@@ -325,93 +325,91 @@ function loopKeysArray(keysArray, block, index) {
         if (key === "type") {
             continue;
         }
-        if (block.hasOwnProperty(key)) {
-            const formattedKey = formatKeyLabel(key);
-            const fieldContainer = document.createElement('div'); // Container for the field and toggle button
+        if (!block.hasOwnProperty(key)) {
+            continue;
+        }
 
-            if (key.includes("image") || key.includes("Image") || key.includes("logo")) {
-                const imageField = document.createElement('div');
-                imageField.className = 'image-field'; // You can add a class name for styling if needed
+        const formattedKey = formatKeyLabel(key);
+        const fieldContainer = document.createElement('div');
 
-                const blocksTitle = document.createElement('label');
-                blocksTitle.textContent = key; // Use the original key for image labels
+        if (key.includes("image") || key.includes("Image") || key.includes("logo")) {
+            const imageField = document.createElement('div');
+            imageField.className = 'image-field';
 
-                // Function to toggle the visibility of image and input
-                function toggleImageAndInput() {
-                    const isImageVisible = imageElement.style.display === 'none';
-                    imageElement.style.display = isImageVisible ? 'block' : 'none';
-                    imageInput.style.display = isImageVisible ? 'block' : 'none';
-                }
+            const blocksTitle = document.createElement('label');
+            blocksTitle.textContent = key;
 
-                blocksTitle.addEventListener('click', function () {
-                    toggleImageAndInput(); // Toggle the display of image and input when label is clicked
-                });
-
-                imageField.appendChild(blocksTitle);
-
-                const imageElement = document.createElement('img');
-                imageElement.src = block[key];
-                imageElement.style.display = 'none'; // Initially hide the image
-                imageField.appendChild(imageElement);
-
-                const imageInput = document.createElement('input');
-                imageInput.type = 'file';
-                imageInput.style.display = 'none'; // Initially hide the file input
-
-
-                imageInput.addEventListener('change', (event) => {
-                    const selectedImage = event.target.files[0];
-                    handleImageUpload(selectedImage, index, key);
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const newImageElement = document.createElement('img');
-                        newImageElement.src = e.target.result;
-                        imageElement.src = e.target.result; // Update the existing image
-                        imageField.insertBefore(newImageElement, imageInput);
-                    };
-                    reader.readAsDataURL(selectedImage);
-                });
-
-                imageField.appendChild(imageInput);
-
-                fieldContainer.appendChild(imageField);
-            } else {
-                const propertyDiv = document.createElement('div');
-                propertyDiv.classList.add('propertyDiv');
-
-                const inputLabel = document.createElement('label');
-                inputLabel.textContent = formattedKey; // Use the formatted key label for text fields
-                inputLabel.style.fontWeight = 'bold';
-                propertyDiv.appendChild(inputLabel);
-
-                const inputField = document.createElement('input');
-                inputField.type = 'text';
-                inputField.value = block[key];
-                inputField.style.display = 'none'; // Initially hide the input field
-                propertyDiv.appendChild(inputField);
-
-                const submitButton = document.createElement('button');
-                submitButton.textContent = 'Update';
-                submitButton.style.display = 'none'; // Initially hide the submit button
-                propertyDiv.appendChild(submitButton);
-
-                inputLabel.addEventListener('click', function () {
-                    // Toggle the display of inputField and submitButton when label is clicked
-                    inputField.style.display = inputField.style.display === 'none' ? 'block' : 'none';
-                    submitButton.style.display = submitButton.style.display === 'none' ? 'block' : 'none';
-                });
-
-                submitButton.addEventListener('click', function () {
-                    handleSubmitButtonClick(index, key, inputField, submitButton);
-                });
-
-                fieldContainer.appendChild(propertyDiv); // Add propertyDiv to the field container
+            function toggleImageAndInput() {
+                const isImageVisible = imageElement.style.display === 'none';
+                imageElement.style.display = isImageVisible ? 'block' : 'none';
+                imageInput.style.display = isImageVisible ? 'block' : 'none';
             }
 
-            container.appendChild(fieldContainer); // Add the field container to the main container
+            blocksTitle.addEventListener('click', toggleImageAndInput);
+
+            imageField.appendChild(blocksTitle);
+
+            const imageElement = document.createElement('img');
+            imageElement.src = block[key];
+            imageElement.style.display = 'none';
+            imageField.appendChild(imageElement);
+
+            const imageInput = document.createElement('input');
+            imageInput.type = 'file';
+            imageInput.style.display = 'none';
+
+            imageInput.addEventListener('change', (event) => {
+                const selectedImage = event.target.files[0];
+                handleImageUpload(selectedImage, index, key);
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const newImageElement = document.createElement('img');
+                    newImageElement.src = e.target.result;
+                    imageElement.src = e.target.result;
+                    imageField.insertBefore(newImageElement, imageInput);
+                };
+                reader.readAsDataURL(selectedImage);
+            });
+
+            imageField.appendChild(imageInput);
+
+            fieldContainer.appendChild(imageField);
+        } else {
+            const propertyDiv = document.createElement('div');
+            propertyDiv.classList.add('propertyDiv');
+
+            const inputLabel = document.createElement('label');
+            inputLabel.textContent = formattedKey;
+            inputLabel.style.fontWeight = 'bold';
+            propertyDiv.appendChild(inputLabel);
+
+            const inputField = document.createElement('input');
+            inputField.type = 'text';
+            inputField.value = block[key];
+            inputField.style.display = 'none';
+            propertyDiv.appendChild(inputField);
+
+            const submitButton = document.createElement('button');
+            submitButton.textContent = 'Update';
+            submitButton.style.display = 'none';
+            propertyDiv.appendChild(submitButton);
+
+            inputLabel.addEventListener('click', () => {
+                inputField.style.display = inputField.style.display === 'none' ? 'block' : 'none';
+                submitButton.style.display = submitButton.style.display === 'none' ? 'block' : 'none';
+            });
+
+            submitButton.addEventListener('click', () => {
+                handleSubmitButtonClick(index, key, inputField, submitButton);
+            });
+
+            fieldContainer.appendChild(propertyDiv);
         }
+
+        container.appendChild(fieldContainer);
     }
 }
+
 
 
 
