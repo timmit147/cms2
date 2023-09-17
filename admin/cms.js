@@ -951,63 +951,102 @@ async function handleAddPageButtonClick() {
 }
 
 
-async function getPages(){
+async function getPages() {
     const pages = await fetchDataFromFirestore("pages");
     const pagesTitles = document.querySelector(".pageTitles");
     const pagesArray = Object.keys(pages); 
-        for (const page of pagesArray) {
+    for (const page of pagesArray) {
         const button = document.createElement('button'); // Create the button element
         button.textContent = page.charAt(0).toUpperCase() + page.slice(1);
         button.addEventListener('click', () => {
+            // Remove the 'currentPage' class from all buttons
+            const allButtons = document.querySelectorAll(".pageTitles button");
+            allButtons.forEach((btn) => {
+                btn.classList.remove("currentPage");
+            });
+
+            // Add the 'currentPage' class to the clicked button
+            button.classList.add("currentPage");
+
             getBlocks(page);
         });
         pagesTitles.appendChild(button); // Append the button to the button container
     }
 }
 
+
 getPages();
 
 
-async function getBlocks(page){
+async function getBlocks(page) {
     const blocks = await fetchDataFromFirestore(`pages/${page}/blocks`);
     const blocksTitles = document.querySelector(".blockTitles");
     blocksTitles.innerHTML = "";
     const contentFields = document.querySelector(".contentFields");
     contentFields.innerHTML = "";
-    const blocksArray = Object.keys(blocks); 
-        for (const block of blocksArray) {
-            const button = document.createElement('button'); // Create the button element
-            button.textContent = blocks[block]['title'];
-            button.addEventListener('click', () => {
-                getContent(page,block);
+    const blocksArray = Object.keys(blocks);
+    for (const block of blocksArray) {
+        const button = document.createElement('button'); // Create the button element
+        button.textContent = blocks[block]['title'];
+        button.addEventListener('click', () => {
+            // Remove the 'currentBlock' class from all buttons
+            const allButtons = document.querySelectorAll(".blockTitles button");
+            allButtons.forEach((btn) => {
+                btn.classList.remove("currentBlock");
             });
+
+            // Add the 'currentBlock' class to the clicked button
+            button.classList.add("currentBlock");
+
+            getContent(page, block);
+        });
         blocksTitles.appendChild(button); // Append the button to the button container
     }
 }
 
-async function getContent(page,block){
+
+async function getContent(page, block) {
     let content = await fetchDataFromFirestore(`pages/${page}/blocks`);
     const contentFields = document.querySelector(".contentFields");
     contentFields.innerHTML = "";
 
+    // Create an array of field names
+    const fieldNames = Object.keys(content[block]);
 
-    for (var field in content[block]) {
+    // Sort the field names alphabetically, excluding "title"
+    const sortedFieldNames = fieldNames.filter(fieldName => fieldName !== "title").sort();
+
+    // Check if "title" field exists and add it at the beginning
+    if (fieldNames.includes("title")) {
+        sortedFieldNames.unshift("title");
+    }
+
+    // Function to format field names
+    function formatFieldName(fieldName) {
+        // Replace numbers with corresponding words, e.g., "block1Price" becomes "Block 1 Price"
+        fieldName = fieldName.replace(/(\d+)/g, " $1 ");
+        // Add spaces before capital letters (except the first one)
+        fieldName = fieldName.replace(/([A-Z])/g, ' $1');
+        // Capitalize the first letter of each word
+        return fieldName.trim().replace(/(^\w|\s\w)/g, m => m.toUpperCase());
+    }
+
+    // Iterate through the sorted field names and create elements
+    for (const fieldName of sortedFieldNames) {
         let imageElement;
         const typeLabel = document.createElement('label');
-        typeLabel.textContent = field;
+        typeLabel.textContent = formatFieldName(fieldName); // Format the field name
         typeLabel.style.fontWeight = 'bold';
-
 
         const inputField = document.createElement('input');
 
-        if(field.includes("Image") || field.includes("image")){
-            let fieldName = field;
+        if (fieldName.includes("Image") || fieldName.includes("image")) {
             inputField.type = 'file';
             imageElement = document.createElement('img');
-            imageElement.src =  content[block][field];
+            imageElement.src = content[block][fieldName];
             inputField.addEventListener('change', (event) => {
                 const selectedImage = event.target.files[0];
-                handleImageUpload(page,selectedImage, block, fieldName);
+                handleImageUpload(page, selectedImage, block, fieldName);
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const newImageElement = document.createElement('img');
@@ -1017,31 +1056,28 @@ async function getContent(page,block){
                 };
                 reader.readAsDataURL(selectedImage);
             });
-            
-        }
-        else{
+
+        } else {
             inputField.type = 'text';
-            inputField.value = content[block][field];
+            inputField.value = content[block][fieldName];
         }
 
         const submitButton = document.createElement('button');
         submitButton.textContent = 'Update';
 
         submitButton.addEventListener('click', () => {
-            updateBlockProperty(page, block, typeLabel.textContent, inputField.value) 
+            updateBlockProperty(page, block, formatFieldName(fieldName), inputField.value);
         });
 
-        contentFields.appendChild(typeLabel); 
-        if(imageElement !== undefined){
+        contentFields.appendChild(typeLabel);
+        if (imageElement !== undefined) {
             contentFields.appendChild(imageElement);
         }
         contentFields.appendChild(inputField);
         contentFields.appendChild(submitButton);
-        
-
     }
-
 }
+
 
 
 
