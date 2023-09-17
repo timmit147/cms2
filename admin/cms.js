@@ -1000,16 +1000,24 @@ async function getContent(page,block){
 
         const inputField = document.createElement('input');
 
-        console.log(field);
         if(field.includes("Image") || field.includes("image")){
+            let fieldName = field;
             inputField.type = 'file';
             imageElement = document.createElement('img');
             imageElement.src =  content[block][field];
-            imageElement.addEventListener('change', (event) => {
-                console.log('test');
-                handleImageUpload(imageElement, index, key);
+            inputField.addEventListener('change', (event) => {
+                const selectedImage = event.target.files[0];
+                handleImageUpload(page,selectedImage, block, fieldName);
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const newImageElement = document.createElement('img');
+                    newImageElement.src = e.target.result;
+                    imageElement.src = e.target.result;
+                    // imageElement.insertBefore(newImageElement, inputField);
+                };
+                reader.readAsDataURL(selectedImage);
             });
-
+            
         }
         else{
             inputField.type = 'text';
@@ -1086,8 +1094,7 @@ async function addNewBlock(selectedBlock) {
     }
 }
 
-async function handleImageUpload(file, blockIndex,key) {
-    console.log(key);
+async function handleImageUpload(page,file, blockIndex,key) {
     const storageRef = firebase.storage().ref();
     const imagesRef = storageRef.child('images');
 
@@ -1099,8 +1106,8 @@ async function handleImageUpload(file, blockIndex,key) {
 
         // Update the block's data in Firestore with the image URL
         const db = firebase.firestore();
-        const blockRef = db.collection('pages').doc(currentPage).collection('blocks').doc(blockIndex);
-
+        const blockRef = db.collection('pages').doc(page).collection('blocks').doc(blockIndex);
+        console.log(blockRef);
         try {
             await blockRef.update({
                 [key]: downloadURL // Update the 'key' field with the download URL
