@@ -1066,7 +1066,7 @@ async function getContent(page, block) {
         submitButton.textContent = 'Update';
 
         submitButton.addEventListener('click', () => {
-            updateBlockProperty(page, block, formatFieldName(fieldName), inputField.value);
+            updateBlockProperty(page, block, fieldName, inputField.value);
         });
 
         contentFields.appendChild(typeLabel);
