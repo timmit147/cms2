@@ -5,16 +5,62 @@ body {
     height: 100vh;
     width: 100vw;
     display: flex;
-    flex-direction: column-reverse;
-    overflow: hidden;
+}
+
+#pages {
+    min-width: 200px;
+    height: 100vh;
+    padding: 8px;
+    border-right: 1px solid;
+}
+
+.pageTitles {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.contentFields{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: scroll;
+    height: 80vh;
+}
+
+#blocks {
+    min-width: 200px;
+    height: 100vh;
+    padding: 8px;
+    border-right: 1px solid;
+}
+
+.blockTitles{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#content {
+    flex: 1;
+    height: 100vh;
+    padding: 8px;
+}
+
+#content img{
+    width: 300px;
 }
 
 h1{
-    color: #114259;
+    color: black;
 }
 
 h2{
-    color: #21759b;
+    color: black;
+}
+
+input[type="file"]{
+    flex: none;
 }
 
 .image-field img {
@@ -29,6 +75,25 @@ h2{
     text-decoration: underline;
     color: #21759b;
 }
+
+.icon {
+    width: 20px; /* Adjust the width and height as needed */
+    height: 20px;
+    background-image: url('images/angle.png'); /* Replace with your icon image URL */
+    background-size: cover;
+    background-color: #21759B; /* Set the desired color for the icon */
+    background-blend-mode: multiply; /* Apply the multiply blend mode */
+}
+
+  /* .icon:after{
+    content: "";
+    mix-blend-mode: multiply; /* Apply the multiply blend mode */
+    background-color: #21759B; /* Set the desired color */
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+  } */
 
 *{
     margin: 0px;
@@ -153,11 +218,11 @@ button{
     border: 0;
     padding: 0;
     font-size: 16px;
+    text-align: left;
 }
 
 button:hover{
     color: #21759B;
-    font-weight: bold;
     cursor: pointer;
 }
 

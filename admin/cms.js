@@ -65,16 +65,16 @@ async function newDatabase() {
 // Firebase authentication state change listener
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-        addMenuButtons();
+        // addMenuButtons();
         hideLoginForm(); // Hide the login form
-        const menu = document.querySelector('.menu');
-        menu.style.display = 'flex';
-        const container = document.querySelector('#container');
-        container.style.display = 'flex';
+        // const menu = document.querySelector('.menu');
+        // menu.style.display = 'flex';
+        // const container = document.querySelector('#container');
+        // container.style.display = 'flex';
     } else {
         showLoginForm(); // Show the login form
     }
-        placeBlock();
+        // placeBlock();
 });
 
 
@@ -209,27 +209,6 @@ function addLink(target,hash) {
 
 
 
-function changeBreadcrump(page, block) {
-    document.querySelector(".breadcrumpArrow").textContent = '>';
-    const breadcrump = document.querySelector('.breadcrump');
-
-    if (breadcrump) {
-        if (page && block) {
-            const pageLink = document.createElement('a');
-            pageLink.href = '#'; // You can set the appropriate URL here
-            pageLink.textContent = page;
-            pageLink.addEventListener('click', () => {
-                placeBlock();
-            });
-            
-            breadcrump.innerHTML = ''; // Clear existing content
-            breadcrump.appendChild(pageLink);
-            breadcrump.appendChild(document.createTextNode(' > ' + block));
-        } else if (page) {
-            breadcrump.textContent = page;
-        }
-    }
-}
 
 
 
@@ -274,7 +253,6 @@ function loopSortedBlocks(blockArray){
             clearContainer(container);
             ShowBlockContents(container, typeLabel.textContent);
             addLink(container,index);
-            changeBreadcrump(currentPage,typeLabel.textContent);          
     
             const keysArray = [];
 
@@ -440,23 +418,20 @@ function loopKeysArray(keysArray, block, index) {
 
 
 
+// async function getBlocks() {
+//     const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
 
+//     const blockArray = Object.entries(pages).map(([index, block]) => ({
+//         index,
+//         order: block.order || 0,
+//         block,
+//     }));
 
+//     // Sort the blockArray in descending order based on the 'order' property
+//     blockArray.sort((a, b) => b.order - a.order);
 
-async function getBlocks() {
-    const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
-
-    const blockArray = Object.entries(pages).map(([index, block]) => ({
-        index,
-        order: block.order || 0,
-        block,
-    }));
-
-    // Sort the blockArray in descending order based on the 'order' property
-    blockArray.sort((a, b) => b.order - a.order);
-
-    loopSortedBlocks(blockArray);
-}
+//     loopSortedBlocks(blockArray);
+// }
 
 
 async function addForm(){
@@ -497,7 +472,6 @@ async function placeBlock() {
     addTitle(container);
     addLink(container);
 
-    changeBreadcrump(currentPage);
     if(currentPage === "tutorial"){
         if (currentPage === "tutorial") {
             const tutorialContent = `
@@ -977,102 +951,90 @@ async function handleAddPageButtonClick() {
 }
 
 
-
-async function addMenuButtons() {
-    const pagesButton = document.getElementById('pagesButton');
-
-    pagesButton.onclick = () => {
-            reloadMenu();
-            document.querySelector(".breadcrump").textContent = '';
-            document.querySelector(".breadcrumpArrow").textContent = '';
-    };
+async function getPages(){
+    const pages = await fetchDataFromFirestore("pages");
+    const pagesTitles = document.querySelector(".pageTitles");
+    const pagesArray = Object.keys(pages); 
+        for (const page of pagesArray) {
+        const button = document.createElement('button'); // Create the button element
+        button.textContent = page.charAt(0).toUpperCase() + page.slice(1);
+        button.addEventListener('click', () => {
+            getBlocks(page);
+        });
+        pagesTitles.appendChild(button); // Append the button to the button container
+    }
 }
 
+getPages();
 
 
-async function reloadMenu(){
-    const pages = await fetchDataFromFirestore("pages");
-    const container = document.querySelector("#container");
-        clearContainer(container);
-
-        const h1 = document.createElement('h1');
-        h1.textContent = "Menu";
-        container.appendChild(h1);
-
-        const pagesTitle = document.createElement('h2');
-        pagesTitle.textContent = "Pages";
-        container.appendChild(pagesTitle);
-
-        const pagesArray = Object.keys(pages); 
-
-        const homepageIndex = pagesArray.indexOf('homepage');
-        if (homepageIndex !== -1) {
-            pagesArray.splice(homepageIndex, 1); 
-            pagesArray.unshift('homepage');
-        }
-
-        for (const page of pagesArray) {
-            if (page === 'settings' || page === 'tutorial') {
-                continue; 
-            }
-
-            const button = document.createElement('button');
-            button.textContent = page.charAt(0).toUpperCase() + page.slice(1);
-            if(page === currentPage){
-                button.classList.add('currentPage');
-            }
-
+async function getBlocks(page){
+    const blocks = await fetchDataFromFirestore(`pages/${page}/blocks`);
+    const blocksTitles = document.querySelector(".blockTitles");
+    blocksTitles.innerHTML = "";
+    const contentFields = document.querySelector(".contentFields");
+    contentFields.innerHTML = "";
+    const blocksArray = Object.keys(blocks); 
+        for (const block of blocksArray) {
+            const button = document.createElement('button'); // Create the button element
+            button.textContent = blocks[block]['title'];
             button.addEventListener('click', () => {
-                currentPage = page;
-                localStorage.setItem('page', page);
-                placeBlock();
-                pagesButton.classList.remove('menu-open');
+                getContent(page,block);
+            });
+        blocksTitles.appendChild(button); // Append the button to the button container
+    }
+}
+
+async function getContent(page,block){
+    let content = await fetchDataFromFirestore(`pages/${page}/blocks`);
+    const contentFields = document.querySelector(".contentFields");
+    contentFields.innerHTML = "";
+
+
+    for (var field in content[block]) {
+        let imageElement;
+        const typeLabel = document.createElement('label');
+        typeLabel.textContent = field;
+        typeLabel.style.fontWeight = 'bold';
+
+
+        const inputField = document.createElement('input');
+
+        console.log(field);
+        if(field.includes("Image") || field.includes("image")){
+            inputField.type = 'file';
+            imageElement = document.createElement('img');
+            imageElement.src =  content[block][field];
+            imageElement.addEventListener('change', (event) => {
+                console.log('test');
+                handleImageUpload(imageElement, index, key);
             });
 
-            container.appendChild(button);
+        }
+        else{
+            inputField.type = 'text';
+            inputField.value = content[block][field];
         }
 
+        const submitButton = document.createElement('button');
+        submitButton.textContent = 'Update';
 
-        const settingsTitle = document.createElement('h2');
-        settingsTitle.textContent = "Settings";
-        container.appendChild(settingsTitle);
-
-        const createPageButton = document.createElement('button');
-        createPageButton.textContent = "Add Page";
-        createPageButton.className = "createPage button2";
-        createPageButton.onclick = handleAddPageButtonClick; // Set the onclick handler
-        container.appendChild(createPageButton);
-
-        for (const page in pages) {
-            if (page === 'settings' || page === 'tutorial') {
-                const button = document.createElement('button');
-                button.textContent = page.charAt(0).toUpperCase() + page.slice(1);
-                if(page === currentPage){
-                    button.classList.add('currentPage');
-                }
-            
-                button.addEventListener('click', () => {
-                    currentPage = page;
-                    localStorage.setItem('page', page);
-                    placeBlock();
-                });
-                container.appendChild(button);            }
-        }
-
-
-        const logoutButton = document.createElement('button');
-logoutButton.textContent = "Logout";
-logoutButton.id = "logoutButton";
-container.appendChild(logoutButton);
-
-    // Add event listener to the logout button
-    logoutButton.addEventListener('click', () => {
-        firebase.auth().signOut().then(() => {
-            location.reload();
+        submitButton.addEventListener('click', () => {
+            updateBlockProperty(page, block, typeLabel.textContent, inputField.value) 
         });
-    });
-    
+
+        contentFields.appendChild(typeLabel); 
+        if(imageElement !== undefined){
+            contentFields.appendChild(imageElement);
+        }
+        contentFields.appendChild(inputField);
+        contentFields.appendChild(submitButton);
+        
+
+    }
+
 }
+
 
 
 async function addNewBlock(selectedBlock) {
