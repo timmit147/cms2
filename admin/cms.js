@@ -74,7 +74,6 @@ firebase.auth().onAuthStateChanged((user) => {
     } else {
         showLoginForm(); // Show the login form
     }
-        // placeBlock();
 });
 
 
@@ -177,18 +176,12 @@ function clearContainer(target) {
   
       // Replace the existing body with the new body
       document.body.parentNode.replaceChild(newBody, document.body);
-  
-      // Note: The old body and its event listeners will be garbage collected
-      target.innerHTML = '';
+
 }
 
 
 
-function addTitle(target){
-    const pageTitle = document.createElement('h1');
-    pageTitle.textContent = currentPage;
-    target.appendChild(pageTitle);
-}
+
 function addLink(target,hash) {
     if(hash !== undefined){
         hash = `#${hash}`
@@ -418,27 +411,12 @@ function loopKeysArray(keysArray, block, index) {
 
 
 
-// async function getBlocks() {
-//     const pages = await fetchDataFromFirestore(`pages/${currentPage}/blocks`);
-
-//     const blockArray = Object.entries(pages).map(([index, block]) => ({
-//         index,
-//         order: block.order || 0,
-//         block,
-//     }));
-
-//     // Sort the blockArray in descending order based on the 'order' property
-//     blockArray.sort((a, b) => b.order - a.order);
-
-//     loopSortedBlocks(blockArray);
-// }
-
 
 async function addForm(){
     container.insertAdjacentHTML('beforeend', await createDropdownWithBlocks);
     document.querySelector("#addBlock button").addEventListener("click", function() {
         const selectedBlock = document.querySelector('#addBlock .block').value;
-        addNewBlock(selectedBlock);      
+        addNewBlock(selectedBlock, page);      
     });
 }
 
@@ -466,57 +444,81 @@ async function addSettings(){
 
 
 
-async function placeBlock() {
-    const container = document.getElementById('container');
-    clearContainer(container);
-    addTitle(container);
-    addLink(container);
 
-    if(currentPage === "tutorial"){
-        if (currentPage === "tutorial") {
-            const tutorialContent = `
-                <p class='tutorialSubtitle'>This page explains how to use this CMS.</p>
-                <h2>How to create pages?</h2>
-                <p>Step 1: Go to menu</p>
-                <p>Step 2: Search settings</p>
-                <p>Step 3: Click on add page</p>
-                <p>Step 4: Give the page a name</p>
-                <p>Step 5: Click on ok to create the page</p>
-                </br>
-                <h2>How to search a page?</h2>
-                <p>Step 1: Go to menu</p>
-                <p>Step 2: Click on search page</p>
-                <p>Step 3: Type the name of the page</p>
-                <p>Step 4: Click on the page</p>
-            `; 
-            const tutorial = document.createElement('div'); // Use a <div> to hold multiple <p> elements
-            tutorial.innerHTML = tutorialContent; // Set the HTML content using innerHTML
-            container.appendChild(tutorial);
-            return;
-        }
-    }
-    if(currentPage != "settings"){
-        addBlockTitle(container);
-        await getBlocks();
-        addForm();
-        const settings = document.createElement('h2');
-        settings.textContent = 'Settings';
-        container.appendChild(settings);
-    }
-    addSettings();
-}
 
 
 document.addEventListener("DOMContentLoaded", function () {
     const addPageButton = document.querySelector(".addPage");
+    const showPageForm = document.querySelector(".showPageForm");
+
 
     addPageButton.addEventListener("click", async function () {
-        const userInput = prompt("Page name:");
-        if (userInput !== null) {
-            await createPage(userInput);
-            getPages();
-        }
+        if (showPageForm.style.display === "flex") {
+            showPageForm.style.display = "none";
+          } else {
+            showPageForm.style.display = "flex";
+          }
     });
+});
+
+const module = await import('./blocks.js');
+const objectWithBlocks = module.default;
+
+const selectElement = document.querySelector('.selectOption');
+const blockForm = document.querySelector('.showBlockForm');
+
+objectWithBlocks.forEach(item => {
+    const option = document.createElement('option');
+    option.value = item.type; // Set the option value
+    option.textContent = item.type; // Set the option text
+    selectElement.appendChild(option);
+});
+
+blockForm.addEventListener('submit', async function (event) {
+    event.preventDefault(); // Prevent the default form submission behavior
+    const selectedBlock = document.querySelector('.selectOption').value;
+    await addNewBlock(selectedBlock);  
+    let page = document.querySelector('.currentPage').textContent.toLowerCase();
+    getBlocks(page);
+});
+
+
+const addButton = document.querySelector('.addBlock');
+
+        // Add a click event listener to the button
+        addButton.addEventListener('click', () => {
+            // Toggle the display property of the block form element
+            if (blockForm.style.display === 'none' || blockForm.style.display === '') {
+                blockForm.style.display = 'block';
+            } else {
+                blockForm.style.display = 'none';
+            }
+        });
+
+
+
+const addPageButton = document.querySelector('.addPageButton');
+const addPageInput = document.querySelector('.addPageInput');
+
+addPageButton.addEventListener('click', async function() {
+    let inputValue = addPageInput.value;
+    
+    if (inputValue) {
+        inputValue = inputValue.toLowerCase(); // Convert input to lowercase
+        try {
+            await createPage(inputValue);
+            getPages();
+            document.querySelector(".showPageForm").style.display = "none";
+            console.log(`Page created with value: ${inputValue}`);
+            // You can add more code here for success handling
+        } catch (error) {
+            console.error(`Error creating page: ${error}`);
+            // You can add more code here for error handling
+        }
+    } else {
+        console.warn('Please enter a value before clicking the "Add Page" button.');
+        // You can add more code here for handling empty input
+    }
 });
 
 
@@ -743,7 +745,6 @@ function createPageWrapper(page, menu) {
         }
         await updatePageField(currentPage, 'menu', menu);
         await loopPageFields(currentPage); // Refresh the display
-            placeBlock();
     });
 
     
@@ -759,7 +760,6 @@ function createPageWrapper(page, menu) {
             [menu[pageIndex], menu[pageIndex - 1]] = [menu[pageIndex - 1], menu[pageIndex]];
             await updatePageField(currentPage, 'menu', menu);
         }
-            placeBlock();
     });
 
     const downButton = document.createElement('button');
@@ -770,7 +770,6 @@ function createPageWrapper(page, menu) {
             [menu[pageIndex], menu[pageIndex + 1]] = [menu[pageIndex + 1], menu[pageIndex]];
             await updatePageField(currentPage, 'menu', menu);
         }
-            placeBlock();
     });
 
     pageWrapper.appendChild(pageCheckbox);
@@ -936,7 +935,6 @@ async function swapBlocksUp(pageName, blockId) {
                     transaction.update(targetBlockRef, targetBlockData);
                 });
 
-                placeBlock(); // Re-render the blocks after swapping
             } catch (error) {
                 console.error("Error updating blocks in Firestore:", error);
             }
@@ -993,7 +991,6 @@ async function removeBlockAndPage(pageName, blockIndex) {
             // Assuming you are using Firebase Firestore
             const blockRef = firebase.firestore().doc(`pages/${pageName}/blocks/${blockIndex}`);
             await blockRef.delete();
-            placeBlock(); // Re-render the blocks after removal
         } catch (error) {
             console.error("Error removing block:", error);
         }
@@ -1035,10 +1032,13 @@ async function getPages() {
             const allButtons = document.querySelectorAll(".pageTitles button");
             allButtons.forEach((btn) => {
                 btn.classList.remove("currentPage");
+                document.querySelector(".removePage").style.display = "none";
             });
 
             // Add the 'currentPage' class to the clicked button
             button.classList.add("currentPage");
+            document.querySelector(".removePage").style.display = "initial";
+
 
             getBlocks(page);
         });
@@ -1154,9 +1154,10 @@ async function getContent(page, block) {
 
 
 async function addNewBlock(selectedBlock) {
+    let page = document.querySelector('.currentPage').textContent.toLowerCase();
     try {
         const pagesCollection = firestore.collection('pages');
-        const page1DocumentRef = pagesCollection.doc(currentPage);
+        const page1DocumentRef = pagesCollection.doc(page);
         const blocksCollectionRef = page1DocumentRef.collection('blocks');
 
         // Get the current count of blocks in the collection
@@ -1196,7 +1197,6 @@ async function addNewBlock(selectedBlock) {
         } else {
             console.error(`Block '${selectedBlock}' not found.`);
         }
-        placeBlock(); // Refresh the blocks after adding a new block
     } catch (error) {
         console.error('Error adding new block:', error);
     }

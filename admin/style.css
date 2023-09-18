@@ -40,7 +40,27 @@ body {
     height: 80vh;
 }
 
+.showPageForm{
+    margin-bottom: 16px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.showBlockForm{
+    margin-bottom: 16px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+}
+
 .pagesHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.blocksHeader{
     display: flex;
     justify-content: space-between;
     align-items: baseline;
@@ -163,6 +183,9 @@ input[type="text"]{
     font-size: 16px;
 }
 
+button.removePage{
+    display: none;
+}
 
 .removeBlockButton:hover, .removePage:hover{
     color: #B92D2D;

@@ -41,6 +41,11 @@
             <button class="addPage"><i class="fa-solid fa-plus"></i></button>
         </div>
     </div>
+    <div class="showPageForm">
+        <input class="addPageInput" type="text" placeholder="New page name">
+        <submit class="addPageButton">Add page</submit>
+    </div>
+
 
     <div class="pageTitles">
 
@@ -48,7 +53,23 @@
 </div>
 
 <div id="blocks">
-    <h2>Blocks</h2>
+    <div class="blocksHeader">
+        <h2>Blocks</h2>
+        <div>
+            <button class="removeBlock"><i class="fa-solid fa-trash"></i></button>
+            <button class="addBlock"><i class="fa-solid fa-plus"></i></button>
+        </div>
+    </div>
+
+    <div class="showBlockForm">
+        <form action="your_action_url_here" method="post">
+            <label for="selectOption">Select an option:</label>
+            <select class="selectOption" name="selectedOption">
+            </select>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
     <div class="blockTitles">
 
     </div>
