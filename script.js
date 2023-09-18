@@ -60,23 +60,29 @@ if (window.innerWidth >= 768) {
     });
 
     const carHeader = document.querySelector('.carHeader');
-
-    carHeader.addEventListener('mouseenter', function (event) {
-        showCircle();
-        isMouseOverCarHeader = true;
-    });
-
-    carHeader.addEventListener('mouseleave', function (event) {
-        hideCircle();
-        isMouseOverCarHeader = false;
-    });
-
-    carHeader.addEventListener('mousemove', function (event) {
-        if (!isMouseOverCarHeader) {
+    let isMouseOverCarHeader = false; // Initialize the flag
+    
+    if (carHeader) { // Check if .carHeader element exists
+        carHeader.addEventListener('mouseenter', function (event) {
             showCircle();
             isMouseOverCarHeader = true;
-        }
-    });
+        });
+    
+        carHeader.addEventListener('mouseleave', function (event) {
+            hideCircle();
+            isMouseOverCarHeader = false;
+        });
+    
+        carHeader.addEventListener('mousemove', function (event) {
+            if (!isMouseOverCarHeader && !circleIsShown()) { // Check if the circle is not already shown
+                showCircle();
+                isMouseOverCarHeader = true;
+            }
+        });
+    } else {
+        console.error(".carHeader element not found in the DOM");
+    }
+    
 
     document.body.style.cursor = 'none';
 
