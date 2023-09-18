@@ -180,7 +180,7 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
       pageName = "index";
     }
 
-    const outputFilePath = path.join("./", `${pageName}.html`);
+    const outputFilePath = path.join("./", pageName + ".html");
     
     fs.writeFileSync(outputFilePath, htmlContent);
     
