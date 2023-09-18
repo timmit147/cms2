@@ -1,40 +1,8 @@
-let currentPage = document.getElementsByTagName("body")[0].id;
 let firestore = null;
 
-const createDropdownWithBlocks = (async () => {
-    const module = await import('./blocks.js');
-    const objectWithBlocks = module.default; 
-
-    let optionsHTML = '';
-    objectWithBlocks.forEach(item => {
-        if (item.type) {
-            const optionText = item.type.charAt(0).toUpperCase() + item.type.slice(1).replace(/([A-Z])/g, ' $1').toLowerCase();
-            optionsHTML += `<option value="${item.type}">${optionText}</option>`;
-        }
-    });
-
-    // Construct the complete form HTML
-    return `
-    <label>Add block</label>
-    <div id="addBlock">
-        <select class="block" name="block" >
-            ${optionsHTML}
-        </select>
-        <button>Add block</button>
-    </div>
-    `;
-})();
 
 
 
-
-function myFunction() {
-    if(localStorage.getItem('page')){
-        currentPage = localStorage.getItem('page');
-    }
-  }
-
-window.addEventListener("load", myFunction);
 
 startScript();
 
@@ -220,196 +188,6 @@ function ShowBlockContents(target, name){
 
 
 
-function loopSortedBlocks(blockArray){
-    const sortedBlocks = blockArray.sort((a, b) => a.order - b.order);
-    for (const { index, block } of sortedBlocks) {
-
-       const container =  document.querySelector('#container');
-
-       
-       
-       const typeLabel = document.createElement('label');
-       typeLabel.textContent = block["title"] || block["type"];
-       typeLabel.style.fontWeight = 'bold';
-       
-       const divContainer = document.createElement('div'); // Creating the div container
-       divContainer.className = 'block'; // Replace 'your-class-name' with the actual class name you want
-       
-       addUpButton(divContainer, index, sortedBlocks.length, currentPage); // Adding buttons to the div
-
-       divContainer.appendChild(typeLabel); // Placing the typeLabel inside the div
-       
-       container.appendChild(divContainer); // Placing the whole div container inside the 'container'
-
-        typeLabel.addEventListener('click', () => {
-            const container = document.querySelector("#container");
-            clearContainer(container);
-            ShowBlockContents(container, typeLabel.textContent);
-            addLink(container,index);
-    
-            const keysArray = [];
-
-            for (const key in block) {
-                if (block.hasOwnProperty(key)) {
-                    keysArray.push(key);
-                }
-            }
-
-
-            keysArray.sort();
-
-            loopKeysArray(keysArray, block, index );
-
-            
-            const removeDiv = document.createElement('div');
-            removeDiv.classList.add('removeDiv');
-            
-            const inputLabel = document.createElement('label');
-            inputLabel.textContent = "Remove block";
-            inputLabel.style.fontWeight = 'bold';
-            removeDiv.appendChild(inputLabel);
-            
-            const removeButton = document.createElement('button');
-            removeButton.textContent = 'Remove block';
-            removeButton.classList.add('removeBlockButton');
-            
-            // Hide the button initially by setting its style
-            removeButton.style.display = 'none';
-            
-            removeButton.addEventListener('click', () => {
-                removeBlockAndPage(currentPage, index); // This will remove the block
-            });
-            
-            let isButtonVisible = false; // Initially, the button is hidden
-            
-            inputLabel.addEventListener('click', () => {
-                if (isButtonVisible) {
-                    removeButton.style.display = 'none'; // Hide the button
-                } else {
-                    removeButton.style.display = 'inline-block'; // Show the button
-                }
-                isButtonVisible = !isButtonVisible; // Toggle button visibility state
-            });
-            
-            removeDiv.appendChild(removeButton);
-            
-            container.appendChild(removeDiv);
-            
-
-    
-
-
-
-
-
-        });
-    }
-}
-
-
-
-function formatKeyLabel(key) {
-    // Split the key by uppercase letters and join with spaces
-    return key.split(/(?=[A-Z])/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-}
-
-function loopKeysArray(keysArray, block, index) {
-    for (const key of keysArray) {
-        if (key === "type") {
-            continue;
-        }
-        if (!block.hasOwnProperty(key)) {
-            continue;
-        }
-
-        const formattedKey = formatKeyLabel(key);
-        const fieldContainer = document.createElement('div');
-
-        if (key.includes("image") || key.includes("Image") || key.includes("logo")) {
-            const imageField = document.createElement('div');
-            imageField.className = 'image-field';
-
-            const blocksTitle = document.createElement('label');
-            blocksTitle.textContent = key;
-
-            function toggleImageAndInput() {
-                const isImageVisible = imageElement.style.display === 'none';
-                imageElement.style.display = isImageVisible ? 'block' : 'none';
-                imageInput.style.display = isImageVisible ? 'block' : 'none';
-            }
-
-            blocksTitle.addEventListener('click', toggleImageAndInput);
-
-            imageField.appendChild(blocksTitle);
-
-            const imageElement = document.createElement('img');
-            imageElement.src = block[key];
-            imageElement.style.display = 'none';
-            imageField.appendChild(imageElement);
-
-            const imageInput = document.createElement('input');
-            imageInput.type = 'file';
-            imageInput.style.display = 'none';
-
-            imageInput.addEventListener('change', (event) => {
-                const selectedImage = event.target.files[0];
-                handleImageUpload(selectedImage, index, key);
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const newImageElement = document.createElement('img');
-                    newImageElement.src = e.target.result;
-                    imageElement.src = e.target.result;
-                    imageField.insertBefore(newImageElement, imageInput);
-                };
-                reader.readAsDataURL(selectedImage);
-            });
-
-            imageField.appendChild(imageInput);
-
-            fieldContainer.appendChild(imageField);
-        } else {
-            const propertyDiv = document.createElement('div');
-            propertyDiv.classList.add('propertyDiv');
-
-            const inputLabel = document.createElement('label');
-            inputLabel.textContent = formattedKey;
-            inputLabel.style.fontWeight = 'bold';
-            propertyDiv.appendChild(inputLabel);
-
-            const inputField = document.createElement('input');
-            inputField.type = 'text';
-            inputField.value = block[key];
-            inputField.style.display = 'none';
-            propertyDiv.appendChild(inputField);
-
-            const submitButton = document.createElement('button');
-            submitButton.textContent = 'Update';
-            submitButton.style.display = 'none';
-            propertyDiv.appendChild(submitButton);
-
-            inputLabel.addEventListener('click', () => {
-                inputField.style.display = inputField.style.display === 'none' ? 'block' : 'none';
-                submitButton.style.display = submitButton.style.display === 'none' ? 'block' : 'none';
-            });
-
-            submitButton.addEventListener('click', () => {
-                handleSubmitButtonClick(index, key, inputField, submitButton);
-            });
-
-            fieldContainer.appendChild(propertyDiv);
-        }
-
-        container.appendChild(fieldContainer);
-    }
-}
-
-
-
-
-
-
-
-
 
 
 async function addForm(){
@@ -441,6 +219,8 @@ const objectWithBlocks = module.default;
 
 const selectElement = document.querySelector('.selectOption');
 const blockForm = document.querySelector('.showBlockForm');
+const addNewBlockButton = document.querySelector('.addNewBlockButton');
+console.log(addNewBlockButton);
 
 objectWithBlocks.forEach(item => {
     const option = document.createElement('option');
@@ -449,8 +229,7 @@ objectWithBlocks.forEach(item => {
     selectElement.appendChild(option);
 });
 
-blockForm.addEventListener('submit', async function (event) {
-    event.preventDefault(); // Prevent the default form submission behavior
+addNewBlockButton.addEventListener('click', async function() {
     const selectedBlock = document.querySelector('.selectOption').value;
     await addNewBlock(selectedBlock);  
     let page = document.querySelector('.currentPage').textContent.toLowerCase();
@@ -588,88 +367,6 @@ async function createPage(pageName) {
 
 
 
-async function loopPageFields(currentPage) {
-    const pageData = await getPageData(currentPage);
-
-    if (!pageData) {
-        console.log(`Page ${currentPage} does not exist.`);
-        return;
-    }
-
-    const container = document.getElementById('container');
-
-    const excludedFields = ['menu', 'label']; // Add other field names you want to exclude
-
-    for (const field in pageData) {
-        if (pageData.hasOwnProperty(field) && !excludedFields.includes(field)) {
-            const fieldValue = pageData[field];
-
-            const fieldLabel = document.createElement('label');
-            fieldLabel.textContent = field;
-            container.appendChild(fieldLabel);
-
-            if (typeof fieldValue === 'string' || typeof fieldValue === 'number') {
-                // Create a div with the class "field-container" to wrap the input field and submit button
-                const fieldDiv = document.createElement('div');
-                fieldDiv.classList.add('field-container');
-
-                // Add an input field for string and number fields
-                const inputField = createInputField(
-                    typeof fieldValue === 'string' ? 'text' : 'number',
-                    fieldValue,
-                    async (value) => {
-                        // Do nothing here, we will update when the button is pressed.
-                    }
-                );
-                fieldDiv.appendChild(inputField);
-
-                // Add a submit button for each input field
-                const submitButton = document.createElement('button');
-                submitButton.textContent = 'Submit';
-                submitButton.addEventListener('click', async () => {
-                    const field = fieldLabel.textContent;
-                    const inputValue = inputField.value;
-                    await updatePageField(currentPage, field, inputValue);
-                });
-                fieldDiv.appendChild(submitButton);
-
-                container.appendChild(fieldDiv);
-            } else if (typeof fieldValue === 'boolean') {
-                // Create a div with the class "field-container" to wrap the checkbox and submit button
-                const fieldDiv = document.createElement('div');
-                fieldDiv.classList.add('field-container');
-
-                // Add a checkbox for boolean fields
-                const checkbox = createCheckbox(fieldValue, async (value) => {
-                    // Do nothing here, we will update when the button is pressed.
-                });
-                fieldDiv.appendChild(checkbox);
-
-                // Add a submit button for each checkbox
-                const submitButton = document.createElement('button');
-                submitButton.textContent = 'Submit';
-                submitButton.addEventListener('click', async () => {
-                    const field = fieldLabel.textContent;
-                    const checkboxValue = checkbox.checked;
-                    await updatePageField(currentPage, field, checkboxValue);
-                });
-                fieldDiv.appendChild(submitButton);
-
-                container.appendChild(fieldDiv);
-            } else {
-                // Display the field value for other field types
-                const fieldValueElement = createFieldValueElement(fieldValue.toString());
-                container.appendChild(fieldValueElement);
-            }
-        }
-    }
-
-    if (currentPage === 'settings') {
-        await displayMenuPages(pageData.menu);
-        await displayUnselectedPages(pageData.menu);
-    }
-}
-
 
 
 async function getPageData(currentPage) {
@@ -735,59 +432,6 @@ async function displayUnselectedPages(menu) {
     }
 }
 
-function createPageWrapper(page, menu) {
-    const pageWrapper = document.createElement('div');
-    pageWrapper.classList.add('page-wrapper');
-
-    const pageCheckbox = document.createElement('input');
-    pageCheckbox.type = 'checkbox';
-    pageCheckbox.value = page;
-    pageCheckbox.checked = menu.includes(page);
-    pageCheckbox.addEventListener('change', async () => {
-        if (pageCheckbox.checked) {
-            menu.push(page);
-        } else {
-            const pageIndex = menu.indexOf(page);
-            if (pageIndex !== -1) {
-                menu.splice(pageIndex, 1);
-            }
-        }
-        await updatePageField(currentPage, 'menu', menu);
-        await loopPageFields(currentPage); // Refresh the display
-    });
-
-    
-
-    const pageLabel = document.createElement('label');
-    pageLabel.textContent = page;
-
-    const upButton = document.createElement('button');
-    upButton.innerHTML = 'Move Up';
-    upButton.addEventListener('click', async () => {
-        const pageIndex = menu.indexOf(page);
-        if (pageIndex > 0) {
-            [menu[pageIndex], menu[pageIndex - 1]] = [menu[pageIndex - 1], menu[pageIndex]];
-            await updatePageField(currentPage, 'menu', menu);
-        }
-    });
-
-    const downButton = document.createElement('button');
-    downButton.innerHTML = 'Move Down';
-    downButton.addEventListener('click', async () => {
-        const pageIndex = menu.indexOf(page);
-        if (pageIndex < menu.length - 1) {
-            [menu[pageIndex], menu[pageIndex + 1]] = [menu[pageIndex + 1], menu[pageIndex]];
-            await updatePageField(currentPage, 'menu', menu);
-        }
-    });
-
-    pageWrapper.appendChild(pageCheckbox);
-    pageWrapper.appendChild(pageLabel);
-    pageWrapper.appendChild(upButton);
-    pageWrapper.appendChild(downButton);
-
-    return pageWrapper;
-}
 
 async function getAllPages() {
     const pagesCollection = firestore.collection('pages');
