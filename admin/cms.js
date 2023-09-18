@@ -420,31 +420,6 @@ async function addForm(){
     });
 }
 
-async function addSettings(){
-
-    await loopPageFields(currentPage);
-
-
-    if (currentPage !== "homepage" && currentPage !== "settings") {
-        const removePagelabel = document.createElement('label');
-        removePagelabel.textContent = 'Remove Page';
-        container.appendChild(removePagelabel);
-    
-        const removePageButton = document.createElement('button');
-        removePageButton.textContent = 'Remove Page';
-        removePageButton.classList.add('removePage'); // Add the 'removePage' class
-        removePageButton.addEventListener('click', () => {
-            removePage(currentPage); 
-        });
-        container.appendChild(removePageButton);
-    }
-    
-  
-}
-
-
-
-
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -558,15 +533,13 @@ addPageButton.addEventListener('click', async function() {
 });
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    const addPageButton = document.querySelector(".removePage");
+var removePageButton = document.querySelector(".removePage");
 
-    addPageButton.addEventListener("click", async function () {
-        let currentPage = document.querySelector('.currentPage');
-        let currentPageText = currentPage.textContent.toLowerCase();
-        await deletePage(currentPageText);
-        getPages();
-    });
+removePageButton.addEventListener("click", async function () {
+    let currentPage = document.querySelector('.currentPage');
+    let currentPageText = currentPage.textContent.toLowerCase();
+    await deletePage(currentPageText);
+    getPages();
 });
 
 async function deletePage(pageName) {
