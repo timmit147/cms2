@@ -58,140 +58,100 @@ body > *{
     background-image: url("./vinger.png");
     width: 80px;
     height: 80px;
-}.carHeader{
-    background-color: #1C1C1C;
+}.contactForm {
     position: relative;
-    height: 500px;
-    padding: 16px;
-    box-sizing: border-box;
-    color: white;
-    font-family: 'Open Sans', sans-serif;
-    background-image: url("./headerBackground.webp");
-    background-size: cover;
-    margin-bottom: 200px;
-}
-
-.carHeader:after {
-    content: "";
-    background-color: #1C1C1C;
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
-    opacity: 0.7;
-}
-
-.carHeader .car {
-    position: absolute;
-    width: 150vh;
-    bottom: -15vh;
-    z-index: 2;
-    right: 25vw;
-}
-.carHeader .logo{
-    max-width: 100px;
-}
-
-
-.carHeader .light {
-    width: 0px;
-    height: 0px;
-    border-style: solid;
-    border-width: 50px 35vw 40px 0px;
-    border-color: transparent white transparent transparent;
-    transform: rotate(0deg);
-    position: absolute;
-    right: 0vw;
-    bottom: 25px;
-    z-index: 1;
-    filter: blur(11px);
-    opacity: 0; /* Initial opacity value */
-    animation: fadeLoop 4s linear infinite; /* Apply the animation */
     overflow: hidden;
-    transition: border-color 0.5s ease; /* Add a transition effect */
+    padding: 160px 32px;
+    box-sizing: border-box;
+    min-height: 350px;
+    background-color: hsl(0, 0%, 11%);
+    color: white;
 }
 
-.carHeader .light:hover {
-    border-color: transparent #F8CD09 transparent transparent;
+.contactForm *{
+    font-family: 'Open Sans', sans-serif;
 }
 
-
-
-@keyframes fadeLoop {
-    0% {
-        opacity: 0.3;
-    }
-    50% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0.3;
-    }
+.contactForm h2 {
+    margin: 0px;
+    margin-bottom: 16px;
 }
 
-.carHeader h1 {
-    font-size: 20px;
-    max-width: 300px;
-    font-weight: 100;
+.contactForm img{
+    position: absolute;
+    width: 300px;
+    height: auto;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
 }
 
-.carHeader strong {
-    color: #F8CD09;
+.contactForm label{
+    font-weight: 900;
+    margin-top: 8px;
 }
 
-.carHeader .content{
-    position: relative;
+.contactForm form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: auto;
     z-index: 5;
-    padding: 30px;
+    position: relative;
+}
+
+.contactForm > * {
     width: fit-content;
 }
 
-.carHeader a{
+.contactForm input, 
+.contactForm textarea{
+    background-color: unset;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 8px;
+    color: #F8CD09;
+    font-weight: bold;
+    max-width: 300px;
+}
+
+.contactForm input::placeholder,
+.contactForm textarea::placeholder {
     color: white;
-    text-decoration: none;
-    border-bottom: 1px solid;
-    margin-right: 8px;
-    cursor: none;
+    font-weight: 100;
 }
 
-.carHeader a:hover{
+
+.contactForm input[type="submit"] {
+    background-color: #F8CD09;
+    border: 0px;
+    color: hsl(0, 0%, 11%);
+    font-size: 18px;
+    padding: 8px 16px;
+    width: fit-content;
+    border-radius: 4px;
+    border: 1px solid;
+    margin-top: 8px;
+}
+
+.contactForm input[type="submit"]:hover {
     color: #F8CD09;
+    background-color: unset;
+    cursor: pointer;
 }
 
-.carHeader .active{
+.contactForm #submittedMessage{
     color: #F8CD09;
-}
-
-.carHeader sub {
-    font-size: 30px;
-    font-weight: 900;
+    display: none;
 }
 
 @media (max-width: 600px) {
-    .carHeader .content{
-        padding:0px;
+    .contactForm {
+        padding:  100px 16px;
     }
 
-    .carHeader .car {
-        width: 55vh;
-        bottom: -7vh;
-        right: 30vw;
-    }
-
-    .carHeader .light{
-        border-width: 30px 45vw 5px 0px;
-        bottom: 8px;
-        filter: blur(5px);
-    }
-    .carHeader{
-        display: flex;
-        align-items: center;
-        margin-bottom: 100px;
-        height: 450px;
-    }
-
-    .carHeader h1{
-        font-size: 18px;
+    .contactForm img{
+        width: 200px;
     }
 }

@@ -60,7 +60,6 @@ if (window.innerWidth >= 768) {
     });
 
     const carHeader = document.querySelector('.carHeader');
-    let isMouseOverCarHeader = false; // Initialize the flag
     
     if (carHeader) { // Check if .carHeader element exists
         carHeader.addEventListener('mouseenter', function (event) {
@@ -83,7 +82,6 @@ if (window.innerWidth >= 768) {
         console.error(".carHeader element not found in the DOM");
     }
     
-
     document.body.style.cursor = 'none';
 
     const style = document.createElement('style');
