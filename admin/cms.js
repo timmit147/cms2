@@ -1148,12 +1148,15 @@ async function getContent(page, block) {
     // Iterate through the sorted field names and create elements
     for (const fieldName of sortedFieldNames) {
         let imageElement;
+        const fieldDiv = document.createElement('div');
+        fieldDiv.classList.add('field'); // Add the class "field" to the div
+    
         const typeLabel = document.createElement('label');
         typeLabel.textContent = formatFieldName(fieldName); // Format the field name
         typeLabel.style.fontWeight = 'bold';
-
+    
         const inputField = document.createElement('input');
-
+    
         if (fieldName.includes("Image") || fieldName.includes("image")) {
             inputField.type = 'file';
             imageElement = document.createElement('img');
@@ -1170,26 +1173,29 @@ async function getContent(page, block) {
                 };
                 reader.readAsDataURL(selectedImage);
             });
-
+    
         } else {
             inputField.type = 'text';
             inputField.value = content[block][fieldName];
         }
-
+    
         const submitButton = document.createElement('button');
         submitButton.textContent = 'Update';
-
+    
         submitButton.addEventListener('click', () => {
             updateBlockProperty(page, block, fieldName, inputField.value);
         });
-
-        contentFields.appendChild(typeLabel);
+    
+        fieldDiv.appendChild(typeLabel);
         if (imageElement !== undefined) {
-            contentFields.appendChild(imageElement);
+            fieldDiv.appendChild(imageElement);
         }
-        contentFields.appendChild(inputField);
-        contentFields.appendChild(submitButton);
+        fieldDiv.appendChild(inputField);
+        fieldDiv.appendChild(submitButton);
+    
+        contentFields.appendChild(fieldDiv); // Add the "field" div to the parent container
     }
+    
 }
 
 
