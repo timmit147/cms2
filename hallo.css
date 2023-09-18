@@ -58,65 +58,7 @@ body > *{
     background-image: url("./vinger.png");
     width: 80px;
     height: 80px;
-}.header{
-    width: 100%;
-    height: 250px;
-    padding: 8px;
-    box-sizing: border-box;
-    text-align: center;
-    color: white;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-    place-content: center;
-    font-family: monospace;
-}
-
-
-.header * {
-    margin: 0;
-}
-
-.header .backdrop{
-    background-color: #000000d9;
-    display: flex;
-    gap: 8px;
-    flex-direction: column;
-    align-items: center;
-    padding: 16px;
-    border-radius: 8px;
-    width: -webkit-fill-available;
-    max-width: 250px;
-}
-
-.header img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-    background-color: black;
-    object-position: bottom;
-}
-
-.header a{
-    color: white;
-    background-color: purple;
-    padding: 8px 16px;
-    text-decoration: none;
-    font-family: monospace;
-    border: 1px solid white;
-    width: max-content;
-}
-
-.header a:hover{
-    background-color: black;
-}
-.install{
+}.install{
     width: 100%;
     height: 300px;
     text-align: center;
@@ -175,4 +117,61 @@ body > *{
     height: 200px;
     padding: 20px;
     box-sizing: border-box;
+}.header{
+    width: 100%;
+    height: 250px;
+    padding: 8px;
+    box-sizing: border-box;
+    text-align: center;
+    color: white;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    place-content: center;
+    font-family: monospace;
+}
+
+
+.header * {
+    margin: 0;
+}
+
+.header .backdrop{
+    background-color: #000000d9;
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    border-radius: 8px;
+    width: -webkit-fill-available;
+    max-width: 250px;
+}
+
+.header img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    background-color: black;
+    object-position: bottom;
+}
+
+.header a{
+    color: white;
+    background-color: purple;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-family: monospace;
+    border: 1px solid white;
+    width: max-content;
+}
+
+.header a:hover{
+    background-color: black;
 }
