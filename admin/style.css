@@ -40,6 +40,16 @@ body {
     height: 80vh;
 }
 
+.blocksButtons{
+    display: flex;
+    gap: 16px;
+}
+
+.pagesButtons{
+    display: flex;
+    gap: 16px;
+}
+
 .showPageForm{
     margin-bottom: 16px;
     display: none;
@@ -148,6 +158,10 @@ label{
     font-weight: bold;
 }
 
+.addBlock{
+    display: none;
+}
+
 #addBlock{
     display: flex;
     gap: 8px;
@@ -184,6 +198,10 @@ input[type="text"]{
 }
 
 button.removePage{
+    display: none;
+}
+
+.removeBlock{
     display: none;
 }
 

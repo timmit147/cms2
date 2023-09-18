@@ -1069,11 +1069,15 @@ async function getPages() {
             allButtons.forEach((btn) => {
                 btn.classList.remove("currentPage");
                 document.querySelector(".removePage").style.display = "none";
+                document.querySelector(".addBlock").style.display = "none";
             });
 
             // Add the 'currentPage' class to the clicked button
             button.classList.add("currentPage");
             document.querySelector(".removePage").style.display = "initial";
+            document.querySelector('.removeBlock').style.display = 'none';
+            document.querySelector(".addBlock").style.display = "block";
+
 
 
             getBlocks(page);
@@ -1106,6 +1110,7 @@ async function getBlocks(page) {
             // Add the 'currentBlock' class to the clicked button
             button.classList.add("currentBlock");
             button.id = block;
+            document.querySelector('.removeBlock').style.display = 'block';
 
             getContent(page, block);
         });
