@@ -480,9 +480,45 @@ blockForm.addEventListener('submit', async function (event) {
     await addNewBlock(selectedBlock);  
     let page = document.querySelector('.currentPage').textContent.toLowerCase();
     getBlocks(page);
+    document.querySelector('.showBlockForm').style.display = 'none';
 });
 
 
+var removeBlock = document.querySelector('.removeBlock');
+
+    // Add a click event listener to the button
+    removeBlock.addEventListener('click', async function() {
+      let currentBlock = document.querySelector('.currentBlock').id;
+      console.log(currentBlock);
+      let page = document.querySelector('.currentPage').textContent.toLowerCase();
+      await deleteBlock(page,currentBlock);
+      getBlocks(page);
+    });
+
+
+    async function deleteBlock(pageName, blockName) {
+        try {
+            const confirmDelete = confirm(`Are you sure you want to delete the block with name: ${blockName}?`);
+    
+            if (!confirmDelete) {
+                console.log('Block deletion canceled by user.');
+                return;
+            }
+    
+            // Reference to the specific document to delete
+            const blockRef = firestore.collection('pages').doc(pageName).collection('blocks').doc(blockName);
+    
+            // Delete the document
+            await blockRef.delete();
+    
+            console.log(`Block with name ${blockName} has been deleted.`);
+        } catch (error) {
+            console.error('Error deleting block:', error);
+        }
+    }
+    
+
+    
 const addButton = document.querySelector('.addBlock');
 
         // Add a click event listener to the button
@@ -1069,6 +1105,7 @@ async function getBlocks(page) {
 
             // Add the 'currentBlock' class to the clicked button
             button.classList.add("currentBlock");
+            button.id = block;
 
             getContent(page, block);
         });
