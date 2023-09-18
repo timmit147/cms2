@@ -114,6 +114,10 @@ body {
     padding: 16px;
 }
 
+.upBlock{
+    display: none;
+}
+
 #content img{
     width: 300px;
     border-radius: 4px;

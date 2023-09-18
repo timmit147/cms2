@@ -1073,6 +1073,7 @@ async function getPages() {
             });
 
             // Add the 'currentPage' class to the clicked button
+            document.querySelector('.upBlock').style.display = 'none';
             button.classList.add("currentPage");
             document.querySelector(".removePage").style.display = "initial";
             document.querySelector('.removeBlock').style.display = 'none';
@@ -1089,6 +1090,58 @@ async function getPages() {
 
 getPages();
 
+let upBlockElement = document.querySelector(".upBlock");
+
+// Add a click event listener to the ".upBlock" element
+upBlockElement.addEventListener("click", async function () {
+    let currentBlockElement = document.querySelector(".currentBlock");
+
+    // Get the id of the ".currentBlock" element and log it to the console
+    var currentBlockId = currentBlockElement.id;
+
+    let page = document.querySelector('.currentPage').textContent.toLowerCase();
+    const blocksQuerySnapshot = await firebase.firestore().collection('pages').doc(page).collection('blocks').get();
+    const existingOrders = blocksQuerySnapshot.docs.map(doc => ({
+        id: doc.id,
+        order: doc.data().order
+    }));
+
+    // Get the id of the button above the ".currentBlock" element
+    var aboveButton = currentBlockElement.previousElementSibling;
+    if (aboveButton) {
+        var aboveButtonId = aboveButton.id;
+    
+        // Find the order values for the current block and the above button
+        var currentBlockOrder = parseInt(existingOrders.find(item => item.id === currentBlockId).order);
+        var aboveButtonOrder = parseInt(existingOrders.find(item => item.id === aboveButtonId).order);
+    
+        // Check if the order values are the same
+        if (currentBlockOrder === aboveButtonOrder) {
+            currentBlockOrder += 1; // Increment aboveButton's order by 1
+        }
+    
+    
+        // Swap the order values
+        existingOrders.find(item => item.id === currentBlockId).order = aboveButtonOrder;
+        existingOrders.find(item => item.id === aboveButtonId).order = currentBlockOrder;
+    
+        // Update the Firestore database with the new order values
+        existingOrders.forEach(async item => {
+            await firebase.firestore().collection('pages').doc(page).collection('blocks').doc(item.id).update({
+                order: item.order.toString() // Convert the number back to a string when updating
+            });
+        });
+    } else {
+        console.log("No button above the currentBlock element.");
+    }
+    
+    getBlocks(page);
+});
+
+
+
+
+
 
 async function getBlocks(page) {
     const blocks = await fetchDataFromFirestore(`pages/${page}/blocks`);
@@ -1097,8 +1150,17 @@ async function getBlocks(page) {
     const contentFields = document.querySelector(".contentFields");
     contentFields.innerHTML = "";
     const blocksArray = Object.keys(blocks);
+
+    // Sort the blocksArray based on the "order" property
+    blocksArray.sort((a, b) => {
+        const orderA = blocks[a].order || 0; // Default to 0 if "order" is missing
+        const orderB = blocks[b].order || 0; // Default to 0 if "order" is missing
+        return orderA - orderB; // Sort in ascending order based on "order" property
+    });
+
     for (const block of blocksArray) {
         const button = document.createElement('button'); // Create the button element
+        button.id = block;
         button.textContent = blocks[block]['title'];
         button.addEventListener('click', () => {
             // Remove the 'currentBlock' class from all buttons
@@ -1109,7 +1171,14 @@ async function getBlocks(page) {
 
             // Add the 'currentBlock' class to the clicked button
             button.classList.add("currentBlock");
-            button.id = block;
+            const buttonAbove = button.previousElementSibling;
+
+            if (buttonAbove && buttonAbove.tagName === 'BUTTON') {
+                document.querySelector('.upBlock').style.display = 'block';
+            }
+            else{
+                document.querySelector('.upBlock').style.display = 'none';
+            }
             document.querySelector('.removeBlock').style.display = 'block';
 
             getContent(page, block);
