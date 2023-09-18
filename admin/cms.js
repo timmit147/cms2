@@ -506,6 +506,77 @@ async function placeBlock() {
     addSettings();
 }
 
+
+document.addEventListener("DOMContentLoaded", function () {
+    const addPageButton = document.querySelector(".addPage");
+
+    addPageButton.addEventListener("click", async function () {
+        const userInput = prompt("Page name:");
+        if (userInput !== null) {
+            await createPage(userInput);
+            getPages();
+        }
+    });
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const addPageButton = document.querySelector(".removePage");
+
+    addPageButton.addEventListener("click", async function () {
+        let currentPage = document.querySelector('.currentPage');
+        let currentPageText = currentPage.textContent.toLowerCase();
+        await deletePage(currentPageText);
+        getPages();
+    });
+});
+
+async function deletePage(pageName) {
+    try {
+        const confirmDelete = confirm(`Are you sure you want to delete the page with ID: ${pageName}?`);
+
+        if (!confirmDelete) {
+            console.log('Page deletion canceled by user.');
+            return;
+        }
+
+        const pagesCollection = firestore.collection('pages');
+        const pageRef = pagesCollection.doc(pageName);
+
+        // Delete the document
+        await pageRef.delete();
+
+        console.log(`Page deleted with ID: ${pageName}`);
+    } catch (error) {
+        console.error('Error deleting page:', error);
+    }
+}
+
+
+
+
+async function createPage(pageName) {
+    try {
+        const pagesCollection = firestore.collection('pages');
+
+        // Specify the document ID as the pageName
+        const newPageRef = pagesCollection.doc(pageName);
+
+        // You can set data for the document if needed
+        const pageData = {
+            // Add any other fields as needed
+        };
+
+        await newPageRef.set(pageData); // Use set() to create or update the document
+
+        console.log(`Page added with ID: ${pageName}`);
+    } catch (error) {
+        console.error('Error creating page:', error);
+    }
+}
+
+
+
 async function loopPageFields(currentPage) {
     const pageData = await getPageData(currentPage);
 
@@ -954,6 +1025,7 @@ async function handleAddPageButtonClick() {
 async function getPages() {
     const pages = await fetchDataFromFirestore("pages");
     const pagesTitles = document.querySelector(".pageTitles");
+    pagesTitles.innerHTML = "";
     const pagesArray = Object.keys(pages); 
     for (const page of pagesArray) {
         const button = document.createElement('button'); // Create the button element

@@ -10,6 +10,7 @@ body {
 
 #pages {
     min-width: 200px;
+    max-width: 200px;
     height: 100vh;
     padding: 16px;
     border-right: 1px solid;
@@ -39,8 +40,15 @@ body {
     height: 80vh;
 }
 
+.pagesHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
 #blocks {
     min-width: 200px;
+    max-width: 200px;
     height: 100vh;
     padding: 16px;
     border-right: 1px solid;
@@ -155,11 +163,6 @@ input[type="text"]{
     font-size: 16px;
 }
 
-.removeBlockButton, .removePage{
-    color: #21759B;
-    font-weight: bold;
-    text-decoration: underline;
-}
 
 .removeBlockButton:hover, .removePage:hover{
     color: #B92D2D;
