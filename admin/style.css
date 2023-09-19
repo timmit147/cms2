@@ -75,7 +75,7 @@ body {
     gap: 8px;
 }
 
-.showPageForm submit{
+.addPageButton{
     background-color: #21759B;
     color: white;
     padding: 4px 16px;
@@ -83,10 +83,11 @@ body {
     width: fit-content;
 }
 
-.showPageForm submit:hover{
+.addPageButton:hover{
     background-color: black;
     color: white;
 }
+
 
 .selectOption {
     padding: 4px 8px;
@@ -95,7 +96,7 @@ body {
     border: 1px solid;
 }
 
-.showBlockForm input{
+.addNewBlockButton{
     background-color: #21759B;
     color: white;
     padding: 4px 16px;
@@ -106,7 +107,8 @@ body {
     margin-top: 8px;
 }
 
-.showBlockForm input:hover{
+
+.addNewBlockButton:hover{
     background-color: black;
     color: white;
 }

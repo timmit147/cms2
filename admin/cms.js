@@ -220,7 +220,6 @@ const objectWithBlocks = module.default;
 const selectElement = document.querySelector('.selectOption');
 const blockForm = document.querySelector('.showBlockForm');
 const addNewBlockButton = document.querySelector('.addNewBlockButton');
-console.log(addNewBlockButton);
 
 objectWithBlocks.forEach(item => {
     const option = document.createElement('option');
