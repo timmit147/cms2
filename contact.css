@@ -63,20 +63,74 @@ body > *{
   }
 
 .header2{
-    background-color: #1C1C1C;
     position: relative;
     height: 100vh;
     padding: 16px;
     box-sizing: border-box;
     color: white;
     font-family: 'Open Sans', sans-serif;
-    background-image: url("./images/background.webp");
-    background-size: cover;
     display: flex;
     padding-top: 100px;
     justify-content: center;
+    overflow: hidden;
 }
 
+.header2 .video-background {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    z-index: -1;
+}
+
+  
+
+.header2 .readMore{
+    position: absolute;
+    bottom: 16px;
+    border: unset;
+    background-color: unset;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+.header2 .readMore::before {
+    content: "\f107";
+    font-family: 'Font Awesome 5 Free';
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 30px;
+    font-weight: 600;
+    animation: bounce 1.5s infinite cubic-bezier(0.5, 0.05, 0.5, 0.95); /* Apply the animation with cubic-bezier easing */
+}
+
+@keyframes bounce {
+    0% {
+        top: -27px; /* Start position */
+    }
+    50% {
+        top: -22px; /* Middle position (adjust as needed) */
+    }
+    100% {
+        top: -27px; /* End position (back to start) */
+    }
+}
+
+
+.header2 .readMore {
+    position: absolute;
+    bottom: 16px;
+    border: unset;
+    background-color: unset;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+}
 
 .header2 .image {
     width: 400px;
