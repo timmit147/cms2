@@ -87,6 +87,21 @@ const objectWithBlocks = [
         block3Image: "",
         block3ImgAlt: "",
         block3Content: "Website content",
+    },
+    {
+        type: "header2",
+        title: "title",
+        subTitle: "Subtitle",
+        content: "content",
+        image: "",
+        imgAlt: "",
+        button1Text: "",
+        button1Url: "",
+        button2Text: "",
+        button2Url: "",
+        button3Text: "",
+        button3Url: "",
+
     }
 ];
 

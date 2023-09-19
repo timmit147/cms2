@@ -1,23 +1,4 @@
-
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <meta name="description" content='undefined'>
-          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-          <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-          <link rel="manifest" href="/manifest.json">
-          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-          <meta name="msapplication-TileColor" content="#1c1c1c">
-          <meta name="theme-color" content="#1c1c1c">
-          <title>contact</title>
-          <link rel="canonical" href="https://multii.nl">
-          <link rel="stylesheet" type="text/css" href="contact.css">
-      </head>
-      <body>
-          <section class="header2" id="Ns8CFtkX5vJXXoHeP1x1" itemscope itemtype="http://schema.org/Product">
+<section class="header2" id="{{id}}" itemscope itemtype="http://schema.org/Product">
     <div class="content">
         <svg  class="logo" alt="Multii logo" viewBox="0 0 336 127" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 40.8594H28.623L48.3117 89.0132H49.3044L68.993 40.8594H97.616V125.876H75.1147V76.7257H74.4529L55.5915 125.212H42.0245L23.1631 76.3936H22.5013V125.876H0V40.8594Z" fill="white"/>
@@ -30,32 +11,13 @@
             <circle cx="324" cy="52.8594" r="12" fill="var(--primary-color)"/>
             <path fill-rule="evenodd" clip-rule="evenodd" d="M318.997 27.288C318.999 27.1922 319 27.0962 319 27C319 18.7157 312.284 12 304 12C295.716 12 289 18.7157 289 27C289 27.0962 289.001 27.1922 289.003 27.288H277.002C277.001 27.1921 277 27.0961 277 27C277 12.0883 289.088 0 304 0C318.912 0 331 12.0883 331 27C331 27.0961 331 27.1921 330.998 27.288H318.997Z" fill="var(--primary-color)"/>
         </svg>
-        <h1 itemprop="name">Creërd Snelle, Mooie en Aanpasbare <strong>Websites & Apps</strong> – Uw Digitale Dromen, Onze Expertise</h1>
-        <a href="#">Ervaring</a>
-        <a href="#">Prijzen</a>
-        <a href="#" class="active">Contact</a>
+        <h1 itemprop="name">{{content}}</h1>
+        <a href="{{button1Url}}">{{button1Text}}</a>
+        <a href="{{button2Url}}">{{button2Text}}</a>
+        <a href="{{button3Url}}" class="active">{{button3Text}}</a>
     </div>
-    <img class="image" src="images/images_2FGroup_2015.webp"  srcset="images/images_2FGroup_2015_mobile.webp 600w, images/images_2FGroup_2015.webp 1200w" sizes="(max-width: 600px) 100vw, 1500px" alt="" itemprop="image">
+    <img class="image" {{image}} alt="{{imgAlt}}" itemprop="image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 </section>
-          <script src="blocks\header2\script.js" type="module" defer></script>
-          <script defer src="script.js"></script>
-
-          
-          <script>
-              if ('serviceWorker' in navigator) {
-                  navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-                      .then(registration => {
-                      })
-                      .catch(error => {
-                          console.error('Service Worker registration failed:', error);
-                      });
-              }
-              
-          </script>
-          
-      </body>
-      </html>    
-    

@@ -1,0 +1,152 @@
+body {
+    margin: 0px;
+    background-color: #1c1c1c;
+}
+
+/* For Webkit-based browsers (Chrome, Safari, newer versions of Edge) */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #F8CD09;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: white; /* Change the background color to white on hover */
+}
+
+/* For Firefox */
+/* You can use scrollbar-color property for Firefox */
+* {
+    scrollbar-color: #F8CD09;
+    scrollbar-width: thin;
+}
+
+body > *{
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+}
+
+.circle, .cursor {
+    position: fixed;
+    transform: translate(-50%, -50%);
+}
+
+.circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #484848;    
+    filter: blur(30px);
+    pointer-events: none;
+}
+
+.cursor {
+    width: 60px;
+    height: 60px;
+    background-image: url("./cursor.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    z-index: 999;
+    pointer-events: none;
+    margin-top: 10px;
+}
+
+.vinger{
+    background-image: url("./vinger.png");
+    width: 80px;
+    height: 80px;
+}:root {
+    --primary-color: #1B61CA;
+  }
+
+.header2{
+    background-color: #1C1C1C;
+    position: relative;
+    height: 100vh;
+    padding: 16px;
+    box-sizing: border-box;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    background-image: url("./images/background.webp");
+    background-size: cover;
+    display: flex;
+    padding-top: 100px;
+    justify-content: center;
+}
+
+
+.header2 .image {
+    width: 400px;
+    height: fit-content;
+    box-shadow: 0px 0px 100px 0px var(--primary-color);
+    border-radius: 8px;
+}
+.header2 .logo{
+    max-width: 100px;
+}
+
+
+
+.header2 h1 {
+    font-size: 20px;
+    max-width: 300px;
+    font-weight: 100;
+}
+
+.header2 strong {
+    color: var(--primary-color);
+}
+
+.header2 .content{
+    position: relative;
+    z-index: 5;
+    padding: 30px;
+    width: fit-content;
+}
+
+.header2 a{
+    color: white;
+    text-decoration: none;
+    border-bottom: 1px solid;
+    margin-right: 8px;
+    cursor: none;
+}
+
+.header2 a:hover{
+    color: var(--primary-color);
+}
+
+.header2 .active{
+    color: var(--primary-color);
+}
+
+.header2 sub {
+    font-size: 30px;
+    font-weight: 900;
+}
+
+@media (max-width: 600px) {
+    .header2 .content{
+        padding:0px;
+    }
+
+    .header2 .image {
+        width: 55vh;
+        bottom: -7vh;
+        right: 30vw;
+    }
+
+    .header2{
+        display: flex;
+        align-items: center;
+        margin-bottom: 100px;
+        height: 450px;
+    }
+
+    .header2 h1{
+        font-size: 18px;
+    }
+}

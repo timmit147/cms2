@@ -114,7 +114,6 @@ async function getPageMetaDescription(pageName){
 
 async function getPagemetaTitle(pageName){
   const pages = await fetchData('pages');
-  let metaDescription;
   
   const page = pages.find(page => page.name === pageName);
   
@@ -150,7 +149,7 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
           <meta name="msapplication-TileColor" content="#1c1c1c">
           <meta name="theme-color" content="#1c1c1c">
-          <title>${metaTitle}</title>
+          <title>${pageName}</title>
           <link rel="canonical" href="https://multii.nl">
           ${cssLinks}
       </head>

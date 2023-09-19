@@ -1,0 +1,92 @@
+:root {
+    --primary-color: #1B61CA;
+  }
+
+.header2{
+    background-color: #1C1C1C;
+    position: relative;
+    height: 100vh;
+    padding: 16px;
+    box-sizing: border-box;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    background-image: url("./images/background.webp");
+    background-size: cover;
+    display: flex;
+    padding-top: 100px;
+    justify-content: center;
+}
+
+
+.header2 .image {
+    width: 400px;
+    height: fit-content;
+    box-shadow: 0px 0px 100px 0px var(--primary-color);
+    border-radius: 8px;
+}
+.header2 .logo{
+    max-width: 100px;
+}
+
+
+
+.header2 h1 {
+    font-size: 20px;
+    max-width: 300px;
+    font-weight: 100;
+}
+
+.header2 strong {
+    color: var(--primary-color);
+}
+
+.header2 .content{
+    position: relative;
+    z-index: 5;
+    padding: 30px;
+    width: fit-content;
+}
+
+.header2 a{
+    color: white;
+    text-decoration: none;
+    border-bottom: 1px solid;
+    margin-right: 8px;
+    cursor: none;
+}
+
+.header2 a:hover{
+    color: var(--primary-color);
+}
+
+.header2 .active{
+    color: var(--primary-color);
+}
+
+.header2 sub {
+    font-size: 30px;
+    font-weight: 900;
+}
+
+@media (max-width: 600px) {
+    .header2 .content{
+        padding:0px;
+    }
+
+    .header2 .image {
+        width: 55vh;
+        bottom: -7vh;
+        right: 30vw;
+    }
+
+    .header2{
+        display: flex;
+        align-items: center;
+        margin-bottom: 100px;
+        height: 450px;
+    }
+
+    .header2 h1{
+        font-size: 18px;
+    }
+}
