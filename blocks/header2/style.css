@@ -1,6 +1,4 @@
-:root {
-    --primary-color: #1B61CA;
-  }
+
 
 .header2{
     position: relative;
@@ -17,9 +15,29 @@
 }
 
 .image-container {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  .image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  }
+
+  .visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+.image-container {
     display: flex;
     animation: loopImages 50s linear infinite; /* Adjust the animation duration as needed */
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     z-index: -1;
@@ -39,14 +57,6 @@
     margin: 0; /* Remove any default margin */
 }
 
-/* @keyframes loopBackground {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 100% 0;
-    }
-} */
 
 .header2 .readMore{
     position: absolute;
@@ -146,7 +156,7 @@
     font-weight: 900;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
     .header2 .content{
         padding:0px;
     }
@@ -156,7 +166,6 @@
     flex-direction: column;
     gap: 20px;
     place-content: baseline;
-    padding-top: 16px;
     }
 
     .header2 h1{

@@ -95,12 +95,19 @@ const objectWithBlocks = [
         content: "content",
         image: "",
         imgAlt: "",
+        image2: "",
+        imgAlt2: "",
+        image3: "",
+        imgAlt3: "",
         button1Text: "",
         button1Url: "",
         button2Text: "",
         button2Url: "",
         button3Text: "",
         button3Url: "",
+        color1: "#ffffff",
+        color2: "#ffffff",
+        color3: "#ffffff",
 
     }
 ];

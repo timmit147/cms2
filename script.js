@@ -78,8 +78,6 @@ if (window.innerWidth >= 768) {
                 isMouseOverCarHeader = true;
             }
         });
-    } else {
-        console.error(".carHeader element not found in the DOM");
     }
     
     document.body.style.cursor = 'none';

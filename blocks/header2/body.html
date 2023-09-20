@@ -1,8 +1,10 @@
 <section class="header2" id="{{id}}" itemscope itemtype="http://schema.org/Product">
+
     <div class="image-container">
-        <img src="./images/backgroundLoop.jpg" alt="Image 1">
-        <img src="./images/backgroundLoop.jpg" alt="Image 2">
+        <img src="./images/backgroundLoop.webp" alt="Image 1">
+        <img src="./images/backgroundLoop.webp" alt="Image 2">
     </div>
+
     <div class="content">
         <svg  class="logo" alt="Multii logo" viewBox="0 0 336 127" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 40.8594H28.623L48.3117 89.0132H49.3044L68.993 40.8594H97.616V125.876H75.1147V76.7257H74.4529L55.5915 125.212H42.0245L23.1631 76.3936H22.5013V125.876H0V40.8594Z" fill="white"/>
@@ -20,7 +22,12 @@
         <a href="{{button2Url}}">{{button2Text}}</a>
         <a href="{{button3Url}}" class="active">{{button3Text}}</a>
     </div>
-    <img class="image" {{image}} alt="{{imgAlt}}" itemprop="image">
+    
+    <div class="image-container">
+        <img class="image image1 visible" color="{{color1}}" src="{{image}}" alt="{{imgAlt}}" itemprop="image">
+        <img class="image image2" color="{{color2}}" src="{{image2}}" alt="{{imgAlt2}}" itemprop="image">
+        <img class="image image3" color="{{color3}}" src="{{image3}}" alt="{{imgAlt3}}" itemprop="image">
+      </div>
 
     <button class="readMore">Lees meer</button>
 
@@ -28,4 +35,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: {{color1}};
+        }
+    </style>
 </section>
