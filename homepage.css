@@ -301,7 +301,6 @@ body > *{
     align-items: center;
     text-align-last: center;
     padding: 160px 40px;
-    background-color: hsl(0, 0%, 11%);
     color: white;
     font-family: 'Open Sans', sans-serif;
 }
