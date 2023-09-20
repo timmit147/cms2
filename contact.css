@@ -319,4 +319,168 @@ body > *{
     .contactForm img{
         width: 200px;
     }
+}:root {
+    --primary-color: #1B61CA;
+  }
+
+.header2{
+    position: relative;
+    height: 100vh;
+    padding: 16px;
+    box-sizing: border-box;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    background-size: cover;
+    display: flex;
+    padding-top: 100px;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.image-container {
+    display: flex;
+    animation: loopImages 50s linear infinite; /* Adjust the animation duration as needed */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+@keyframes loopImages {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-50%); /* Move the container left by 50% of its width */
+    }
+}
+
+.image-container img {
+    height: 100vh;
+    margin: 0; /* Remove any default margin */
+}
+
+/* @keyframes loopBackground {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 100% 0;
+    }
+} */
+
+.header2 .readMore{
+    position: absolute;
+    bottom: 16px;
+    border: unset;
+    background-color: unset;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+.header2 .readMore::before {
+    content: "\f107";
+    font-family: 'Font Awesome 5 Free';
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 30px;
+    font-weight: 600;
+    animation: bounce 1.5s infinite cubic-bezier(0.5, 0.05, 0.5, 0.95); /* Apply the animation with cubic-bezier easing */
+}
+
+@keyframes bounce {
+    0% {
+        top: -27px; /* Start position */
+    }
+    50% {
+        top: -22px; /* Middle position (adjust as needed) */
+    }
+    100% {
+        top: -27px; /* End position (back to start) */
+    }
+}
+
+
+.header2 .readMore {
+    position: absolute;
+    bottom: 16px;
+    border: unset;
+    background-color: unset;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.header2 .image {
+    width: 400px;
+    height: fit-content;
+    box-shadow: 0px 0px 70px 0px var(--primary-color);
+    border-radius: 8px;
+    max-width: 100%;
+}
+
+
+.header2 .logo{
+    max-width: 130px;
+}
+
+
+
+.header2 h1 {
+    font-size: 20px;
+    max-width: 300px;
+    font-weight: 100;
+}
+
+.header2 strong {
+    color: var(--primary-color);
+}
+
+.header2 .content{
+    position: relative;
+    z-index: 5;
+    padding: 30px;
+    width: fit-content;
+}
+
+.header2 a{
+    color: white;
+    text-decoration: none;
+    border-bottom: 1px solid;
+    margin-right: 8px;
+    cursor: none;
+}
+
+.header2 a:hover{
+    color: var(--primary-color);
+}
+
+.header2 .active{
+    color: var(--primary-color);
+}
+
+.header2 sub {
+    font-size: 30px;
+    font-weight: 900;
+}
+
+@media (max-width: 600px) {
+    .header2 .content{
+        padding:0px;
+    }
+
+    .header2{
+        display: flex;
+    flex-direction: column;
+    gap: 20px;
+    place-content: baseline;
+    padding-top: 16px;
+    }
+
+    .header2 h1{
+        font-size: 18px;
+    }
 }
