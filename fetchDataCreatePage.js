@@ -198,10 +198,16 @@ async function createBaseHtmlContent(pageName) {
   cssFiles.push(cssFilePath);
 
   blocks.sort((a, b) => {
-  const orderA = parseInt(a['fields']['order']['integerValue']) || 0;
-  const orderB = parseInt(b['fields']['order']['integerValue']) || 0;
-  return orderA - orderB;
-});
+    const orderA = a['fields']['order']['integerValue'] || a['fields']['order']['stringValue'] || 0;
+    const orderB = b['fields']['order']['integerValue'] || b['fields']['order']['stringValue'] || 0;
+  
+    // Use localeCompare for string comparison and parseInt for numeric comparison
+    if (typeof orderA === 'number' && typeof orderB === 'number') {
+      return orderA - orderB; // Numeric comparison
+    } else {
+      return orderA.toString().localeCompare(orderB.toString()); // String comparison
+    }
+  });
 
   for (const block of blocks) {
     const filePath = path.join("./", 'blocks', block['fields']['type']['stringValue'], 'body.html');

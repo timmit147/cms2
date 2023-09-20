@@ -58,101 +58,6 @@ body > *{
     background-image: url("./vinger.png");
     width: 80px;
     height: 80px;
-}.contactForm {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    padding: 160px 32px;
-    box-sizing: border-box;
-    min-height: 725px;
-    color: white;
-}
-
-.contactForm *{
-    font-family: 'Open Sans', sans-serif;
-}
-
-.contactForm h2 {
-    margin: 0px;
-    margin-bottom: 16px;
-}
-
-.contactForm img{
-    position: absolute;
-    width: 300px;
-    height: auto;
-    bottom: 0;
-    right: 0;
-    z-index: 1;
-}
-
-.contactForm label{
-    font-weight: 900;
-    margin-top: 8px;
-}
-
-.contactForm form {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: auto;
-    z-index: 5;
-    position: relative;
-}
-
-.contactForm > * {
-    width: fit-content;
-}
-
-.contactForm input, 
-.contactForm textarea{
-    background-color: unset;
-    border: 1px solid white;
-    border-radius: 8px;
-    padding: 8px;
-    color: #F8CD09;
-    font-weight: bold;
-    max-width: 300px;
-}
-
-.contactForm input::placeholder,
-.contactForm textarea::placeholder {
-    color: white;
-    font-weight: 100;
-}
-
-
-.contactForm input[type="submit"] {
-    background-color: #F8CD09;
-    border: 0px;
-    color: hsl(0, 0%, 11%);
-    font-size: 18px;
-    padding: 8px 16px;
-    width: fit-content;
-    border-radius: 4px;
-    border: 1px solid;
-    margin-top: 8px;
-}
-
-.contactForm input[type="submit"]:hover {
-    color: #F8CD09;
-    background-color: unset;
-    cursor: pointer;
-}
-
-.contactForm #submittedMessage{
-    color: #F8CD09;
-    display: none;
-}
-
-@media (max-width: 600px) {
-    .contactForm {
-        padding:  100px 16px;
-    }
-
-    .contactForm img{
-        width: 200px;
-    }
 }
 :root {
     --primary-color: #257cff;
@@ -348,5 +253,101 @@ body > *{
 
     .header2 h1{
         font-size: 18px;
+    }
+}
+.contactForm {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 160px 32px;
+    box-sizing: border-box;
+    min-height: 725px;
+    color: white;
+}
+
+.contactForm *{
+    font-family: 'Open Sans', sans-serif;
+}
+
+.contactForm h2 {
+    margin: 0px;
+    margin-bottom: 16px;
+}
+
+.contactForm img{
+    position: absolute;
+    width: 300px;
+    height: auto;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.contactForm label{
+    font-weight: 900;
+    margin-top: 8px;
+}
+
+.contactForm form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: auto;
+    z-index: 5;
+    position: relative;
+}
+
+.contactForm > * {
+    width: fit-content;
+}
+
+.contactForm input, 
+.contactForm textarea{
+    background-color: unset;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 8px;
+    color: #F8CD09;
+    font-weight: bold;
+    max-width: 300px;
+}
+
+.contactForm input::placeholder,
+.contactForm textarea::placeholder {
+    color: white;
+    font-weight: 100;
+}
+
+
+.contactForm input[type="submit"] {
+    background-color: #F8CD09;
+    border: 0px;
+    color: hsl(0, 0%, 11%);
+    font-size: 18px;
+    padding: 8px 16px;
+    width: fit-content;
+    border-radius: 4px;
+    border: 1px solid;
+    margin-top: 8px;
+}
+
+.contactForm input[type="submit"]:hover {
+    color: #F8CD09;
+    background-color: unset;
+    cursor: pointer;
+}
+
+.contactForm #submittedMessage{
+    color: #F8CD09;
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .contactForm {
+        padding:  100px 16px;
+    }
+
+    .contactForm img{
+        width: 200px;
     }
 }
