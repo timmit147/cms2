@@ -403,7 +403,6 @@ body > *{
     padding: 160px 32px;
     box-sizing: border-box;
     min-height: 725px;
-    background-color: hsl(0, 0%, 11%);
     color: white;
 }
 

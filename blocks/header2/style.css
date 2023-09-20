@@ -62,13 +62,14 @@
     visibility: visible;
   }
 
-  .header2 .image-container {
+  .image-container {
     display: flex;
-    animation: loopImages 50s linear infinite; /* Adjust the animation duration as needed */
+    animation: loopImages 50s linear infinite;
     position: fixed;
     top: 0;
     left: 0;
     z-index: -1;
+    height: 100vh;
 }
 
 @keyframes loopImages {
