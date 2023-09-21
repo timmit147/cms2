@@ -114,7 +114,14 @@ const objectWithBlocks = [
         color2: "#ffffff",
         color3: "#ffffff",
 
-    }
+    },
+    {
+        type: "imageTitle",
+        title: "Title",
+        text: "Text",
+        image: "",
+        imgAlt: "",
+    },
 ];
 
 export default objectWithBlocks;

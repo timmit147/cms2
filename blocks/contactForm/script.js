@@ -20,7 +20,7 @@ contactForm.addEventListener('submit', async function (e) {
 
     try {
         // Make an HTTP POST request to your PHP script
-        const response = await fetch('http://multii.freaze.eu/email.php', {
+        const response = await fetch('https://multii.freaze.eu/email.php', {
             method: 'POST',
             body: formData
         });
