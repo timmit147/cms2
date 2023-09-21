@@ -842,6 +842,67 @@ async function getContent(page, block) {
     
         const inputField = document.createElement('input');
     
+        if (fieldName.includes("object") || fieldName.includes("object")) {
+            const object = content[block][fieldName];
+            const objectTitle = document.createElement('h2');
+            objectTitle.textContent = fieldName; // Format the field name
+            fieldDiv.appendChild(objectTitle);
+
+            const objectAdd = document.createElement('button');
+            objectAdd.textContent = 'Add'; // Format the field name
+            fieldDiv.appendChild(objectAdd);
+
+            objectAdd.addEventListener('click', () => {
+                var itemCount = Object.keys(object).length;
+                Object.keys(object).forEach((field) => {
+                    if(field !== 'items'){
+                        return;
+                    }
+                    console.log(object['items']);
+                    const items = object['items'];
+                      const test = {};
+
+                    for (let i = 0; i < items.length; i++) {
+                        const itemName = items[i];
+                        test[itemName] = '';
+                    }
+                    object[itemCount] = test;
+                    updateBlockProperty(page, block, fieldName, object);
+                });
+            });
+
+            Object.keys(object).forEach((field) => {
+                if(field === 'items'){
+                    return;
+                }
+
+                for (const prop in object[field]) {
+                  const value = object[field][prop];
+                  const typeLabel = document.createElement('label');
+                    typeLabel.textContent = formatFieldName(prop); // Format the field name
+                    typeLabel.style.fontWeight = 'bold';
+                    const inputField = document.createElement('input');
+                    inputField.type = 'text';
+                     inputField.value = value;
+                     const submitButton = document.createElement('button');
+                     submitButton.textContent = 'Update';
+                 
+                     submitButton.addEventListener('click', () => {
+                         updateBlockProperty(page, block, fieldName, inputField.value);
+                     });
+
+                     fieldDiv.appendChild(typeLabel);
+
+                     fieldDiv.appendChild(inputField);
+        fieldDiv.appendChild(submitButton);
+    
+        contentFields.appendChild(fieldDiv);
+                }
+
+            });
+              continue;
+        }   
+
         if (fieldName.includes("Image") || fieldName.includes("image")) {
             inputField.type = 'file';
             imageElement = document.createElement('img');

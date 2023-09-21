@@ -74,6 +74,7 @@ const objectWithBlocks = [
         contactButtonLink: "#",
     },
     {
+        title: "Website slider",
         type: "websiteSlider",
         block1Title: "Website name",
         block1Image: "",
@@ -87,6 +88,10 @@ const objectWithBlocks = [
         block3Image: "",
         block3ImgAlt: "",
         block3Content: "Website content",
+        object:{
+            items: ["image","imgAlt"],
+            item1: { 'image': 'hallo','imgAlt': 'hallo'  },
+        },
     },
     {
         type: "header2",
