@@ -805,144 +805,124 @@ async function getBlocks(page) {
 
 
 async function getContent(page, block) {
-    let content = await fetchDataFromFirestore(`pages/${page}/blocks`);
+    const content = await fetchDataFromFirestore(`pages/${page}/blocks`);
     const contentFields = document.querySelector(".contentFields");
     contentFields.innerHTML = "";
 
-    // Create an array of field names
     const fieldNames = Object.keys(content[block]);
+    const sortedFieldNames = sortFieldNames(fieldNames);
 
-    // Sort the field names alphabetically, excluding "title"
-    const sortedFieldNames = fieldNames.filter(fieldName => fieldName !== "title").sort();
-
-    // Check if "title" field exists and add it at the beginning
-    if (fieldNames.includes("title")) {
-        sortedFieldNames.unshift("title");
-    }
-
-    // Function to format field names
-    function formatFieldName(fieldName) {
-        // Replace numbers with corresponding words, e.g., "block1Price" becomes "Block 1 Price"
-        fieldName = fieldName.replace(/(\d+)/g, " $1 ");
-        // Add spaces before capital letters (except the first one)
-        fieldName = fieldName.replace(/([A-Z])/g, ' $1');
-        // Capitalize the first letter of each word
-        return fieldName.trim().replace(/(^\w|\s\w)/g, m => m.toUpperCase());
-    }
-
-    // Iterate through the sorted field names and create elements
     for (const fieldName of sortedFieldNames) {
-        let imageElement;
-        const fieldDiv = document.createElement('div');
-        fieldDiv.classList.add('field'); // Add the class "field" to the div
-    
-        const typeLabel = document.createElement('label');
-        typeLabel.textContent = formatFieldName(fieldName); // Format the field name
-        typeLabel.style.fontWeight = 'bold';
-    
-        const inputField = document.createElement('input');
-    
+        const fieldDiv = createFieldDiv(fieldName);
+
         if (fieldName.includes("object") || fieldName.includes("object")) {
-            const object = content[block][fieldName];
-            const objectTitle = document.createElement('h2');
-            objectTitle.textContent = fieldName; // Format the field name
-            fieldDiv.appendChild(objectTitle);
-
-            const objectAdd = document.createElement('button');
-            objectAdd.textContent = 'Add'; // Format the field name
-            fieldDiv.appendChild(objectAdd);
-
-            objectAdd.addEventListener('click', () => {
-                var itemCount = Object.keys(object).length;
-                Object.keys(object).forEach((field) => {
-                    if(field !== 'items'){
-                        return;
-                    }
-                    console.log(object['items']);
-                    const items = object['items'];
-                      const test = {};
-
-                    for (let i = 0; i < items.length; i++) {
-                        const itemName = items[i];
-                        test[itemName] = '';
-                    }
-                    object[itemCount] = test;
-                    updateBlockProperty(page, block, fieldName, object);
-                });
-            });
-
-            Object.keys(object).forEach((field) => {
-                if(field === 'items'){
-                    return;
-                }
-
-                for (const prop in object[field]) {
-                  const value = object[field][prop];
-                  const typeLabel = document.createElement('label');
-                    typeLabel.textContent = formatFieldName(prop); // Format the field name
-                    typeLabel.style.fontWeight = 'bold';
-                    const inputField = document.createElement('input');
-                    inputField.type = 'text';
-                     inputField.value = value;
-                     const submitButton = document.createElement('button');
-                     submitButton.textContent = 'Update';
-                 
-                     submitButton.addEventListener('click', () => {
-                         updateBlockProperty(page, block, fieldName, inputField.value);
-                     });
-
-                     fieldDiv.appendChild(typeLabel);
-
-                     fieldDiv.appendChild(inputField);
-        fieldDiv.appendChild(submitButton);
-    
-        contentFields.appendChild(fieldDiv);
-                }
-
-            });
-              continue;
-        }   
-
-        if (fieldName.includes("Image") || fieldName.includes("image")) {
-            inputField.type = 'file';
-            imageElement = document.createElement('img');
-            imageElement.src = content[block][fieldName];
-            inputField.addEventListener('change', (event) => {
-                const selectedImage = event.target.files[0];
-                handleImageUpload(page, selectedImage, block, fieldName);
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const newImageElement = document.createElement('img');
-                    newImageElement.src = e.target.result;
-                    imageElement.src = e.target.result;
-                    // imageElement.insertBefore(newImageElement, inputField);
-                };
-                reader.readAsDataURL(selectedImage);
-            });
-    
+            handleObjectField(fieldDiv, content[block][fieldName], fieldName, page, block);
+        } else if (fieldName.includes("Image") || fieldName.includes("image")) {
+            handleImageField(fieldDiv, content[block][fieldName], fieldName, page, block);
         } else {
-            inputField.type = 'text';
-            inputField.value = content[block][fieldName];
+            handleTextField(fieldDiv, content[block][fieldName], fieldName, page, block);
         }
-    
-        const submitButton = document.createElement('button');
-        submitButton.textContent = 'Update';
-    
-        submitButton.addEventListener('click', () => {
-            updateBlockProperty(page, block, fieldName, inputField.value);
-        });
-    
-        fieldDiv.appendChild(typeLabel);
-        if (imageElement !== undefined) {
-            fieldDiv.appendChild(imageElement);
-        }
-        fieldDiv.appendChild(inputField);
-        fieldDiv.appendChild(submitButton);
-    
-        contentFields.appendChild(fieldDiv); // Add the "field" div to the parent container
+
+        contentFields.appendChild(fieldDiv);
     }
-    
 }
+
+function sortFieldNames(fieldNames) {
+    return fieldNames
+        .filter(fieldName => fieldName !== "title")
+        .sort((a, b) => a.localeCompare(b));
+}
+
+function createFieldDiv(fieldName) {
+    const fieldDiv = document.createElement('div');
+    fieldDiv.classList.add('field');
+    const typeLabel = createLabel(formatFieldName(fieldName));
+    fieldDiv.appendChild(typeLabel);
+    return fieldDiv;
+}
+
+function formatFieldName(fieldName) {
+    fieldName = fieldName.replace(/(\d+)/g, " $1 ").replace(/([A-Z])/g, ' $1');
+    return fieldName.trim().replace(/(^\w|\s\w)/g, m => m.toUpperCase());
+}
+
+function createLabel(text) {
+    const label = document.createElement('label');
+    label.textContent = text;
+    label.style.fontWeight = 'bold';
+    return label;
+}
+
+function handleObjectField(fieldDiv, object, fieldName, page, block) {
+    const objectTitle = document.createElement('h2');
+    objectTitle.textContent = fieldName;
+    const objectAdd = createButton('Add');
+    objectAdd.addEventListener('click', () => addItemsToObject(object, fieldName, page, block));
+    fieldDiv.appendChild(objectTitle);
+    fieldDiv.appendChild(objectAdd);
+
+    for (const field in object) {
+        if (field !== 'items') {
+            continue;
+        }
+        const items = object['items'];
+        const test = {};
+        for (let i = 0; i < items.length; i++) {
+            const itemName = items[i];
+            test[itemName] = '';
+        }
+        object[fieldName] = test;
+        updateBlockProperty(page, block, fieldName, object);
+    }
+}
+
+function createButton(text) {
+    const button = document.createElement('button');
+    button.textContent = text;
+    return button;
+}
+
+function handleImageField(fieldDiv, imageUrl, fieldName, page, block) {
+    const inputButton = createButton('Change Image');
+    const imageElement = document.createElement('img');
+    imageElement.src = imageUrl;
+
+    inputButton.addEventListener('click', () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.style.display = 'none';
+
+        fileInput.addEventListener('change', (event) => {
+            const selectedImage = event.target.files[0];
+            handleImageUpload(page, selectedImage, block, fieldName, imageElement);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const newImageElement = document.createElement('img');
+                newImageElement.src = e.target.result;
+                imageElement.src = e.target.result;
+            };
+            reader.readAsDataURL(selectedImage);
+        });
+
+        fileInput.click();
+    });
+
+    fieldDiv.appendChild(imageElement);
+    fieldDiv.appendChild(inputButton);
+}
+
+function handleTextField(fieldDiv, value, fieldName, page, block) {
+    const inputField = document.createElement('input');
+    inputField.type = 'text';
+    inputField.value = value;
+
+    const submitButton = createButton('Update');
+    submitButton.addEventListener('click', () => updateBlockProperty(page, block, fieldName, inputField.value));
+
+    fieldDiv.appendChild(inputField);
+    fieldDiv.appendChild(submitButton);
+}
+
 
 
 
