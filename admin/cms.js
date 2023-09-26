@@ -892,6 +892,9 @@ function handleImageField(fieldDiv, imageUrl, fieldName, page, block) {
         fileInput.type = 'file';
         fileInput.style.display = 'none';
 
+        const messageElement = document.createElement('div');
+        messageElement.style.display = 'none'; // Initially hide the message
+
         fileInput.addEventListener('change', (event) => {
             const selectedImage = event.target.files[0];
             handleImageUpload(page, selectedImage, block, fieldName, imageElement);
@@ -900,15 +903,30 @@ function handleImageField(fieldDiv, imageUrl, fieldName, page, block) {
                 const newImageElement = document.createElement('img');
                 newImageElement.src = e.target.result;
                 imageElement.src = e.target.result;
+
+                // Display a success message
+                messageElement.textContent = 'Image changed successfully!';
+                messageElement.style.color = 'green';
+                messageElement.style.display = 'block';
             };
             reader.readAsDataURL(selectedImage);
         });
 
         fileInput.click();
+        messageElement.textContent = 'Select a new image...'; // Display a message when the button is clicked
+        messageElement.style.display = 'block';
+        fieldDiv.appendChild(messageElement);
     });
 
     fieldDiv.appendChild(imageElement);
     fieldDiv.appendChild(inputButton);
+}
+
+
+function createLoadingSpinner() {
+    const spinner = document.createElement('div');
+    spinner.classList.add('spinner'); // Add a CSS class for styling
+    return spinner;
 }
 
 function handleTextField(fieldDiv, value, fieldName, page, block) {
@@ -917,11 +935,57 @@ function handleTextField(fieldDiv, value, fieldName, page, block) {
     inputField.value = value;
 
     const submitButton = createButton('Update');
-    submitButton.addEventListener('click', () => updateBlockProperty(page, block, fieldName, inputField.value));
+    const messageElement = document.createElement('div');
+    messageElement.style.display = 'none'; // Initially hide the message
+
+    const loadingSpinner = createLoadingSpinner(); // Create a loading spinner element
+
+    submitButton.addEventListener('click', async () => {
+        // Hide the previous message when the button is clicked again
+        messageElement.style.display = 'none';
+
+        // Display the loading spinner while the update is in progress
+        fieldDiv.appendChild(loadingSpinner);
+
+        // Disable the input field and the submit button during the update
+        inputField.disabled = true;
+        submitButton.disabled = true;
+
+        try {
+            // Simulate a 3-second delay for demonstration purposes
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Hide the loading spinner after 3 seconds
+            fieldDiv.removeChild(loadingSpinner);
+
+            // Display a success message
+            messageElement.textContent = `Block property '${fieldName}' updated successfully.`;
+            messageElement.style.color = 'green';
+            messageElement.style.display = 'block';
+
+            // Re-enable the input field and the submit button
+            inputField.disabled = false;
+            submitButton.disabled = false;
+        } catch (error) {
+            // Handle any errors that may occur during the update
+            // You can display an error message or take appropriate action here
+            console.error(error);
+
+            // Hide the loading spinner
+            fieldDiv.removeChild(loadingSpinner);
+
+            // Re-enable the input field and the submit button in case of an error
+            inputField.disabled = false;
+            submitButton.disabled = false;
+        }
+    });
 
     fieldDiv.appendChild(inputField);
     fieldDiv.appendChild(submitButton);
+    fieldDiv.appendChild(messageElement);
 }
+
+
 
 
 
