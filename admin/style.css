@@ -12,7 +12,6 @@ body {
     min-width: 200px;
     max-width: 200px;
     height: 100vh;
-    padding: 16px;
     border-right: 1px solid;
 }
 
@@ -20,6 +19,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    padding: 16px;
 }
 
 .field {
@@ -32,7 +32,6 @@ body {
     background-color: #21759B;
     color: white;
     padding: 4px 16px;
-    border-radius: 4px;
 }
 
 .field button:hover {
@@ -53,7 +52,6 @@ body {
 .contentFields{
     display: flex;
     flex-direction: column;
-    gap: 24px;
     overflow-y: scroll;
     height: 80vh;
 }
@@ -124,19 +122,22 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    padding: 16px;
+    border-bottom: 1px solid;
 }
 
 .blocksHeader{
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    padding: 16px;
+    border-bottom: 1px solid;
 }
 
 #blocks {
     min-width: 200px;
     max-width: 200px;
     height: 100vh;
-    padding: 16px;
     border-right: 1px solid;
 }
 
@@ -144,12 +145,12 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    padding: 16px;
 }
 
 #content {
     flex: 1;
     height: 100vh;
-    padding: 16px;
 }
 
 .upBlock{
@@ -167,7 +168,12 @@ h1{
 
 h2{
     color: black;
-    margin-top: 0px;
+    margin: 0px;
+}
+
+#content h2{
+    padding: 16px;
+    border-bottom: 1px solid;
 }
 
 input[type="file"]{
@@ -251,7 +257,6 @@ label{
 }
 
 input[type="text"]{
-    border-radius: 4px;
     padding: 4px;
     width: fit-content;
     border: 1px solid black;
@@ -415,6 +420,11 @@ a:hover{
     text-decoration: underline;
 }
 
+.contentFields > *{
+    border-bottom: 1px solid;
+    padding: 16px;
+}
+
 #loginForm{
     display: flex;
     align-items: center;
@@ -422,6 +432,13 @@ a:hover{
     height: 100%;
     width: 100%;
     gap: 40px;
+    position: fixed;
+    background-color: white;
+    gap: 32px;
+}
+
+#loginForm h1{
+    margin: 0px;
 }
 
 #loginForm .form-container {
@@ -481,6 +498,9 @@ a:hover{
 @media (max-width: 767px) {
     #loginForm {
       flex-direction: column;
+      gap: 0px;
+      padding: 16px;
+    box-sizing: border-box;
     }
 
     .menu {

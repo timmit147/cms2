@@ -2,10 +2,13 @@
     position: relative;
     width: 100%;
     overflow: hidden;
-    padding: 160px 32px;
     box-sizing: border-box;
-    min-height: 725px;
     color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 32px;
 }
 
 .contactForm *{

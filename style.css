@@ -9,17 +9,17 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #F8CD09;
+    background-color: white;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: white; /* Change the background color to white on hover */
+    background-color: gray; /* Change the background color to white on hover */
 }
 
 /* For Firefox */
 /* You can use scrollbar-color property for Firefox */
 * {
-    scrollbar-color: #F8CD09;
+    scrollbar-color: white;
     scrollbar-width: thin;
 }
 
@@ -28,23 +28,24 @@ body > *{
     transition: opacity 2s ease-in-out;
 }
 
-.circle, .cursor {
-    position: fixed;
-    transform: translate(-50%, -50%);
-}
 
 .circle {
-    width: 150px;
-    height: 150px;
+    width: 250px;
+    height: 250px;
     border-radius: 50%;
-    background-color: #484848;    
-    filter: blur(30px);
+    background-color: rgba(255, 255, 255, 0.275);  
+    filter: blur(40px);
     pointer-events: none;
+    position: fixed;
+    z-index: -1;
 }
+
 
 .cursor {
     width: 60px;
     height: 60px;
+    /* background-image: url("./cursor.svg");  */
+
     background-image: url("./cursor.png");
     background-repeat: no-repeat;
     background-size: contain;
@@ -52,6 +53,10 @@ body > *{
     z-index: 999;
     pointer-events: none;
     margin-top: 10px;
+    /* background-color: var(--primary-color); */
+    
+    /* Change the mix-blend-mode to "screen" to blend the image with the background color */
+    /* mix-blend-mode: screen; */
 }
 
 .vinger{

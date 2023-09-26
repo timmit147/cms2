@@ -20,7 +20,7 @@ contactForm.addEventListener('submit', async function (e) {
 
     try {
         // Make an HTTP POST request to your PHP script
-        const response = await fetch('https://multii.freaze.eu/email.php', {
+        const response = await fetch('http://multii.freaze.eu/email.php', {
             method: 'POST',
             body: formData
         });
@@ -31,6 +31,7 @@ contactForm.addEventListener('submit', async function (e) {
             const submittedMessage = document.getElementById('submittedMessage');
             submittedMessage.style.display = 'block';
             submittedMessage.textContent = responseData;
+            console.log('Email send:', responseData);
         } else {
             console.error('Failed to send email:', response.status, response.statusText);
         }
