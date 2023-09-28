@@ -58,6 +58,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
+    height: inherit;
 }
 
 .blocksButtons{
@@ -426,6 +427,11 @@ a:hover{
 
 .contentFields > *{
     border-bottom: 1px solid;
+    padding: 16px;
+}
+
+.contentFields > *:last-child{
+    border-bottom: 0px solid;
     padding: 16px;
 }
 

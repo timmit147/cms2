@@ -612,6 +612,11 @@ async function getPages() {
                 btn.classList.remove("currentPage");
                 document.querySelector(".removePage").style.display = "none";
                 document.querySelector(".addBlock").style.display = "none";
+                var blockEmptyElement = document.querySelector(".blockEmpty");
+
+                if (blockEmptyElement) {
+                  blockEmptyElement.style.display = "none";
+                }            
             });
 
             document.querySelector('.upBlock').style.display = 'none';
@@ -679,7 +684,7 @@ async function getBlocks(page) {
     const blocksTitles = document.querySelector(".blockTitles");
     blocksTitles.innerHTML = "";
     const contentFields = document.querySelector(".contentFields");
-    contentFields.innerHTML = "";
+    contentFields.innerHTML = "<p class='contentEmpty'>Select a block</p>";
     const blocksArray = Object.keys(blocks);
 
     blocksArray.sort((a, b) => {
