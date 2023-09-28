@@ -33,54 +33,61 @@
     </form>
 </div>
 
-<div id="pages">
-    <div class="pagesHeader">
-        <h2>Pages</h2>
-        <div class="pagesButtons">
-            <button class="removePage"><i class="fa-solid fa-trash"></i></button>
-            <button class="addPage"><i class="fa-solid fa-plus"></i></button>
+
+<div class="layout">
+    <div id="pages">
+        <div class="pagesHeader">
+            <h2>Pages</h2>
+            <div class="pagesButtons">
+                <button class="removePage"><i class="fa-solid fa-trash"></i></button>
+                <button class="addPage"><i class="fa-solid fa-plus"></i></button>
+            </div>
         </div>
-    </div>
-    <div class="showPageForm">
-        <input class="addPageInput" type="text" placeholder="New page name">
-        <button class="addPageButton">Add page</button>
-    </div>
+        <div class="showPageForm">
+            <input class="addPageInput" type="text" placeholder="New page name">
+            <button class="addPageButton">Add page</button>
+        </div>
 
 
-    <div class="pageTitles">
+        <div class="pageTitles">
 
-    </div>
-</div>
-
-<div id="blocks">
-    <div class="blocksHeader">
-        <h2>Blocks</h2>
-        <div class="blocksButtons">
-            <button class="upBlock"><i class="fa-solid fa-angle-up"></i></button>
-            <button class="removeBlock"><i class="fa-solid fa-trash"></i></button>
-            <button class="addBlock"><i class="fa-solid fa-plus"></i></button>
         </div>
     </div>
 
-    <div class="showBlockForm">
-            <select class="selectOption" name="selectedOption">
-            </select>
-            <button class="addNewBlockButton">Add block</button>
+    <div id="blocks" class="hidden">
+        <div class="blocksHeader">
+            <h2>Blocks</h2>
+            <div class="blocksButtons">
+                <button class="upBlock"><i class="fa-solid fa-angle-up"></i></button>
+                <button class="removeBlock"><i class="fa-solid fa-trash"></i></button>
+                <button class="addBlock"><i class="fa-solid fa-plus"></i></button>
+            </div>
+        </div>
+
+        <div class="showBlockForm">
+                <select class="selectOption" name="selectedOption">
+                </select>
+                <button class="addNewBlockButton">Add block</button>
+        </div>
+
+        <div class="blockTitles">
+
+        </div>
     </div>
 
-    <div class="blockTitles">
+    <div id="content" class="hidden">
+        <h2>Content</h2>
+        <div class="contentFields">
 
-    </div>
-</div>
-
-<div id="content">
-    <h2>Content</h2>
-    <div class="contentFields">
-
+        </div>
     </div>
 </div>
     
-
+<div class="menu">
+    <button class="pagesButton bold">Pages</pages>
+    <button class="blocksButton">Blocks</pages>
+    <button class="contentButton">Content</pages>
+</div>
 
     <div id="addPagePopup" style="display: none;" >
         <input type="text" id="pageNameInput" placeholder="Enter page name">

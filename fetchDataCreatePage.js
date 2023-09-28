@@ -100,6 +100,7 @@ async function getPageMetaDescription(pageName){
   let metaDescription;
   
   const page = pages.find(page => page.name === pageName);
+
   
   if (page) {
     metaDescription = page.fields && page.fields.metaDescription;

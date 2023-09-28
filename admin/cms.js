@@ -455,7 +455,6 @@ async function triggerGitHubAction() {
     });
 
     if (response.ok) {
-        console.log('GitHub Action workflow triggered successfully.');
     } else {
         console.error('Error triggering GitHub Action workflow:', response.statusText);
     }
@@ -844,6 +843,15 @@ function handleTextField(fieldDiv, value, fieldName, page, block) {
     const inputField = document.createElement('input');
     inputField.type = 'text';
     inputField.value = value;
+    
+    // Check if the input value is empty immediately upon creation
+    if (inputField.value.trim() === '') {
+        inputField.style.border = '2px solid red';
+        const errorMessage = document.createElement('div');
+        errorMessage.textContent = 'This input needs text.';
+        errorMessage.style.color = 'red';
+        fieldDiv.appendChild(errorMessage);
+    }
 
     const submitButton = createButton('Update');
     const messageElement = document.createElement('div');
@@ -851,7 +859,7 @@ function handleTextField(fieldDiv, value, fieldName, page, block) {
 
     const loadingSpinner = createLoadingSpinner();
 
-    submitButton.addEventListener('click', async() => {
+    submitButton.addEventListener('click', async () => {
         messageElement.style.display = 'none';
 
         fieldDiv.appendChild(loadingSpinner);
@@ -861,17 +869,26 @@ function handleTextField(fieldDiv, value, fieldName, page, block) {
 
         try {
             await new Promise(resolve => setTimeout(resolve, 1000));
+            updateBlockProperty(page, block, fieldName, inputField.value);
 
             fieldDiv.removeChild(loadingSpinner);
 
-            messageElement.textContent = `Block property '${fieldName}' updated successfully.`;
-            messageElement.style.color = 'green';
+            if (inputField.value.trim() === '') {
+                // If the input value is empty or contains only spaces
+                inputField.style.border = '2px solid red';
+                messageElement.textContent = 'This input needs text.';
+                messageElement.style.color = 'red';
+            } else {
+                inputField.style.border = ''; // Reset the border style
+                messageElement.textContent = `Block property '${fieldName}' updated successfully.`;
+                messageElement.style.color = 'green';
+            }
+
             messageElement.style.display = 'block';
 
             inputField.disabled = false;
             submitButton.disabled = false;
         } catch (error) {
-
             console.error(error);
 
             fieldDiv.removeChild(loadingSpinner);
@@ -885,6 +902,8 @@ function handleTextField(fieldDiv, value, fieldName, page, block) {
     fieldDiv.appendChild(submitButton);
     fieldDiv.appendChild(messageElement);
 }
+
+
 
 async function addNewBlock(selectedBlock) {
     let page = document.querySelector('.currentPage').textContent.toLowerCase();
@@ -944,21 +963,38 @@ async function handleImageUpload(page, file, blockIndex, key) {
 
         const db = firebase.firestore();
         const blockRef = db.collection('pages').doc(page).collection('blocks').doc(blockIndex);
-        console.log(blockRef);
         try {
             await blockRef.update({
                 [key]: downloadURL
             });
-            console.log(`Image URL stored in the block's data.`);
         } catch (error) {
             console.error('Error updating block with image URL:', error);
         }
 
-        console.log('Image uploaded successfully');
     } catch (error) {
         console.error('Error uploading image:', error);
     }
 }
+
+const buttons = document.querySelectorAll('.menu button');
+    const sections = document.querySelectorAll('.layout > div');
+
+    buttons.forEach((button, index) => {
+        button.addEventListener('click', function () {
+            // Hide all sections
+            sections.forEach(section => section.classList.add('hidden'));
+
+            // Remove 'bold' class from all buttons
+            buttons.forEach(btn => btn.classList.remove('bold'));
+
+            // Add 'bold' class to the clicked button
+            this.classList.add('bold');
+
+            // Show the corresponding section
+            sections[index].classList.remove('hidden');
+        });
+    });
+
 
 async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) {
     try {
@@ -966,7 +1002,6 @@ async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) 
         await blockRef.update({
             [propertyKey]: newValue
         });
-        console.log(`Block property '${propertyKey}' updated successfully.`);
         triggerGitHubAction();
         return `Block property '${propertyKey}' updated successfully. and it should take approximately 1 minute for the changes to reflect on the website.`;
     } catch (error) {
