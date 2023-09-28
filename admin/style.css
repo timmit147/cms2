@@ -58,7 +58,6 @@ body {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
-    height: 80%;
 }
 
 .blocksButtons{
@@ -158,6 +157,8 @@ body {
 #content {
     flex: 1;
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .upBlock{
@@ -274,7 +275,7 @@ button.removePage{
     display: none;
 }
 
-.removeBlockButton:hover, .removePage:hover{
+.removeBlock:hover, .removePage:hover{
     color: #B92D2D;
 }
 
@@ -476,6 +477,7 @@ a:hover{
     width: 100vw;
     display: none;
     gap: 8px;
+    background-color: white;
 }
 
 .menu a{
@@ -509,7 +511,7 @@ a:hover{
     .menu{
         display: flex;
     }
-    .hidden {
+    #content.hidden, #blocks.hidden, #pages.hidden{
         display: none;
     }
 }
