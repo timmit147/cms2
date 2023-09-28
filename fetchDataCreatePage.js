@@ -45,12 +45,11 @@ async function createHtmlFiles() {
       fs.mkdirSync(outputPath, { recursive: true });
   }
 
-  for (const pageName of pages) {
-    if (pageName['name'] == "settings" || pageName['name'] == "tutorial") {
-      return;
-    }
-    await createBaseHtmlContent(pageName['name']);    
+  for (const page of pages) {
+    const pageName = page.name;
+      await createBaseHtmlContent(pageName); 
   }
+
 }
 
 
@@ -130,7 +129,6 @@ async function getPagemetaTitle(pageName){
 }
 
 async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent) {
-
   metaDescription = await getPageMetaDescription(pageName);
   metaTitle = await getPagemetaTitle(pageName);
 
@@ -191,13 +189,17 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
 }
 
 async function createBaseHtmlContent(pageName) {
-  const blocks = await fetchData(`pages/${pageName}/blocks`);
+  console.log(pageName);
+  let blocks = await fetchData(`pages/${pageName}/blocks`);
+
   const bodyPromises = [];
   const cssFiles = [];
+
 
   const cssFilePath = path.join('./style.css');
   cssFiles.push(cssFilePath);
 
+  
   blocks.sort((a, b) => {
     const orderA = a['fields']['order']['integerValue'] || a['fields']['order']['stringValue'] || 0;
     const orderB = b['fields']['order']['integerValue'] || b['fields']['order']['stringValue'] || 0;
@@ -250,7 +252,6 @@ async function createBaseHtmlContent(pageName) {
 
   const javascriptFiles = generateJavascriptTags(blocks);
   const cssLinks = generateSingleCssFile(cssFiles,pageName);
-
   generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent);
 }
 
@@ -264,7 +265,7 @@ function sanitizeFilename(filename) {
   return filename.replace(/[/\\?%*:|"<>]/g, '_');
 }
 
-function saveImages(imageUrl) {
+async function saveImages(imageUrl) {
   const rootDirectory = './';
   const imagesDirectory = path.join(rootDirectory, 'images');
   if (!fs.existsSync(imagesDirectory)) {
@@ -276,47 +277,40 @@ function saveImages(imageUrl) {
 
   const fileStream = fs.createWriteStream(path.join(imagesDirectory, filename));
 
-  https.get(imageUrl, (response) => {
-    response.pipe(fileStream);
+  return new Promise((resolve, reject) => {
+    https.get(imageUrl, (response) => {
+      response.pipe(fileStream);
 
-    fileStream.on('finish', () => {
-      fileStream.close();
+      fileStream.on('finish', () => {
+        fileStream.close();
 
-      // Resize the original image to have a max width of 1500px or smaller
-      const originalImage = sharp(path.join(imagesDirectory, filename));
-      originalImage.metadata().then((metadata) => {
-        if (metadata.width > 1500) {
-          originalImage.resize({ width: 1500 });
-        }
-
-        // Convert the original image to WebP format
-        const originalOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '.webp'));
-        originalImage.toFile(originalOutputPath, (err) => {
-          if (err) {
-            console.error(`Error converting original image to WebP: ${err.message}`);
-            return;
+        // Resize the original image to have a max width of 1500px or smaller
+        const originalImage = sharp(path.join(imagesDirectory, filename));
+        originalImage.metadata().then((metadata) => {
+          if (metadata.width > 1500) {
+            originalImage.resize({ width: 1500 });
           }
-          // Remove the original image
-          fs.unlinkSync(path.join(imagesDirectory, filename));
-        });
 
-        // Resize the image for mobile devices and save as WebP
-        const mobileOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '_mobile.webp'));
-        originalImage
-          .resize({ width: 600 }) // Adjust the width as needed for your mobile design
-          .toFile(mobileOutputPath, (err) => {
+          // Convert the original image to WebP format
+          const originalOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '.webp'));
+          originalImage.toFile(originalOutputPath, (err) => {
             if (err) {
-              console.error(`Error converting mobile image to WebP: ${err.message}`);
+              console.error(`Error converting original image to WebP: ${err.message}`);
+              reject(err);
               return;
             }
+            // Remove the original image
+            fs.unlinkSync(path.join(imagesDirectory, filename));
+            resolve(`src="images/${filename.replace(/\.[^.]+$/, '.webp')}" srcset="images/${filename.replace(/\.[^.]+$/, '_mobile.webp')} 600w, images/${filename.replace(/\.[^.]+$/, '.webp')} 1200w" sizes="(max-width: 600px) 100vw, 1500px"`);
           });
+        });
       });
+    }).on('error', (err) => {
+      console.error(`Error downloading image: ${err.message}`);
+      reject(err);
     });
-  }).on('error', (err) => {
-    console.error(`Error downloading image: ${err.message}`);
   });
-return `src="images/${filename.replace(/\.[^.]+$/, '.webp')}"  srcset="images/${filename.replace(/\.[^.]+$/, '_mobile.webp')} 600w, images/${filename.replace(/\.[^.]+$/, '.webp')} 1200w" sizes="(max-width: 600px) 100vw, 1500px"`;
-  }
+}
 
 
 function replaceValues(htmlContent, currentName, updateName) {
