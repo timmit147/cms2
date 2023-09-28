@@ -995,7 +995,27 @@ const buttons = document.querySelectorAll('.menu button');
         });
     });
 
-
+    function toggleIcon(elementSelector) {
+        var icon = document.querySelector(`${elementSelector} .icon`);
+      
+        // Toggle between plus and minus icons
+        if (icon.classList.contains('fa-plus')) {
+          icon.classList.remove('fa-plus');
+          icon.classList.add('fa-minus');
+        } else {
+          icon.classList.remove('fa-minus');
+          icon.classList.add('fa-plus');
+        }
+      }
+      
+      document.querySelector('.addBlock').addEventListener('click', function() {
+        toggleIcon('.addBlock');
+      });
+      
+      document.querySelector('.addPage').addEventListener('click', function() {
+        toggleIcon('.addPage');
+      });
+      
 async function updateBlockProperty(pageName, blockIndex, propertyKey, newValue) {
     try {
         const blockRef = firestore.collection('pages').doc(pageName).collection('blocks').doc(blockIndex);

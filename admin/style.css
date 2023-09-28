@@ -83,7 +83,6 @@ body {
     background-color: #21759B;
     color: white;
     padding: 4px 16px;
-    border-radius: 4px;
     width: fit-content;
 }
 
@@ -92,19 +91,21 @@ body {
     color: white;
 }
 
+::placeholder {
+    color: black; /* Change this to the desired color */
+  }
 
 .selectOption {
     padding: 4px 8px;
     font-size: 16px;
-    border-radius: 4px;
     border: 1px solid;
+    width: 100%;
 }
 
 .addNewBlockButton{
     background-color: #21759B;
     color: white;
     padding: 4px 16px;
-    border-radius: 4px;
     border: 0px;
     font-size: 16px;
     display: flex;
@@ -213,14 +214,7 @@ input[type="file"]{
     color: #21759b;
 }
 
-.icon {
-    width: 20px; /* Adjust the width and height as needed */
-    height: 20px;
-    background-image: url('images/angle.png'); /* Replace with your icon image URL */
-    background-size: cover;
-    background-color: #21759B; /* Set the desired color for the icon */
-    background-blend-mode: multiply; /* Apply the multiply blend mode */
-}
+
 
 *{
     margin: 0px;
