@@ -192,8 +192,8 @@ const addNewBlockButton = document.querySelector('.addNewBlockButton');
 
 objectWithBlocks.forEach(item => {
     const option = document.createElement('option');
-    option.value = item.type;
-    option.textContent = item.type;
+    option.value = item.type[0];
+    option.textContent = item.type[1];
     selectElement.appendChild(option);
 });
 
@@ -696,7 +696,7 @@ async function getBlocks(page) {
     for (const block of blocksArray) {
         const button = document.createElement('button');
         button.id = block;
-        button.textContent = blocks[block]['title'];
+        button.textContent = blocks[block]['name'][1];
         button.addEventListener('click', () => {
             const allButtons = document.querySelectorAll(".blockTitles button");
             allButtons.forEach((btn) => {
@@ -731,12 +731,16 @@ async function getContent(page, block) {
     for (const fieldName of sortedFieldNames) {
         const fieldDiv = createFieldDiv(fieldName);
 
-        if (fieldName.includes("object") || fieldName.includes("object")) {
-            handleObjectField(fieldDiv, content[block][fieldName], fieldName, page, block);
-        } else if (fieldName.includes("Image") || fieldName.includes("image")) {
-            handleImageField(fieldDiv, content[block][fieldName], fieldName, page, block);
+        let type = content[block][fieldName][0];
+        let value = content[block][fieldName];
+        console.log(value);
+
+        if (type === "object") {
+            handleObjectField(fieldDiv, value, fieldName, page, block);
+        } else if (type === "image") {
+            handleImageField(fieldDiv, value, fieldName, page, block);
         } else {
-            handleTextField(fieldDiv, content[block][fieldName], fieldName, page, block);
+            handleTextField(fieldDiv, value, fieldName, page, block);
         }
 
         contentFields.appendChild(fieldDiv);
@@ -801,7 +805,7 @@ function createButton(text) {
 function handleImageField(fieldDiv, imageUrl, fieldName, page, block) {
     const inputButton = createButton('Change Image');
     const imageElement = document.createElement('img');
-    imageElement.src = imageUrl;
+    imageElement.src = imageUrl[1];
 
     inputButton.addEventListener('click', () => {
         const fileInput = document.createElement('input');
@@ -813,7 +817,11 @@ function handleImageField(fieldDiv, imageUrl, fieldName, page, block) {
 
         fileInput.addEventListener('change', (event) => {
             const selectedImage = event.target.files[0];
-            handleImageUpload(page, selectedImage, block, fieldName, imageElement);
+            // console.log(selectedImage);
+            imageUrl[1] = selectedImage;
+            console.log(imageUrl);
+            // console.log(imageUrl);
+            handleImageUpload(page, imageUrl, block, fieldName);
             const reader = new FileReader();
             reader.onload = (e) => {
                 const newImageElement = document.createElement('img');
@@ -844,10 +852,10 @@ function createLoadingSpinner() {
     return spinner;
 }
 
-function handleTextField(fieldDiv, value, fieldName, page, block) {
+function handleTextField(fieldDiv, inputData, fieldName, page, block) {
     const inputField = document.createElement('input');
     inputField.type = 'text';
-    inputField.value = value;
+    inputField.value = inputData[1];
     
     // Check if the input value is empty immediately upon creation
     if (inputField.value.trim() === '') {
@@ -874,7 +882,8 @@ function handleTextField(fieldDiv, value, fieldName, page, block) {
 
         try {
             await new Promise(resolve => setTimeout(resolve, 1000));
-            updateBlockProperty(page, block, fieldName, inputField.value);
+            inputData[1] = inputField.value;
+            updateBlockProperty(page, block, fieldName, inputData);
 
             fieldDiv.removeChild(loadingSpinner);
 
@@ -925,15 +934,23 @@ async function addNewBlock(selectedBlock) {
         const newBlockDocRef = blocksCollectionRef.doc();
 
         async function getBlockData(blockName) {
-            const module = await
-            import ('./blocks.js');
+            const module = await import('./blocks.js');
             const objectWithBlocks = module.default;
-            const block = objectWithBlocks.find(obj => obj.type === blockName);
-            return block || null;
+        
+            for (const block of objectWithBlocks) {
+                if (block.type[0] === blockName) {
+                    return block;
+                }
+            }
+        
+            return null;
         }
+        
 
 
         const selectedBlockData = await getBlockData(selectedBlock);
+        console.log(selectedBlockData);
+
         if (selectedBlockData) {
             const newBlockData = {
                 ...selectedBlockData,
@@ -941,9 +958,6 @@ async function addNewBlock(selectedBlock) {
             };
 
 
-            if (selectedBlockData.image) {
-                newBlockData.image = '';
-            }
 
 
             await newBlockDocRef.set(newBlockData);
@@ -957,20 +971,23 @@ async function addNewBlock(selectedBlock) {
 }
 
 async function handleImageUpload(page, file, blockIndex, key) {
+    console.log(file);
     const storageRef = firebase.storage().ref();
     const imagesRef = storageRef.child('images');
 
     try {
-        const imageRef = imagesRef.child(file.name);
-        await imageRef.put(file);
+        const imageRef = imagesRef.child(file[1].name);
+        await imageRef.put(file[1]);
 
         const downloadURL = await imageRef.getDownloadURL();
+
+        file[1] = downloadURL;
 
         const db = firebase.firestore();
         const blockRef = db.collection('pages').doc(page).collection('blocks').doc(blockIndex);
         try {
             await blockRef.update({
-                [key]: downloadURL
+                [key]: file
             });
         } catch (error) {
             console.error('Error updating block with image URL:', error);
