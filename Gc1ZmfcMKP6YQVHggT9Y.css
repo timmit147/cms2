@@ -1,0 +1,541 @@
+body {
+    margin: 0px;
+    background-color: #1c1c1c;
+}
+
+/* For Webkit-based browsers (Chrome, Safari, newer versions of Edge) */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: white;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: gray; /* Change the background color to white on hover */
+}
+
+/* For Firefox */
+/* You can use scrollbar-color property for Firefox */
+* {
+    scrollbar-color: white;
+    scrollbar-width: thin;
+}
+
+body > *{
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+}
+
+
+.circle {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.275);  
+    filter: blur(40px);
+    pointer-events: none;
+    position: fixed;
+    z-index: -1;
+}
+
+
+.cursor {
+    width: 60px;
+    height: 60px;
+    /* background-image: url("./cursor.svg");  */
+
+    background-image: url("./cursor.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    z-index: 999;
+    pointer-events: none;
+    margin-top: 10px;
+    /* background-color: var(--primary-color); */
+    
+    /* Change the mix-blend-mode to "screen" to blend the image with the background color */
+    /* mix-blend-mode: screen; */
+}
+
+.vinger{
+    background-image: url("./vinger.png");
+    width: 80px;
+    height: 80px;
+}
+:root {
+    --primary-color: #257cff;
+    }
+    
+.header2{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.header2 .website-container {
+    position: relative;
+    width: 400px;
+    max-width: 100%;
+    display: inline-block;
+    height: fit-content;
+  }
+
+
+  .header2 .image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+    box-shadow: 0px 0px 70px 0px var(--primary-color);
+    border-radius: 8px;
+    max-width: 100%;
+    height: auto;
+    width: 100%;
+    top: 50%;
+    transform: translate(0%, -50%);
+}
+
+
+
+.header2 .visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .image-container {
+    display: flex;
+    animation: loopImages 50s linear infinite;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100vh;
+}
+
+@keyframes loopImages {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-50%); /* Move the container left by 50% of its width */
+    }
+}
+
+.image-container img {
+    height: 100vh;
+    margin: 0; /* Remove any default margin */
+}
+
+
+.header2 .readMore{
+    position: absolute;
+    bottom: 16px;
+    border: unset;
+    background-color: unset;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+.header2 .readMore::before {
+    content: "\f107";
+    font-family: 'Font Awesome 5 Free';
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 30px;
+    font-weight: 600;
+    animation: bounce 1.5s infinite cubic-bezier(0.5, 0.05, 0.5, 0.95); /* Apply the animation with cubic-bezier easing */
+}
+
+@keyframes bounce {
+    0% {
+        top: -27px; /* Start position */
+    }
+    50% {
+        top: -22px; /* Middle position (adjust as needed) */
+    }
+    100% {
+        top: -27px; /* End position (back to start) */
+    }
+}
+
+
+.header2 .readMore {
+    position: absolute;
+    bottom: 16px;
+    border: unset;
+    background-color: unset;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+
+
+.header2 .logo{
+    max-width: 130px;
+}
+
+
+
+.header2 h1 {
+    font-size: 20px;
+    max-width: 300px;
+    font-weight: 100;
+}
+
+.header2 strong {
+    color: var(--primary-color);
+}
+
+.header2 .content{
+    position: relative;
+    z-index: 5;
+    padding: 30px;
+    width: fit-content;
+}
+
+.header2 a{
+    color: white;
+    text-decoration: none;
+    border-bottom: 1px solid;
+    margin-right: 8px;
+    cursor: none;
+}
+
+.header2 a:hover{
+    color: var(--primary-color);
+}
+
+.header2 .active{
+    color: var(--primary-color);
+}
+
+.header2 sub {
+    font-size: 30px;
+    font-weight: 900;
+}
+
+@media (max-width: 700px) {
+
+    .header2{
+        flex-direction: column;
+        gap: 20px;
+        align-items: unset;
+        justify-content: unset;
+        padding-top: 80px;
+    }
+
+    .header2 .content{
+        padding:0px;
+    }
+
+    .header2 .image{
+        top: unset;
+        transform: unset;
+    }
+
+    .header2 h1{
+        font-size: 18px;
+    }
+}
+.imageTitle {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    gap: 8px;
+    font-family: 'Open Sans', sans-serif;
+    margin: 16px;
+}
+
+.imageTitle img {
+    max-width: 400px;
+    height: fit-content;
+    width: 100%;
+}
+
+.imageTitle p{
+    max-width: 400px;
+    text-align: center;
+}.imageTitle {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    gap: 8px;
+    font-family: 'Open Sans', sans-serif;
+    margin: 16px;
+}
+
+.imageTitle img {
+    max-width: 400px;
+    height: fit-content;
+    width: 100%;
+}
+
+.imageTitle p{
+    max-width: 400px;
+    text-align: center;
+}.imageTitle {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    gap: 8px;
+    font-family: 'Open Sans', sans-serif;
+    margin: 16px;
+}
+
+.imageTitle img {
+    max-width: 400px;
+    height: fit-content;
+    width: 100%;
+}
+
+.imageTitle p{
+    max-width: 400px;
+    text-align: center;
+}.imageTitle {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    gap: 8px;
+    font-family: 'Open Sans', sans-serif;
+    margin: 16px;
+}
+
+.imageTitle img {
+    max-width: 400px;
+    height: fit-content;
+    width: 100%;
+}
+
+.imageTitle p{
+    max-width: 400px;
+    text-align: center;
+}.prices {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    text-align-last: center;
+    padding: 160px 40px;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.prices > p {
+    max-width: 400px;
+}
+
+.prices a {
+    color: white;
+    text-decoration: none;
+    border-bottom:1px solid ;
+}
+
+.prices a:hover{
+    color: #F8CD09;
+}
+
+.prices h2{
+    margin: 0px;
+}
+
+.prices .blocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+}
+
+.prices .block {
+    background-color: white;
+    border-radius: 8px;
+    color: #1B1B1B;
+    padding: 24px;
+    text-align-last: left;
+    max-width: 220px; /* Fixed width for all blocks */
+    max-height: 220px; /* Fixed height for all blocks */
+    margin-right: 16px; /* Space between blocks */
+    margin-bottom: 16px; /* Space below blocks */
+    box-sizing: border-box;
+}
+
+.prices .block2 {
+    background-color: #F8CD09;
+}
+
+.prices h3 {
+    font-weight: 900;
+    font-size: 24px;
+}
+
+.prices .block .price {
+    font-weight: 900;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.prices .block .blockContent{
+    font-size: 14px;
+}
+
+.prices .block * {
+    margin: 0;
+    padding: 0;
+}
+
+@media (max-width: 600px) {
+    .prices > p {
+        max-width: 220px;
+    }
+    
+    .prices{
+        padding: 32px 16px;
+        align-items: baseline; 
+        text-align-last: left;
+    }
+
+    .prices .blocks{
+        justify-content: left;
+    }
+
+}
+
+@media (max-width: 400px) {
+
+
+
+    .prices .block{
+        margin-right: 0px;
+        aspect-ratio: 1/1;
+        max-height: unset;
+        padding: 16px;
+    }
+    
+}.contactForm {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 32px;
+}
+
+.contactForm *{
+    font-family: 'Open Sans', sans-serif;
+}
+
+.contactForm h2 {
+    margin: 0px;
+    margin-bottom: 16px;
+}
+
+.contactForm img{
+    position: absolute;
+    width: 300px;
+    height: auto;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.contactForm label{
+    font-weight: 900;
+    margin-top: 8px;
+}
+
+.contactForm form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: auto;
+    z-index: 5;
+    position: relative;
+}
+
+.contactForm > * {
+    width: fit-content;
+}
+
+.contactForm input, 
+.contactForm textarea{
+    background-color: unset;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 8px;
+    color: #F8CD09;
+    font-weight: bold;
+    max-width: 300px;
+}
+
+.contactForm input::placeholder,
+.contactForm textarea::placeholder {
+    color: white;
+    font-weight: 100;
+}
+
+
+.contactForm input[type="submit"] {
+    background-color: #F8CD09;
+    border: 0px;
+    color: hsl(0, 0%, 11%);
+    font-size: 18px;
+    padding: 8px 16px;
+    width: fit-content;
+    border-radius: 4px;
+    border: 1px solid;
+    margin-top: 8px;
+}
+
+.contactForm input[type="submit"]:hover {
+    color: #F8CD09;
+    background-color: unset;
+    cursor: pointer;
+}
+
+.contactForm #submittedMessage{
+    color: #F8CD09;
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .contactForm {
+        padding:  100px 16px;
+    }
+
+    .contactForm img{
+        width: 200px;
+    }
+}

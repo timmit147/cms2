@@ -1,4 +1,5 @@
 async function fetchData(path) {
+  console.log(path);
   const https = require('https');
   const apiKey = "AIzaSyCj6MCnHdqr9_DOYRJtSsB30P_LfD3QyH8";
   const projectId = "cms2-58eaf";
@@ -25,7 +26,8 @@ async function fetchData(path) {
             resolve(documents);
           }
         } catch (error) {
-          reject(error); 
+          console.error('Error parsing JSON:', error);
+          reject(error);
         }
       });
     }).on('error', error => {
@@ -47,7 +49,7 @@ async function createHtmlFiles() {
 
   for (const page of pages) {
     const pageName = page.name;
-      await createBaseHtmlContent(pageName); 
+        await createBaseHtmlContent(pageName); 
   }
 
 }
@@ -191,6 +193,8 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
 async function createBaseHtmlContent(pageName) {
   console.log(pageName);
   let blocks = await fetchData(`pages/${pageName}/blocks`);
+  // console.log(blocks);
+  // console.log("test");
 
   const bodyPromises = [];
   const cssFiles = [];
@@ -200,52 +204,63 @@ async function createBaseHtmlContent(pageName) {
   cssFiles.push(cssFilePath);
 
   
-  blocks.sort((a, b) => {
-    const orderA = a['fields']['order']['integerValue'] || a['fields']['order']['stringValue'] || 0;
-    const orderB = b['fields']['order']['integerValue'] || b['fields']['order']['stringValue'] || 0;
+  // blocks.sort((a, b) => {
+  //   const orderA = a['fields']['order']['integerValue'] || a['fields']['order']['stringValue'] || 0;
+  //   const orderB = b['fields']['order']['integerValue'] || b['fields']['order']['stringValue'] || 0;
   
-    // Use localeCompare for string comparison and parseInt for numeric comparison
-    if (typeof orderA === 'number' && typeof orderB === 'number') {
-      return orderA - orderB; // Numeric comparison
-    } else {
-      return orderA.toString().localeCompare(orderB.toString()); // String comparison
-    }
-  });
+  //   // Use localeCompare for string comparison and parseInt for numeric comparison
+  //   if (typeof orderA === 'number' && typeof orderB === 'number') {
+  //     return orderA - orderB; // Numeric comparison
+  //   } else {
+  //     return orderA.toString().localeCompare(orderB.toString()); // String comparison
+  //   }
+  // });
 
   for (const block of blocks) {
-    const filePath = path.join("./", 'blocks', block['fields']['type']['stringValue'], 'body.html');
-    const promise = await readFile(filePath, 'utf-8');
 
+    const typeArrayValue = block["fields"]["type"]["arrayValue"];
 
-    let update = await replaceValues(promise,'id',block['name']);
-    const fields = await block['fields'];
-    for (const key in fields) {
-      if (fields.hasOwnProperty(key)) {
-        let value = fields[key];
-    
-        for (const innerKey in value) {
-          if (value[innerKey].startsWith('https://firebasestorage.googleapis.com/')) {
-            // Save the image and get the saved filename
-            const savedImageFilename = await saveImages(value[innerKey]);
-            // Replace the URL with the saved filename
-            value[innerKey] = savedImageFilename;
-          }
+    if (typeArrayValue && typeArrayValue["values"] && typeArrayValue["values"].length > 0) {
+        const galleryValue = typeArrayValue["values"][1]["stringValue"];
+        console.log(galleryValue);
+
+        const filePath = path.join("./", 'blocks', galleryValue, 'body.html');
+        const promise = await readFile(filePath, 'utf-8');
+
+        let update = await replaceValues(promise, 'id', block['name']);
+        const fields = await block['fields'];
+
+        for (const key in fields) {
+            if (fields.hasOwnProperty(key)) {
+                let value = fields[key];
+
+                for (const innerKey in value) {
+                    console.log(value[innerKey]);
+                    if (value[innerKey].startsWith('https://firebasestorage.googleapis.com/')) {
+                        // Save the image and get the saved filename
+                        const savedImageFilename = await saveImages(value[innerKey]);
+                        // Replace the URL with the saved filename
+                        value[innerKey] = savedImageFilename;
+                    }
+                }
+
+                if (value.arrayValue) {
+                    update = renderArray(update, 'fruits', fields[key].arrayValue.values);
+                } else {
+                    update = await replaceValues(update, key, fields[key].stringValue);
+                }
+            }
         }
-    
-        if (value.arrayValue) {
-          update = renderArray(update, 'fruits', fields[key].arrayValue.values);
-        } else {
-          update = await replaceValues(update, key, fields[key].stringValue);
-        }
-      }
+
+        bodyPromises.push(update);
+
+        const cssFilePath = path.join("./", 'blocks', block['fields']['type']['stringValue'], 'style.css');
+        cssFiles.push(cssFilePath);
+
+    } else {
+        console.error("Invalid block structure: Unable to retrieve 'gallery' value");
     }
-    
-
-    bodyPromises.push(update);
-
-    const cssFilePath = path.join("./", 'blocks', block['fields']['type']['stringValue'], 'style.css');
-    cssFiles.push(cssFilePath);
-  }
+}
 
   const bodyContents = await Promise.all(bodyPromises);
   const combinedBodyContent = bodyContents.join('');
@@ -265,7 +280,7 @@ function sanitizeFilename(filename) {
   return filename.replace(/[/\\?%*:|"<>]/g, '_');
 }
 
-async function saveImages(imageUrl) {
+function saveImages(imageUrl) {
   const rootDirectory = './';
   const imagesDirectory = path.join(rootDirectory, 'images');
   if (!fs.existsSync(imagesDirectory)) {
@@ -277,40 +292,47 @@ async function saveImages(imageUrl) {
 
   const fileStream = fs.createWriteStream(path.join(imagesDirectory, filename));
 
-  return new Promise((resolve, reject) => {
-    https.get(imageUrl, (response) => {
-      response.pipe(fileStream);
+  https.get(imageUrl, (response) => {
+    response.pipe(fileStream);
 
-      fileStream.on('finish', () => {
-        fileStream.close();
+    fileStream.on('finish', () => {
+      fileStream.close();
 
-        // Resize the original image to have a max width of 1500px or smaller
-        const originalImage = sharp(path.join(imagesDirectory, filename));
-        originalImage.metadata().then((metadata) => {
-          if (metadata.width > 1500) {
-            originalImage.resize({ width: 1500 });
+      // Resize the original image to have a max width of 1500px or smaller
+      const originalImage = sharp(path.join(imagesDirectory, filename));
+      originalImage.metadata().then((metadata) => {
+        if (metadata.width > 1500) {
+          originalImage.resize({ width: 1500 });
+        }
+
+        // Convert the original image to WebP format
+        const originalOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '.webp'));
+        originalImage.toFile(originalOutputPath, (err) => {
+          if (err) {
+            console.error(`Error converting original image to WebP: ${err.message}`);
+            return;
           }
+          // Remove the original image
+          fs.unlinkSync(path.join(imagesDirectory, filename));
+        });
 
-          // Convert the original image to WebP format
-          const originalOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '.webp'));
-          originalImage.toFile(originalOutputPath, (err) => {
+        // Resize the image for mobile devices and save as WebP
+        const mobileOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '_mobile.webp'));
+        originalImage
+          .resize({ width: 600 }) // Adjust the width as needed for your mobile design
+          .toFile(mobileOutputPath, (err) => {
             if (err) {
-              console.error(`Error converting original image to WebP: ${err.message}`);
-              reject(err);
+              console.error(`Error converting mobile image to WebP: ${err.message}`);
               return;
             }
-            // Remove the original image
-            fs.unlinkSync(path.join(imagesDirectory, filename));
-            resolve(`src="images/${filename.replace(/\.[^.]+$/, '.webp')}" srcset="images/${filename.replace(/\.[^.]+$/, '_mobile.webp')} 600w, images/${filename.replace(/\.[^.]+$/, '.webp')} 1200w" sizes="(max-width: 600px) 100vw, 1500px"`);
           });
-        });
       });
-    }).on('error', (err) => {
-      console.error(`Error downloading image: ${err.message}`);
-      reject(err);
     });
+  }).on('error', (err) => {
+    console.error(`Error downloading image: ${err.message}`);
   });
-}
+return `src="images/${filename.replace(/\.[^.]+$/, '.webp')}"  srcset="images/${filename.replace(/\.[^.]+$/, '_mobile.webp')} 600w, images/${filename.replace(/\.[^.]+$/, '.webp')} 1200w" sizes="(max-width: 600px) 100vw, 1500px"`;
+  }
 
 
 function replaceValues(htmlContent, currentName, updateName) {

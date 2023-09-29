@@ -1,10 +1,14 @@
 const objectWithBlocks = [
     {
-        name: ["text", "Gallery", 2],
-        title: ["input", "Title", 3],
-        content: ["textarea", "Content", 4],
-        type: ["gallery", "Gallery" , 5],
-        image: ["image", "", 6],
+        type: "gallery",
+        name: "Gallery",
+        nameSchema: "input",
+        title: "gallery",
+        titleSchema: "input",
+        content: "Content",
+        contentSchema: "textarea",
+        image: "",
+        imageSchema: "image",
     }
       
 ];

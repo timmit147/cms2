@@ -192,8 +192,8 @@ const addNewBlockButton = document.querySelector('.addNewBlockButton');
 
 objectWithBlocks.forEach(item => {
     const option = document.createElement('option');
-    option.value = item.type[0];
-    option.textContent = item.type[1];
+    option.value = item.type;
+    option.textContent = item.name;
     selectElement.appendChild(option);
 });
 
@@ -696,7 +696,7 @@ async function getBlocks(page) {
     for (const block of blocksArray) {
         const button = document.createElement('button');
         button.id = block;
-        button.textContent = blocks[block]['name'][1];
+        button.textContent = blocks[block]['name'];
         button.addEventListener('click', () => {
             const allButtons = document.querySelectorAll(".blockTitles button");
             allButtons.forEach((btn) => {
@@ -729,11 +729,14 @@ async function getContent(page, block) {
     const sortedFieldNames = sortFieldNames(fieldNames);
 
     for (const fieldName of sortedFieldNames) {
+        if (fieldName.includes('Schema')) {
+            continue;
+        }
         const fieldDiv = createFieldDiv(fieldName);
 
-        let type = content[block][fieldName][0];
+        let type = content[block][fieldName+'Schema'];
         let value = content[block][fieldName];
-        console.log(value);
+
 
         if (type === "object") {
             handleObjectField(fieldDiv, value, fieldName, page, block);
@@ -805,7 +808,7 @@ function createButton(text) {
 function handleImageField(fieldDiv, imageUrl, fieldName, page, block) {
     const inputButton = createButton('Change Image');
     const imageElement = document.createElement('img');
-    imageElement.src = imageUrl[1];
+    imageElement.src = imageUrl;
 
     inputButton.addEventListener('click', () => {
         const fileInput = document.createElement('input');
@@ -816,9 +819,9 @@ function handleImageField(fieldDiv, imageUrl, fieldName, page, block) {
         messageElement.style.display = 'none';
 
         fileInput.addEventListener('change', (event) => {
-            const selectedImage = event.target.files[0];
+            const selectedImage = event.target.files;
             // console.log(selectedImage);
-            imageUrl[1] = selectedImage;
+            imageUrl = selectedImage;
             console.log(imageUrl);
             // console.log(imageUrl);
             handleImageUpload(page, imageUrl, block, fieldName);
@@ -855,7 +858,7 @@ function createLoadingSpinner() {
 function handleTextField(fieldDiv, inputData, fieldName, page, block) {
     const inputField = document.createElement('input');
     inputField.type = 'text';
-    inputField.value = inputData[1];
+    inputField.value = inputData;
     
     // Check if the input value is empty immediately upon creation
     if (inputField.value.trim() === '') {
@@ -882,7 +885,7 @@ function handleTextField(fieldDiv, inputData, fieldName, page, block) {
 
         try {
             await new Promise(resolve => setTimeout(resolve, 1000));
-            inputData[1] = inputField.value;
+            inputData = inputField.value;
             updateBlockProperty(page, block, fieldName, inputData);
 
             fieldDiv.removeChild(loadingSpinner);
@@ -938,7 +941,7 @@ async function addNewBlock(selectedBlock) {
             const objectWithBlocks = module.default;
         
             for (const block of objectWithBlocks) {
-                if (block.type[0] === blockName) {
+                if (block.type === blockName) {
                     return block;
                 }
             }
