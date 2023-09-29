@@ -111,65 +111,116 @@ return `src="images/${filename.replace(/\.[^.]+$/, '.webp')}"  srcset="images/${
 function sanitizeFilename(filename) {
   return filename.replace(/[/\\?%*:|"<>]/g, '_');
 }
-  
+
 
 async function getBlocks(pageName) {
   let blocks = await fetchData(`pages/${pageName}/blocks`);
+  blocks.sort(compareBlocks);
 
   const blocksHtml = [];
   const blocksCss = [];
 
-    blocks.sort((a, b) => {
-    const orderA = a['fields']['order']['integerValue'] || a['fields']['order']['stringValue'] || 0;
-    const orderB = b['fields']['order']['integerValue'] || b['fields']['order']['stringValue'] || 0;
-  
-    // Use localeCompare for string comparison and parseInt for numeric comparison
-    if (typeof orderA === 'number' && typeof orderB === 'number') {
-      return orderA - orderB; // Numeric comparison
-    } else {
-      return orderA.toString().localeCompare(orderB.toString()); // String comparison
-    }
-  });
-
   for (const block of blocks) {
-    const blockType = block['fields']['type']['stringValue'];
-
-    if (blockType === undefined) {
-      continue; // Skip to the next iteration if blockType is undefined
-    }
-
-    let filePath = path.join("./", 'blocks', blockType, 'body.html');
-    let fileContent = await fileRead(filePath, 'utf-8');
-    let update = await replaceValues(fileContent, 'id', block['name']);
-
-    const fields = block['fields'];
-    for (const key in fields) {
-      if (fields.hasOwnProperty(key)) {
-        let value = fields[key];
-
-        for (const innerKey in value) {
-          if (value[innerKey].startsWith('https://firebasestorage.googleapis.com/')) {
-            const savedImageFilename = await saveImages(value[innerKey]);
-            value[innerKey] = savedImageFilename;
-          }
-        }
-
-        update = await replaceValues(update, key, fields[key].stringValue);
-      }
-    }
-
+    const update = await processBlock(block, blocksHtml, blocksCss);
     blocksHtml.push(update);
-    const cssFilePath = path.join("./", 'blocks', blockType, 'style.css');
-    blocksCss.push(cssFilePath);
   }
 
   const bodyContents = await Promise.all(blocksHtml);
   const combinedBodyContent = bodyContents.join('');
 
   const javascriptFiles = generateJavascriptTags(blocks);
-  const cssLinks = generateSingleCssFile(blocksCss,pageName);
+  const cssLinks = generateSingleCssFile(blocksCss, pageName);
   generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBodyContent);
 }
+
+function compareBlocks(a, b) {
+  const orderA = getOrderValue(a);
+  const orderB = getOrderValue(b);
+
+  if (typeof orderA === 'number' && typeof orderB === 'number') {
+    return orderA - orderB;
+  } else {
+    return orderA.toString().localeCompare(orderB.toString());
+  }
+}
+
+function getOrderValue(block) {
+  return (
+    block['fields']['order']['integerValue'] ||
+    block['fields']['order']['stringValue'] ||
+    0
+  );
+}
+
+async function processBlock(block, blocksHtml, blocksCss) {
+  const blockType = block['fields']['type']['stringValue'];
+
+  if (!blockType) {
+    return '';
+  }
+
+  let filePath = path.join("./", 'blocks', blockType, 'body.html');
+  let fileContent = await fileRead(filePath, 'utf-8');
+  let update = await replaceValues(fileContent, 'id', block['name']);
+
+  const fields = block['fields'];
+
+  for (const key in fields) {
+    if (fields.hasOwnProperty(key)) {
+      let value = fields[key];
+
+      if (value['stringValue'] === 'reference') {
+        const refUpdates = await processReferenceField(key, value, blocksCss);
+        blocksHtml.push(...refUpdates);
+      }
+
+      for (const innerKey in value) {
+        if (value[innerKey].startsWith('https://firebasestorage.googleapis.com/')) {
+          const savedImageFilename = await saveImages(value[innerKey]);
+          value[innerKey] = savedImageFilename;
+        }
+
+        update = await replaceValues(update, key, fields[key].stringValue);
+      }
+    }
+  }
+
+  blocksHtml.push(update);
+  const cssFilePath = path.join("./", 'blocks', blockType, 'style.css');
+  blocksCss.push(cssFilePath);
+}
+
+
+async function processReferenceField(key, value, blocksCss) {
+  const referencedBlocks = [];
+
+  let newKey = key.replace('Schema', '');
+  let referencedBlocksData = await fetchData(`pages/${newKey}/blocks`);
+
+  for (const referencedBlock of referencedBlocksData) {
+    const referencedBlockType = referencedBlock['fields']['type']['stringValue'];
+
+    let refFilePath = path.join("./", 'blocks', referencedBlockType, 'body.html');
+    let refFileContent = await fileRead(refFilePath, 'utf-8');
+    let refUpdate = await replaceValues(refFileContent, 'id', referencedBlock['name']);
+
+    // Replace placeholders dynamically based on keys in 'fields'
+    for (const fieldKey in referencedBlock['fields']) {
+      const placeholder = `{{${fieldKey}}}`;
+      const value = referencedBlock['fields'][fieldKey]['stringValue'];
+      refUpdate = refUpdate.replace(new RegExp(placeholder, 'g'), value);
+    }
+
+    const refCssFilePath = path.join("./", 'blocks', referencedBlockType, 'style.css');
+    blocksCss.push(refCssFilePath);
+
+    referencedBlocks.push(refUpdate);
+  }
+  console.log(referencedBlocks);
+  return referencedBlocks;
+}
+
+
 
 
 async function getPageMetaDescription(pageName){
@@ -227,6 +278,7 @@ async function generateHtmlPage(pageName, javascriptFiles, cssLinks, combinedBod
           <meta name="msapplication-TileColor" content="#1c1c1c">
           <meta name="theme-color" content="#1c1c1c">
           <title>${pageName}</title>
+          <link rel="stylesheet" type="text/css" href="style.css">
           <link rel="canonical" href="https://multii.nl">
           ${cssLinks}
       </head>

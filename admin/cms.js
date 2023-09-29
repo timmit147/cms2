@@ -742,6 +742,8 @@ async function getContent(page, block) {
             handleObjectField(fieldDiv, value, fieldName, page, block);
         } else if (type === "image") {
             handleImageField(fieldDiv, value, fieldName, page, block);
+        } else if (type === "reference") {
+            handleReferenceField(fieldDiv, value, fieldName, page, block);
         } else {
             handleTextField(fieldDiv, value, fieldName, page, block);
         }
@@ -749,6 +751,60 @@ async function getContent(page, block) {
         contentFields.appendChild(fieldDiv);
     }
 }
+
+
+async function handleReferenceField(fieldDiv, inputData, fieldName, page, block) {
+    // Create a select element
+    const selectField = document.createElement('select');
+
+    const pages = await getAllPages();
+
+    // Create an option element for the default/empty value
+    const defaultOption = document.createElement('option');
+    defaultOption.text = 'Select an option'; // You can customize the default text
+    defaultOption.value = ''; // You can customize the default value
+    selectField.appendChild(defaultOption);
+
+    // Create options for each page
+    for (const page of pages) {
+        const pageOption = document.createElement('option');
+        pageOption.text = page; // Assuming each page has a 'name' property, modify accordingly
+        pageOption.value = page; // Assuming each page has an 'id' property, modify accordingly
+        selectField.appendChild(pageOption);
+
+        // Check if the current pageOption matches the inputData
+        if (page === inputData) {
+            // Automatically select the option that matches inputData
+            selectField.value = inputData;
+        }
+    }
+
+    // Create an option element for the existing inputData
+    const inputOption = document.createElement('option');
+    inputOption.text = inputData;
+    inputOption.value = inputData;
+    selectField.appendChild(inputOption);
+
+    // Append the select element to the fieldDiv
+    fieldDiv.appendChild(selectField);
+
+    // Event listener for the select element
+    selectField.addEventListener('change', async () => {
+        const selectedValue = selectField.value;
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            updateBlockProperty(page, block, fieldName, selectedValue);
+            // You can add any additional logic or UI updates here
+            console.log(`Block property '${fieldName}' updated successfully.`);
+        } catch (error) {
+            console.error(error);
+            // Handle errors or display an error message
+        }
+    });
+}
+
+
 
 function sortFieldNames(fieldNames) {
     return fieldNames
