@@ -171,7 +171,9 @@ async function processBlock(block, blocksHtml, blocksCss) {
 
       if (value['stringValue'] === 'reference') {
         const refUpdates = await processReferenceField(key, value, blocksCss);
-        blocksHtml.push(...refUpdates);
+        let newKey = key.replace('Schema', '');
+        update = await replaceValues(update, newKey, refUpdates);
+
       }
 
       for (const innerKey in value) {
@@ -216,7 +218,6 @@ async function processReferenceField(key, value, blocksCss) {
 
     referencedBlocks.push(refUpdate);
   }
-  console.log(referencedBlocks);
   return referencedBlocks;
 }
 
