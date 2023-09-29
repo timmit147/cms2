@@ -820,11 +820,7 @@ function handleImageField(fieldDiv, imageUrl, fieldName, page, block) {
 
         fileInput.addEventListener('change', (event) => {
             const selectedImage = event.target.files;
-            // console.log(selectedImage);
-            imageUrl = selectedImage;
-            console.log(imageUrl);
-            // console.log(imageUrl);
-            handleImageUpload(page, imageUrl, block, fieldName);
+            handleImageUpload(page, selectedImage[0], block, fieldName);
             const reader = new FileReader();
             reader.onload = (e) => {
                 const newImageElement = document.createElement('img');
@@ -835,7 +831,7 @@ function handleImageField(fieldDiv, imageUrl, fieldName, page, block) {
                 messageElement.style.color = 'green';
                 messageElement.style.display = 'block';
             };
-            reader.readAsDataURL(selectedImage);
+            reader.readAsDataURL(selectedImage[0]);
         });
 
         fileInput.click();
@@ -979,12 +975,12 @@ async function handleImageUpload(page, file, blockIndex, key) {
     const imagesRef = storageRef.child('images');
 
     try {
-        const imageRef = imagesRef.child(file[1].name);
-        await imageRef.put(file[1]);
+        const imageRef = imagesRef.child(file.name);
+        await imageRef.put(file);
 
         const downloadURL = await imageRef.getDownloadURL();
 
-        file[1] = downloadURL;
+        file = downloadURL;
 
         const db = firebase.firestore();
         const blockRef = db.collection('pages').doc(page).collection('blocks').doc(blockIndex);
