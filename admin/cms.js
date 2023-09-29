@@ -696,7 +696,7 @@ async function getBlocks(page) {
     for (const block of blocksArray) {
         const button = document.createElement('button');
         button.id = block;
-        button.textContent = blocks[block]['name'];
+        button.textContent = blocks[block]['name'] || blocks[block]['type'];
         button.addEventListener('click', () => {
             const allButtons = document.querySelectorAll(".blockTitles button");
             allButtons.forEach((btn) => {
@@ -729,7 +729,7 @@ async function getContent(page, block) {
     const sortedFieldNames = sortFieldNames(fieldNames);
 
     for (const fieldName of sortedFieldNames) {
-        if (fieldName.includes('Schema')) {
+        if (fieldName.includes('Schema') || fieldName.includes('order') || fieldName.includes('type')) {
             continue;
         }
         const fieldDiv = createFieldDiv(fieldName);
