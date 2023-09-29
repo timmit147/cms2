@@ -49,7 +49,7 @@ async function getHtmlPages() {
 
   for (const page of pages) {
     const pageName = page.name;
-      await getBlocks(pageName); 
+    getBlocks(pageName); 
   }
 }
 
@@ -70,14 +70,14 @@ function saveImages(imageUrl) {
 
     fileStream.on('finish', () => {
       fileStream.close();
-
+    
       // Resize the original image to have a max width of 1500px or smaller
       const originalImage = sharp(path.join(imagesDirectory, filename));
       originalImage.metadata().then((metadata) => {
         if (metadata.width > 1500) {
           originalImage.resize({ width: 1500 });
         }
-
+    
         // Convert the original image to WebP format
         const originalOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '.webp'));
         originalImage.toFile(originalOutputPath, (err) => {
@@ -85,20 +85,21 @@ function saveImages(imageUrl) {
             console.error(`Error converting original image to WebP: ${err.message}`);
             return;
           }
-          // Remove the original image
-          fs.unlinkSync(path.join(imagesDirectory, filename));
+    
+          // Resize the image for mobile devices and save as WebP
+          const mobileOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '_mobile.webp'));
+          originalImage
+            .resize({ width: 600 }) // Adjust the width as needed for your mobile design
+            .toFile(mobileOutputPath, (err) => {
+              if (err) {
+                console.error(`Error converting mobile image to WebP: ${err.message}`);
+                return;
+              }
+    
+              // Remove the original image after all operations are complete
+              fs.unlinkSync(path.join(imagesDirectory, filename));
+            });
         });
-
-        // Resize the image for mobile devices and save as WebP
-        const mobileOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '_mobile.webp'));
-        originalImage
-          .resize({ width: 600 }) // Adjust the width as needed for your mobile design
-          .toFile(mobileOutputPath, (err) => {
-            if (err) {
-              console.error(`Error converting mobile image to WebP: ${err.message}`);
-              return;
-            }
-          });
       });
     });
   }).on('error', (err) => {
@@ -107,9 +108,9 @@ function saveImages(imageUrl) {
 return `src="images/${filename.replace(/\.[^.]+$/, '.webp')}"  srcset="images/${filename.replace(/\.[^.]+$/, '_mobile.webp')} 600w, images/${filename.replace(/\.[^.]+$/, '.webp')} 1200w" sizes="(max-width: 600px) 100vw, 1500px"`;
   }
 
-  function sanitizeFilename(filename) {
-    return filename.replace(/[/\\?%*:|"<>]/g, '_');
-  }
+function sanitizeFilename(filename) {
+  return filename.replace(/[/\\?%*:|"<>]/g, '_');
+}
   
 
 async function getBlocks(pageName) {
