@@ -1,5 +1,5 @@
 let rotateInterval;
-const images = document.querySelectorAll('.image');
+const images = document.querySelectorAll('.header2 .image');
 let currentIndex = 0;
 
 function updatePrimaryColor() {
