@@ -476,7 +476,7 @@ a:hover{
     border-top: 1px solid;
     padding: 20px;
     box-sizing: border-box;
-    height: 10vh;
+    height: 10%;
     width: 100vw;
     display: none;
     gap: 8px;
@@ -513,5 +513,9 @@ a:hover{
     }
     #content.hidden, #blocks.hidden, #pages.hidden{
         display: none;
+    }
+
+    .layout {
+        height: 90%;
     }
 }
