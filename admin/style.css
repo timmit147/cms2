@@ -1,11 +1,11 @@
 body {
     margin: 0px;
+    padding: 0px;
     font-family: 'Open Sans', sans-serif;
     font-size: 16px;
     height: 100vh;
     width: 100vw;
     display: flex;
-    overflow: hidden;
     flex-direction: column;
 }
 
@@ -509,7 +509,9 @@ a:hover{
 
 @media (max-width: 650px) {
     .menu{
-        display: flex;
+        position: absolute;
+        bottom: 0;
+        z-index: 1;
     }
     #content.hidden, #blocks.hidden, #pages.hidden{
         display: none;
@@ -517,5 +519,13 @@ a:hover{
 
     .layout {
         height: 90%;
+    }
+
+    #pages{
+        border-right: 0px;
+    }
+
+    #blocks{
+        border-right: 0px;
     }
 }
