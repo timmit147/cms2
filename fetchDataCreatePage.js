@@ -53,60 +53,70 @@ async function getHtmlPages() {
   }
 }
 
-function saveImages(imageUrl) {
+async function saveImages(imageUrl) {
   const rootDirectory = './';
   const imagesDirectory = path.join(rootDirectory, 'images');
-  if (!fs.existsSync(imagesDirectory)) {
-    fs.mkdirSync(imagesDirectory, { recursive: true });
-  }
+  const maxWidth = 1500;
+  const mobileWidth = 600;
 
   const originalFilename = path.basename(imageUrl);
   const filename = sanitizeFilename(originalFilename.split('?')[0]);
+  const originalImagePath = path.join(imagesDirectory, filename);
+  const webpOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '.webp'));
 
-  const fileStream = fs.createWriteStream(path.join(imagesDirectory, filename));
+  // Check if the file already exists
+  if (fs.existsSync(webpOutputPath)) {
+    return `src="images/${filename.replace(/\.[^.]+$/, '.webp')}" srcset="images/${filename.replace(
+      /\.[^.]+$/,
+      '_mobile.webp'
+    )} ${mobileWidth}w, images/${filename.replace(/\.[^.]+$/, '.webp')} ${maxWidth}w" sizes="(max-width: ${mobileWidth}px) 100vw, ${maxWidth}px"`;
+  }
 
-  https.get(imageUrl, (response) => {
+  try {
+    const response = await new Promise((resolve, reject) => {
+      https.get(imageUrl, resolve).on('error', reject);
+    });
+
+    const fileStream = fs.createWriteStream(originalImagePath);
     response.pipe(fileStream);
 
-    fileStream.on('finish', () => {
-      fileStream.close();
-    
-      // Resize the original image to have a max width of 1500px or smaller
-      const originalImage = sharp(path.join(imagesDirectory, filename));
-      originalImage.metadata().then((metadata) => {
-        if (metadata.width > 1500) {
-          originalImage.resize({ width: 1500 });
-        }
-    
-        // Convert the original image to WebP format
-        const originalOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '.webp'));
-        originalImage.toFile(originalOutputPath, (err) => {
-          if (err) {
-            console.error(`Error converting original image to WebP: ${err.message}`);
-            return;
-          }
-    
-          // Resize the image for mobile devices and save as WebP
-          const mobileOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '_mobile.webp'));
-          originalImage
-            .resize({ width: 600 }) // Adjust the width as needed for your mobile design
-            .toFile(mobileOutputPath, (err) => {
-              if (err) {
-                console.error(`Error converting mobile image to WebP: ${err.message}`);
-                return;
-              }
-    
-              // Remove the original image after all operations are complete
-              fs.unlinkSync(path.join(imagesDirectory, filename));
-            });
-        });
-      });
+    await new Promise((resolve) => {
+      fileStream.on('finish', resolve);
     });
-  }).on('error', (err) => {
-    console.error(`Error downloading image: ${err.message}`);
-  });
-return `src="images/${filename.replace(/\.[^.]+$/, '.webp')}"  srcset="images/${filename.replace(/\.[^.]+$/, '_mobile.webp')} 600w, images/${filename.replace(/\.[^.]+$/, '.webp')} 1200w" sizes="(max-width: 600px) 100vw, 1500px"`;
+
+    fileStream.close();
+
+    const originalImage = sharp(originalImagePath);
+    const metadata = await originalImage.metadata();
+
+    if (metadata.width > maxWidth) {
+      // Continue with the resizing and conversion logic
+      const resizedImage = sharp(originalImagePath);
+      await resizedImage.resize({ width: maxWidth }).toFile(webpOutputPath);
+
+      const originalOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '.webp'));
+      await originalImage.toFile(originalOutputPath);
+
+      const mobileOutputPath = path.join(imagesDirectory, filename.replace(/\.[^.]+$/, '_mobile.webp'));
+      await resizedImage.resize({ width: mobileWidth }).toFile(mobileOutputPath);
+
+    } else {
+      // Convert the original image to WebP format
+      await originalImage.toFile(webpOutputPath);
+    }
+
+    fs.unlinkSync(originalImagePath);
+
+    return `src="images/${filename.replace(/\.[^.]+$/, '.webp')}" srcset="images/${filename.replace(
+      /\.[^.]+$/,
+      '_mobile.webp'
+    )} ${mobileWidth}w, images/${filename.replace(/\.[^.]+$/, '.webp')} ${maxWidth}w" sizes="(max-width: ${mobileWidth}px) 100vw, ${maxWidth}px"`;
+
+  } catch (err) {
+    console.error(`Error processing image: ${err.message}`);
+    return ''; // or throw the error depending on your use case
   }
+}
 
 function sanitizeFilename(filename) {
   return filename.replace(/[/\\?%*:|"<>]/g, '_');
